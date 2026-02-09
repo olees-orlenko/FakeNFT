@@ -35,6 +35,11 @@ extension NFTCollection {
                 title: "Brown",
                 coverURL: URL(string: "https://code.s3.yandex.net/Mobile/iOS/NFT/Обложки_коллекций/Brown.png"),
                 itemCount: 8
+            ),
+            NFTCollection(
+                title: "Brown",
+                coverURL: URL(string: "https://code.s3.yandex.net/Mobile/iOS/NFT/Обложки_коллекций/Brown.png"),
+                itemCount: 8
             )
         ]
     }
