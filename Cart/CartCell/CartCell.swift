@@ -8,14 +8,18 @@
 import SwiftUI
 
 struct CartCell: View {
+    var name: String
+    var image: String
+    var rating : Int
+    
     var body: some View {
         HStack {
-            Image(.nftPlaceholder)
+            Image(name)
             
             VStack(alignment: .leading, spacing: 0) {
-                Text("April")
+                Text(name)
                     .padding(.bottom, 4)
-                RatingView(rating: 3)
+                RatingView(rating: rating)
                     .padding(.bottom, 12)
                 Text("Цена")
                     .padding(.bottom, 2)
@@ -30,5 +34,5 @@ struct CartCell: View {
 }
 
 #Preview {
-    CartCell()
+    CartCell(name: "April", image: "April", rating: 2)
 }
