@@ -11,7 +11,7 @@ struct CartCell: View {
     var body: some View {
         HStack {
             Image(.nftPlaceholder)
-                .padding()
+            
             VStack(alignment: .leading, spacing: 0) {
                 Text("April")
                     .padding(.bottom, 4)
@@ -25,7 +25,6 @@ struct CartCell: View {
             Button(action: {}) {
                 Image(.thrash)
             }
-            .padding()
         }
     }
 }
