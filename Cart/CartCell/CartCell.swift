@@ -10,12 +10,13 @@ import SwiftUI
 struct CartCell: View {
     var name: String
     var image: String
-    var rating : Int
-    
+    var rating: Int
+    var deleteAction: () -> Void
+
     var body: some View {
         HStack {
             Image(name)
-            
+
             VStack(alignment: .leading, spacing: 0) {
                 Text(name)
                     .padding(.bottom, 4)
@@ -26,7 +27,7 @@ struct CartCell: View {
                 Text("1,78 ETH")
             }
             Spacer()
-            Button(action: {}) {
+            Button(action: deleteAction) {
                 Image(.thrash)
             }
         }
@@ -34,5 +35,5 @@ struct CartCell: View {
 }
 
 #Preview {
-    CartCell(name: "April", image: "April", rating: 2)
+    CartCell(name: "April", image: "April", rating: 2, deleteAction: {})
 }
