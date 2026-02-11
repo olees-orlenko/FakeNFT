@@ -11,6 +11,7 @@ struct CartCell: View {
     var name: String
     var image: String
     var rating: Int
+    var price: Double
     var deleteAction: () -> Void
 
     var body: some View {
@@ -28,7 +29,7 @@ struct CartCell: View {
                     .font(.system(size: 13, weight: .regular))
                     .foregroundStyle(.blackAdaptive)
                     .padding(.bottom, 2)
-                Text("1,78 ETH")
+                Text("\(String(format: "%.2f", price).replacingOccurrences(of: ".", with: ",")) ETH")
                     .foregroundStyle(.blackAdaptive)
                     .font(.system(size: 17,weight: .bold))
             }
@@ -45,11 +46,11 @@ struct CartCell: View {
 }
 
 #Preview ("Cart cell light") {
-    CartCell(name: "April", image: "April", rating: 2, deleteAction: {})
+    CartCell(name: "April", image: "April", rating: 2, price: 3.14, deleteAction: {})
         .preferredColorScheme(.light)
 }
 
 #Preview ("Cart cell dark") {
-    CartCell(name: "April", image: "April", rating: 2, deleteAction: {})
+    CartCell(name: "April", image: "April", rating: 2, price: 3.14, deleteAction: {})
         .preferredColorScheme(.dark)
 }

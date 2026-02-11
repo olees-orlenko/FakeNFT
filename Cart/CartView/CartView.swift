@@ -76,6 +76,7 @@ struct CartView: View {
                     name: item.name,
                     image: item.image,
                     rating: item.rating,
+                    price: item.price,
                     deleteAction: {
                         itemToDelete = item
                         showDeleteAlert = true
@@ -96,7 +97,7 @@ struct CartView: View {
                 Text("\(listData.count) NFT")
                     .font(.system(size: 15))
                     .foregroundStyle(.blackAdaptive)
-                Text("5.17 ETH") // count price
+                Text("\(formattedTotalPrice) ETH")
                     .foregroundStyle(.ypGreen)
                     .font(.system(size: 17, weight: .bold))
                     .lineLimit(1)
@@ -110,7 +111,7 @@ struct CartView: View {
                     .foregroundStyle(.whiteAdaptive)
                     .font(.system(size: 17, weight: .bold))
             }
-            .frame(width: 240, height: 44)
+            .frame(maxWidth: 240, maxHeight: 44)
             .background(.blackAdaptive)
             .clipShape(RoundedRectangle(cornerRadius: 16))
 
@@ -128,7 +129,7 @@ struct CartView: View {
                 Spacer()
                 Text("Корзина пуста")
                     .foregroundStyle(.blackAdaptive)
-                    .font(.system(size: 17,weight: .bold))
+                    .font(.system(size: 17, weight: .bold))
                 Spacer()
             }
             Spacer()
@@ -136,10 +137,18 @@ struct CartView: View {
         .background(.whiteAdaptive)
     }
 
+    private var totalPrice: Double {
+        listData.reduce(0) { $0 + $1.price }
+    }
+    private var formattedTotalPrice: String {
+        String(format: "%.2f", totalPrice).replacingOccurrences(of: ".", with: ",")
+    }
+
     private var sortOptions: [SortOption] {
         [
             SortOption(title: "По цене") {
-                withAnimation { }
+                withAnimation { listData.sort {
+                    $0.price < $1.price } }
             },
             SortOption(title: "По названию") {
                 withAnimation { listData.sort { $0.name < $1.name } }
