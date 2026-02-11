@@ -32,9 +32,9 @@ extension NFTCollection {
                 itemCount: 6
             ),
             NFTCollection(
-                title: "Brown",
+                title: "Red",
                 coverURL: URL(string: "https://code.s3.yandex.net/Mobile/iOS/NFT/Обложки_коллекций/Brown.png"),
-                itemCount: 8
+                itemCount: 9
             ),
             NFTCollection(
                 title: "Brown",

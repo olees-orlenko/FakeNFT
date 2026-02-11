@@ -69,9 +69,37 @@ extension UIColor {
     private static let yaLightGrayLight = UIColor(hexString: "#F7F7F8")
     private static let yaGrayDarkTheme  = UIColor(hexString: "#CCCCCC")
     
+    // MARK: - Light and Dark Colors for Sorting Menu Background
+    
+    private static let sortingLightTheme = UIColor(hexString: "#C9C9CA")
+    private static let sortingDarkTheme  = UIColor(hexString: "#262628")
+    
+    // MARK: - Light and Dark Colors for Text
+    
+    private static let textLightTheme = UIColor(hexString: "#717074")
+    private static let textDarkTheme  = UIColor(hexString: "#A09EA3")
+    
+    // MARK: - LoadingHUD
+    
     static let loadingHUDColor = UIColor { traits in
         return traits.userInterfaceStyle == .dark
         ? yaGrayDarkTheme
         : yaLightGrayLight
+    }
+    
+    // MARK: - Sorting Menu
+    
+    static let sortingBackground = UIColor { traits in
+        return traits.userInterfaceStyle == .dark
+        ? sortingDarkTheme
+        : sortingLightTheme
+    }
+    
+    // MARK: - Sorting Menu Text
+    
+    static let sortingText = UIColor { traits in
+        return traits.userInterfaceStyle == .dark
+        ? textDarkTheme
+        : textLightTheme
     }
 }
