@@ -41,6 +41,7 @@ struct CartCell: View {
         }
         .background(.whiteAdaptive)
     }
+    
 }
 
 #Preview ("Cart cell light") {

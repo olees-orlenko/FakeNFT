@@ -25,7 +25,6 @@ struct CartView: View {
                     }
                     Spacer()
                 }
-
                 if showDeleteAlert {
                     Color.clear
                         .ignoresSafeArea(.all)
@@ -83,8 +82,10 @@ struct CartView: View {
                     }
                 )
                 .listRowSeparator(.hidden)
+                .listRowBackground(Color.whiteAdaptive)
             }
         }
+        .background(.whiteAdaptive)
         .listStyle(.plain)
         .listRowSpacing(16)
     }
@@ -121,11 +122,18 @@ struct CartView: View {
     }
 
     var emptyState: some View {
-        VStack {
+        HStack {
             Spacer()
-            Text("Cart empty")
+            VStack {
+                Spacer()
+                Text("Корзина пуста")
+                    .foregroundStyle(.blackAdaptive)
+                    .font(.system(size: 17,weight: .bold))
+                Spacer()
+            }
             Spacer()
         }
+        .background(.whiteAdaptive)
     }
 
     private var sortOptions: [SortOption] {
@@ -149,10 +157,6 @@ struct CartView: View {
     }
 }
 
-#Preview("Cart empty state") {
-    CartView(listData: [])
-}
-
 #Preview("Cart Light") {
     CartView(listData: [cartMock, cartMock2, cartMock3, cartMock])
         .preferredColorScheme(.light)
@@ -160,5 +164,15 @@ struct CartView: View {
 
 #Preview("Cart Dark") {
     CartView(listData: [cartMock, cartMock2, cartMock3, cartMock])
+        .preferredColorScheme(.dark)
+}
+
+#Preview("Cart empty state light") {
+    CartView(listData: [])
+        .preferredColorScheme(.light)
+}
+
+#Preview("Cart empty state dark") {
+    CartView(listData: [])
         .preferredColorScheme(.dark)
 }
