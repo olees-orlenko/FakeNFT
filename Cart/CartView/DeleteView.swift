@@ -18,32 +18,39 @@ struct DeleteView: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 108, height: 108)
             Text("Вы уверены,что хотите \nудалить этот объект из корзины?")
+                .foregroundStyle(.blackAdaptive)
                 .font(.system(size: 13, weight: .regular))
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
             HStack(alignment: .center, spacing: 8) {
                 Button(action: onDelete) {
                     Text("Удалить")
-                        .foregroundStyle(.red)
+                        .foregroundStyle(.ypRed)
                 }
                 .frame(width: 127)
                 .padding()
-                .background(.black)
+                .background(.blackAdaptive)
                 .clipShape(RoundedRectangle(cornerRadius: 16))
 
                 Button(action: onCancel) {
                     Text("Вернуться")
-                        .foregroundStyle(.white)
+                        .foregroundStyle(.whiteAdaptive)
                 }
                 .frame(width: 127)
                 .padding()
-                .background(.black)
+                .background(.blackAdaptive)
                 .clipShape(RoundedRectangle(cornerRadius: 16))
             }
         }
     }
 }
 
-#Preview {
+#Preview ("Delete view light") {
     DeleteView(onDelete: {}, onCancel: {})
+        .preferredColorScheme(.light)
+}
+
+#Preview("Delete view dark") {
+    DeleteView(onDelete: {}, onCancel: {})
+        .preferredColorScheme(.dark)
 }

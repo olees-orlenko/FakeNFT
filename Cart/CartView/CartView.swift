@@ -53,6 +53,7 @@ struct CartView: View {
                     .zIndex(2)
                 }
             }
+            .background(.whiteAdaptive)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: { withAnimation { isShowingSortMenu = true }}) {
@@ -65,7 +66,7 @@ struct CartView: View {
             }
             .toolbar(showDeleteAlert ? .hidden : .visible, for: .tabBar)
         }
-        .overlay(SortMenuView(isShowingSortMenu: $isShowingSortMenu, title: "Title", options: sortOptions, closeButtonTitle: "Cancel"))
+        .overlay(SortMenuView(isShowingSortMenu: $isShowingSortMenu, title: "Сортировка", options: sortOptions, closeButtonTitle: "Закрыть"))
         .toolbar(isShowingSortMenu ? .hidden : .visible, for: .tabBar)
     }
 
@@ -91,28 +92,31 @@ struct CartView: View {
     var makeOrder: some View {
         HStack {
             VStack(alignment: .leading) {
-                Text("\(listData.count) nft")
+                Text("\(listData.count) NFT")
                     .font(.system(size: 15))
+                    .foregroundStyle(.blackAdaptive)
                 Text("5.17 ETH") // count price
-                    .foregroundStyle(.green)
+                    .foregroundStyle(.ypGreen)
                     .font(.system(size: 17, weight: .bold))
+                    .lineLimit(1)
             }
             .padding(.horizontal)
 
             Spacer()
 
             Button(action: {}) {
-                Text("to order")
-                    .foregroundStyle(.white)
+                Text("К оплате")
+                    .foregroundStyle(.whiteAdaptive)
+                    .font(.system(size: 17, weight: .bold))
             }
             .frame(width: 240, height: 44)
-            .background(.black)
+            .background(.blackAdaptive)
             .clipShape(RoundedRectangle(cornerRadius: 16))
 
-            .padding(.horizontal)
+            .padding(.trailing)
         }
         .padding()
-        .background(.gray.opacity(0.6)) // Change color
+        .background(.lightGrayAdaptive)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -149,6 +153,12 @@ struct CartView: View {
     CartView(listData: [])
 }
 
-#Preview("CartView") {
+#Preview("Cart Light") {
     CartView(listData: [cartMock, cartMock2, cartMock3, cartMock])
+        .preferredColorScheme(.light)
+}
+
+#Preview("Cart Dark") {
+    CartView(listData: [cartMock, cartMock2, cartMock3, cartMock])
+        .preferredColorScheme(.dark)
 }

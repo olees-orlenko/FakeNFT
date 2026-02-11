@@ -65,7 +65,7 @@ struct SortMenuView: View {
                             .frame(maxWidth: .infinity)
                             .padding()
                             .background(RoundedRectangle(cornerRadius: 13, style: .continuous)
-                                .fill(.blackAdaptive)
+                                .fill(.whiteAdaptive)
                             )
                     }
                     .padding(.horizontal, 8)
@@ -79,7 +79,7 @@ struct SortMenuView: View {
     }
 }
 
-#Preview("Sort Menu White") {
+#Preview("Sort Menu Light") {
     @Previewable @State var isShowingSortMenu = true
     let options = [
         SortOption(title: "По цене", action: { print("Сортировка по цене") }),
@@ -88,9 +88,10 @@ struct SortMenuView: View {
     ]
 
     SortMenuView(isShowingSortMenu: $isShowingSortMenu, title: "Сортировка", options: options, closeButtonTitle: "Закрыть")
+        .preferredColorScheme(.light)
 }
 
-#Preview("Sort Menu Black") {
+#Preview("Sort Menu Dark") {
     @Previewable @State var isShowingSortMenu = true
     let options = [
         SortOption(title: "По цене", action: { print("Сортировка по цене") }),
