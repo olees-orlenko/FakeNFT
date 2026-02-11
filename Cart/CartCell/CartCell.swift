@@ -31,7 +31,7 @@ struct CartCell: View {
                     .padding(.bottom, 2)
                 Text("\(String(format: "%.2f", price).replacingOccurrences(of: ".", with: ",")) ETH")
                     .foregroundStyle(.blackAdaptive)
-                    .font(.system(size: 17,weight: .bold))
+                    .font(.system(size: 17, weight: .bold))
             }
             Spacer()
             Button(action: deleteAction) {
@@ -42,15 +42,14 @@ struct CartCell: View {
         }
         .background(.whiteAdaptive)
     }
-    
 }
 
-#Preview ("Cart cell light") {
+#Preview("Cart cell light") {
     CartCell(name: "April", image: "April", rating: 2, price: 3.14, deleteAction: {})
         .preferredColorScheme(.light)
 }
 
-#Preview ("Cart cell dark") {
+#Preview("Cart cell dark") {
     CartCell(name: "April", image: "April", rating: 2, price: 3.14, deleteAction: {})
         .preferredColorScheme(.dark)
 }

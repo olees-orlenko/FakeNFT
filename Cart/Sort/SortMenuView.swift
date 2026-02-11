@@ -7,22 +7,33 @@
 
 import SwiftUI
 
+// MARK: - SortMenuView
+
 struct SortMenuView: View {
     @Binding var isShowingSortMenu: Bool
     let title: String
     let options: [SortOption]
     let closeButtonTitle: String
 
+    // MARK: - Body
+
     var body: some View {
         GeometryReader { _ in
             if isShowingSortMenu {
+                // MARK: - Background
+
                 Color.black.opacity(0.5)
                     .ignoresSafeArea()
                     .onTapGesture {
                         withAnimation { isShowingSortMenu = false }
                     }
+
+                // MARK: - Menu Container
+
                 VStack(spacing: 0) {
                     VStack(spacing: 0) {
+                        // MARK: - Options List
+
                         Text(title)
                             .font(.caption2)
                             .foregroundStyle(Color.gray)
@@ -58,6 +69,8 @@ struct SortMenuView: View {
                     .padding(.horizontal, 8)
                     .padding(.bottom, 8)
 
+                    // MARK: - Close Button
+
                     Button(action: { withAnimation { isShowingSortMenu = false }
                     }) {
                         Text(closeButtonTitle)
@@ -78,6 +91,8 @@ struct SortMenuView: View {
         .animation(.easeOut(duration: 0.22), value: isShowingSortMenu)
     }
 }
+
+// MARK: - Preview
 
 #Preview("Sort Menu Light") {
     @Previewable @State var isShowingSortMenu = true

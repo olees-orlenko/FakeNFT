@@ -8,12 +8,13 @@
 import SwiftUI
 
 struct DeleteView: View {
+    var imageName: String
     let onDelete: () -> Void
     let onCancel: () -> Void
 
     var body: some View {
         VStack {
-            Image("April")
+            Image(imageName)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 108, height: 108)
@@ -46,11 +47,11 @@ struct DeleteView: View {
 }
 
 #Preview ("Delete view light") {
-    DeleteView(onDelete: {}, onCancel: {})
+    DeleteView(imageName: "April", onDelete: {}, onCancel: {})
         .preferredColorScheme(.light)
 }
 
 #Preview("Delete view dark") {
-    DeleteView(onDelete: {}, onCancel: {})
+    DeleteView(imageName: "April", onDelete: {}, onCancel: {})
         .preferredColorScheme(.dark)
 }

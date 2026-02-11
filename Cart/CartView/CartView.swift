@@ -8,11 +8,15 @@
 import SwiftUI
 
 struct CartView: View {
+    // MARK: - Properties
+
     @State var listData: [CartModel]
 
     @State private var isShowingSortMenu = false
     @State private var showDeleteAlert = false
     @State private var itemToDelete: CartModel?
+
+    // MARK: - Body
 
     var body: some View {
         NavigationStack {
@@ -25,6 +29,9 @@ struct CartView: View {
                     }
                     Spacer()
                 }
+
+                // MARK: - Delete Alert
+
                 if showDeleteAlert {
                     Color.clear
                         .ignoresSafeArea(.all)
@@ -33,7 +40,8 @@ struct CartView: View {
                         .zIndex(1)
 
                     DeleteView(
-                        onDelete: {
+                        imageName: itemToDelete?.image ?? ""
+                        , onDelete: {
                             if let item = itemToDelete {
                                 deleteItem(item)
                             }
@@ -53,6 +61,9 @@ struct CartView: View {
                 }
             }
             .background(.whiteAdaptive)
+
+            // MARK: - Toolbar
+
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: { withAnimation { isShowingSortMenu = true }}) {
@@ -65,9 +76,14 @@ struct CartView: View {
             }
             .toolbar(showDeleteAlert ? .hidden : .visible, for: .tabBar)
         }
+
+        // MARK: - Sorting Overlay
+
         .overlay(SortMenuView(isShowingSortMenu: $isShowingSortMenu, title: "Сортировка", options: sortOptions, closeButtonTitle: "Закрыть"))
         .toolbar(isShowingSortMenu ? .hidden : .visible, for: .tabBar)
     }
+
+    // MARK: - UI Components
 
     var list: some View {
         List {
@@ -137,9 +153,12 @@ struct CartView: View {
         .background(.whiteAdaptive)
     }
 
+    // MARK: - Computed Properties
+
     private var totalPrice: Double {
         listData.reduce(0) { $0 + $1.price }
     }
+
     private var formattedTotalPrice: String {
         String(format: "%.2f", totalPrice).replacingOccurrences(of: ".", with: ",")
     }
@@ -148,7 +167,8 @@ struct CartView: View {
         [
             SortOption(title: "По цене") {
                 withAnimation { listData.sort {
-                    $0.price < $1.price } }
+                    $0.price < $1.price
+                } }
             },
             SortOption(title: "По названию") {
                 withAnimation { listData.sort { $0.name < $1.name } }
@@ -159,12 +179,16 @@ struct CartView: View {
         ]
     }
 
+    // MARK: - Private Methods
+
     private func deleteItem(_ item: CartModel) {
         if let index = listData.firstIndex(where: { $0.id == item.id }) {
             listData.remove(at: index)
         }
     }
 }
+
+// MARK: - Preview
 
 #Preview("Cart Light") {
     CartView(listData: [cartMock, cartMock2, cartMock3, cartMock])
