@@ -13,8 +13,8 @@ struct CatalogView: View {
     
     // MARK: - Properties
     
-    private let collections = NFTCollection.mockCollections
     @StateObject private var viewModel = CatalogViewModel()
+    @State private var isShowingSortMenu = false
     
     // MARK: - Body
     
@@ -25,33 +25,43 @@ struct CatalogView: View {
                     .ignoresSafeArea()
                 ScrollView {
                     LazyVStack(spacing: 8) {
-                        ForEach(collections) { collection in
+                        ForEach(viewModel.collections) { collection in
                             CollectionCell(collection: collection)
                                 .padding(.horizontal, 16)
                         }
                     }
                     .padding(.top, 20)
                 }
+                .padding(.bottom, isShowingSortMenu ? 32 : 0)
                 if viewModel.isLoading {
                     Color.clear
-                        .ignoresSafeArea()
                         .contentShape(Rectangle())
                         .onTapGesture { }
                     LoadingHUD()
                         .transition(.opacity.combined(with: .scale))
+                }
+                if isShowingSortMenu {
+                    CollectionFilter(
+                        isPresented: $isShowingSortMenu,
+                        onSortByName: { viewModel.sort(by: .byName(ascending: true)) },
+                        onSortByCount: { viewModel.sort(by: .byCount(ascending: false)) }
+                    )
                 }
             }
             .background(Color(.systemBackground))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: { }) {
+                    Button {
+                        isShowingSortMenu = true
+                    } label: {
                         Image("Menu")
                             .foregroundColor(.primary)
                             .padding(1.3)
                     }
                 }
             }
+            .toolbar(isShowingSortMenu ? .hidden : .visible, for: .tabBar)
         }
         .task {
             await viewModel.loadCovers()
