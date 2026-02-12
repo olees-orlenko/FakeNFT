@@ -13,7 +13,7 @@ struct RatingView: View {
     let maxRating: Int = 5
     
     var body: some View {
-        HStack {
+        HStack(spacing: 2) {
             ForEach(1...maxRating, id: \.self) { index in
                 Image(.star)
                     .renderingMode(.template)
