@@ -11,9 +11,15 @@ extension UIFont {
 
     // Body Fonts
     static var bodyRegular = UIFont.systemFont(ofSize: 17, weight: .regular)
+    
+    // MARK: - Font for Title in Collection Cell
+    
     static var bodyBold = UIFont.systemFont(ofSize: 17, weight: .bold)
 
     // Caption Fonts
     static var caption1 = UIFont.systemFont(ofSize: 15, weight: .regular)
+    
+    // MARK: - Font for Sorting Title
+    
     static var caption2 = UIFont.systemFont(ofSize: 13, weight: .regular)
 }
