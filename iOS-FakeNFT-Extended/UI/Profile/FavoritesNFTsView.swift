@@ -1,10 +1,14 @@
 import SwiftUI
 
-struct MyNFTsView: View {
+struct FavoritesNFTsView: View {
     @Environment(\.dismiss) private var dismiss
-    private let items: [MyNFTItem]
+    private let items: [FavoriteNFTItem]
+    private let columns = [
+        GridItem(.fixed(168), spacing: 7),
+        GridItem(.fixed(168), spacing: 7)
+    ]
 
-    init(items: [MyNFTItem] = MyNFTItem.mock) {
+    init(items: [FavoriteNFTItem] = FavoriteNFTItem.mock) {
         self.items = items
     }
 
@@ -13,7 +17,7 @@ struct MyNFTsView: View {
             if items.isEmpty {
                 VStack {
                     Spacer()
-                    Text("У Вас ещё нет NFT")
+                    Text("У Вас ещё нет избранных NFT")
                         .font(.system(size: 17, weight: .bold))
                         .foregroundStyle(Color(uiColor: UIColor(hexString: "#1A1B22")))
                         .frame(maxWidth: .infinity)
@@ -21,15 +25,17 @@ struct MyNFTsView: View {
                 }
             } else {
                 ScrollView {
-                    VStack(spacing: 0) {
+                    LazyVGrid(columns: columns, alignment: .leading, spacing: 20) {
                         ForEach(items) { item in
-                            MyNFTRowView(item: item)
+                            FavoriteNFTCard(item: item)
                         }
                     }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 16)
                 }
             }
         }
-        .navigationTitle("Мои NFT")
+        .navigationTitle("Избранные NFT")
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .toolbar {
@@ -42,68 +48,46 @@ struct MyNFTsView: View {
                         .foregroundStyle(Color(uiColor: UIColor(hexString: "#1A1B22")))
                 }
             }
-            if !items.isEmpty {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: {}) {
-                        Image("sort")
-                            .renderingMode(.template)
-                            .foregroundStyle(Color(uiColor: UIColor(hexString: "#1A1B22")))
-                    }
-                    .frame(width: 42, height: 42)
-                }
-            }
         }
     }
 }
 
-private struct MyNFTRowView: View {
-    let item: MyNFTItem
+private struct FavoriteNFTCard: View {
+    let item: FavoriteNFTItem
 
     var body: some View {
-        HStack(spacing: 16) {
-            imageBlock
+        HStack(spacing: 12) {
+            icon
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(item.name)
                     .font(.system(size: 17, weight: .bold))
+                    .foregroundStyle(Color(uiColor: UIColor(hexString: "#1A1B22")))
                     .lineLimit(1)
                 starsView
-                Text("от \(item.author)")
-                    .font(.system(size: 13, weight: .regular))
-                    .foregroundStyle(Color(uiColor: UIColor(hexString: "#1A1B22")))
-            }
-
-            Spacer()
-
-            VStack(alignment: .leading, spacing: 2) {
-                Text("Цена")
-                    .font(.system(size: 13, weight: .regular))
-                    .foregroundStyle(Color(uiColor: UIColor(hexString: "#1A1B22")))
                 Text(item.price)
-                    .font(.system(size: 17, weight: .bold))
+                    .font(.system(size: 17, weight: .regular))
                     .foregroundStyle(Color(uiColor: UIColor(hexString: "#1A1B22")))
                     .lineLimit(1)
             }
-            .frame(width: 112, alignment: .leading)
         }
-        .padding(.horizontal, 16)
-        .frame(height: 140)
+        .frame(width: 168, height: 80, alignment: .leading)
     }
 
-    private var imageBlock: some View {
+    private var icon: some View {
         ZStack(alignment: .topTrailing) {
             RoundedRectangle(cornerRadius: 12)
                 .fill(
                     LinearGradient(
-                        colors: [Color.pink.opacity(0.3), Color.purple.opacity(0.35)],
+                        colors: [Color.orange.opacity(0.35), Color.pink.opacity(0.35)],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     )
                 )
-                .frame(width: 108, height: 108)
+                .frame(width: 80, height: 80)
                 .overlay {
                     Text(item.name.prefix(1))
-                        .font(.system(size: 34, weight: .bold))
+                        .font(.system(size: 26, weight: .bold))
                         .foregroundStyle(.white)
                 }
 
@@ -111,15 +95,15 @@ private struct MyNFTRowView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 20, height: 20)
-                .foregroundStyle(.white)
-                .padding(8)
+                .foregroundStyle(Color(uiColor: UIColor(hexString: "#F56B6C")))
+                .padding(4)
         }
     }
 
     private var starsView: some View {
         HStack(spacing: 2) {
             ForEach(0..<5, id: \.self) { idx in
-                Image(systemName: idx < item.rating ? "star.fill" : "star.fill")
+                Image(systemName: "star.fill")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 12, height: 12)
@@ -129,28 +113,30 @@ private struct MyNFTRowView: View {
     }
 }
 
-struct MyNFTItem: Identifiable {
+struct FavoriteNFTItem: Identifiable {
     let id: String
     let name: String
     let rating: Int
-    let author: String
     let price: String
 
-    static let mock: [MyNFTItem] = [
-        MyNFTItem(id: "1", name: "Lilo", rating: 3, author: "John Doe", price: "1,78 ETH"),
-        MyNFTItem(id: "2", name: "Spring", rating: 3, author: "John Doe", price: "1,78 ETH"),
-        MyNFTItem(id: "3", name: "April", rating: 3, author: "John Doe", price: "1,78 ETH")
+    static let mock: [FavoriteNFTItem] = [
+        FavoriteNFTItem(id: "1", name: "Archie", rating: 1, price: "1,78 ETH"),
+        FavoriteNFTItem(id: "2", name: "Pixi", rating: 3, price: "1,78 ETH"),
+        FavoriteNFTItem(id: "3", name: "Melissa", rating: 5, price: "1,78 ETH"),
+        FavoriteNFTItem(id: "4", name: "April", rating: 2, price: "1,78 ETH"),
+        FavoriteNFTItem(id: "5", name: "Daisy", rating: 1, price: "1,78 ETH"),
+        FavoriteNFTItem(id: "6", name: "Lilo", rating: 4, price: "1,78 ETH")
     ]
 }
 
 #Preview {
     NavigationStack {
-        MyNFTsView()
+        FavoritesNFTsView()
     }
 }
 
 #Preview("Empty") {
     NavigationStack {
-        MyNFTsView(items: [])
+        FavoritesNFTsView(items: [])
     }
 }
