@@ -69,10 +69,15 @@ struct ProfileView: View {
             }
             .buttonStyle(.plain)
 
-            ProfileRowView(
-                title: "Избранные NFT",
-                count: viewData.favoriteNftCount
-            )
+            NavigationLink {
+                FavoritesNFTsView()
+            } label: {
+                ProfileRowView(
+                    title: "Избранные NFT",
+                    count: viewData.favoriteNftCount
+                )
+            }
+            .buttonStyle(.plain)
         }
         .padding(.top, 16)
     }
