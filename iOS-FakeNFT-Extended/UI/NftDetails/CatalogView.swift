@@ -23,15 +23,15 @@ struct CatalogView: View {
             ZStack {
                 Color(.systemBackground)
                     .ignoresSafeArea()
-                ScrollView {
-                    LazyVStack(spacing: 8) {
-                        ForEach(viewModel.collections) { collection in
-                            CollectionCell(collection: collection)
-                                .padding(.horizontal, 16)
-                        }
-                    }
-                    .padding(.top, 20)
+                List(viewModel.collections) { collection in
+                    CatalogCollectionCell(collection: collection)
+                        .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 8, trailing: 16))
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
                 }
+                .listStyle(.plain)
+                .scrollContentBackground(.hidden)
+                .padding(.top, 12)
                 .padding(.bottom, isShowingSortMenu ? 32 : 0)
                 if viewModel.isLoading {
                     Color.clear
@@ -57,7 +57,7 @@ struct CatalogView: View {
                     } label: {
                         Image("Menu")
                             .foregroundColor(.primary)
-                            .padding(1.3)
+                            .padding(9)
                     }
                 }
             }

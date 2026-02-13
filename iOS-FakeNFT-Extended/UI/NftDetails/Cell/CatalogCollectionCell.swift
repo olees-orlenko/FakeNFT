@@ -1,5 +1,5 @@
 //
-//  CollectionCell.swift
+//  CatalogCollectionCell.swift
 //  iOS-FakeNFT-Extended
 //
 //  Created by Олеся Орленко on 05.02.2026.
@@ -7,16 +7,22 @@
 
 import SwiftUI
 
-// MARK: - Collection Cell
+// MARK: - Catalog Collection Cell
 
-struct CollectionCell: View {
+struct CatalogCollectionCell: View {
     
     // MARK: - Properties
     
-    let collection: NFTCollection
-    var cornerRadius: CGFloat = 12
-    var coverHeight: CGFloat = 140
-    var verticalPadding: CGFloat = 8
+    private let collection: NFTCollection
+    private let cornerRadius: CGFloat = 12
+    private let coverHeight: CGFloat = 140
+    private let verticalPadding: CGFloat = 8
+    
+    // MARK: - Init
+    
+    init(collection: NFTCollection) {
+            self.collection = collection
+        }
     
     // MARK: - Body
     
@@ -70,7 +76,7 @@ struct CollectionCell: View {
 
 #Preview("Cell light") {
     Group {
-        CollectionCell(collection: NFTCollection.mockCollections[0])
+        CatalogCollectionCell(collection: NFTCollection.mockCollections[0])
             .padding()
     }
     .preferredColorScheme(.light)
@@ -78,7 +84,7 @@ struct CollectionCell: View {
 
 #Preview("Cell dark") {
     Group {
-        CollectionCell(collection: NFTCollection.mockCollections[0])
+        CatalogCollectionCell(collection: NFTCollection.mockCollections[0])
             .padding()
     }
     .preferredColorScheme(.dark)

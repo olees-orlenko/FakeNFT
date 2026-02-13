@@ -60,7 +60,6 @@ final class CatalogViewModel: ObservableObject {
             }
             await group.waitForAll()
         }
-        try? await Task.sleep(nanoseconds: 80_000_000)
         isLoading = false
         print("Загрузка обложек завершена")
     }
@@ -68,10 +67,10 @@ final class CatalogViewModel: ObservableObject {
     // MARK: - Filtering
     
     func sort(by option: SortOption) {
-        applySort(option, save: true)
+        applySort(option, isSave: true)
     }
     
-    private func applySort(_ option: SortOption, save: Bool) {
+    private func applySort(_ option: SortOption, isSave: Bool) {
         currentSort = option
         switch option {
         case .none:
@@ -87,7 +86,7 @@ final class CatalogViewModel: ObservableObject {
                 ascending ? $0.itemCount < $1.itemCount : $0.itemCount > $1.itemCount
             }
         }
-        if save {
+        if isSave {
             switch option {
             case .none:
                 storedType = SortType.none.rawValue
@@ -106,11 +105,11 @@ final class CatalogViewModel: ObservableObject {
         let type = SortType(rawValue: storedType) ?? .none
         switch type {
         case .none:
-            applySort(.none, save: false)
+            applySort(.none, isSave: false)
         case .name:
-            applySort(.byName(ascending: storedAscending), save: false)
+            applySort(.byName(ascending: storedAscending), isSave: false)
         case .count:
-            applySort(.byCount(ascending: storedAscending), save: false)
+            applySort(.byCount(ascending: storedAscending), isSave: false)
         }
     }
 }
