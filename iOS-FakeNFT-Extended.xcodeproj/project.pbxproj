@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -104,6 +104,13 @@
 		FC705C132F3FE7F300A4D0E5 /* RatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		A7145A3E2F3F765E00C29D24 /* Profile */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Profile; sourceTree = "<group>"; };
+		A7145A3F2F3F766D00C29D24 /* Statistic */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Statistic; sourceTree = "<group>"; };
+		A7145A422F3F767300C29D24 /* Catalog */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Catalog; sourceTree = "<group>"; };
+		A7145A432F3F767400C29D24 /* Card */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Card; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
+
 /* Begin PBXFrameworksBuildPhase section */
 		ABC5E1652C31F5AF002B4068 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -154,9 +161,12 @@
 		ABC5E16A2C31F5AF002B4068 /* iOS-FakeNFT-Extended */ = {
 			isa = PBXGroup;
 			children = (
+				A7145A3E2F3F765E00C29D24 /* Profile */,
+				A7145A3F2F3F766D00C29D24 /* Statistic */,
+				A7145A422F3F767300C29D24 /* Catalog */,
+				A7145A432F3F767400C29D24 /* Card */,
 				ABC5E16B2C31F5AF002B4068 /* iOS_FakeNFT_ExtendedApp.swift */,
 				ABC5E1E92C32084F002B4068 /* Localizable.strings */,
-				ABC5E1952C31F64A002B4068 /* DesignSystem */,
 				ABC5E19A2C31F687002B4068 /* Foundation */,
 				ABC5E19E2C31F6C1002B4068 /* Models */,
 				ABC5E1A92C31FABA002B4068 /* Services */,
@@ -273,6 +283,7 @@
 				ABC5E1B82C31FD51002B4068 /* TestCatalogView.swift */,
 				ABC5E1E72C320610002B4068 /* NftDetailBridgeView.swift */,
 				ABC5E1C82C3203E9002B4068 /* NftDetails */,
+				ABC5E1952C31F64A002B4068 /* DesignSystem */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -325,6 +336,12 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				A7145A3E2F3F765E00C29D24 /* Profile */,
+				A7145A3F2F3F766D00C29D24 /* Statistic */,
+				A7145A422F3F767300C29D24 /* Catalog */,
+				A7145A432F3F767400C29D24 /* Card */,
 			);
 			name = "iOS-FakeNFT-Extended";
 			packageProductDependencies = (
