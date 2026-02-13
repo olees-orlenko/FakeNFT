@@ -59,10 +59,16 @@ struct ProfileView: View {
 
     private var actionsSection: some View {
         VStack(spacing: 8) {
-            ProfileRowView(
-                title: "Мои NFT",
-                count: viewData.myNftCount
-            )
+            NavigationLink {
+                MyNFTsView()
+            } label: {
+                ProfileRowView(
+                    title: "Мои NFT",
+                    count: viewData.myNftCount
+                )
+            }
+            .buttonStyle(.plain)
+
             ProfileRowView(
                 title: "Избранные NFT",
                 count: viewData.favoriteNftCount
@@ -88,19 +94,16 @@ private struct ProfileRowView: View {
     let count: Int
 
     var body: some View {
-        Button(action: {}) {
-            HStack {
-                Text("\(title) (\(count))")
-                    .font(.system(size: 17, weight: .bold))
-                    .foregroundStyle(Color.primary)
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .foregroundStyle(Color(.systemGray2))
-            }
-            .frame(height: 54)
-            .padding(.horizontal, 16)
+        HStack {
+            Text("\(title) (\(count))")
+                .font(.system(size: 17, weight: .bold))
+                .foregroundStyle(Color.primary)
+            Spacer()
+            Image(systemName: "chevron.right")
+                .foregroundStyle(Color(.systemGray2))
         }
-        .buttonStyle(.plain)
+        .frame(height: 54)
+        .padding(.horizontal, 16)
     }
 }
 
