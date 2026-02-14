@@ -49,6 +49,7 @@
 		FC6342192F36E4470087B355 /* CatalogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC6342182F36E43F0087B355 /* CatalogView.swift */; };
 		FC705C122F3FD85D00A4D0E5 /* LikeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC705C112F3FD85B00A4D0E5 /* LikeButton.swift */; };
 		FC705C142F3FE80100A4D0E5 /* RatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC705C132F3FE7F300A4D0E5 /* RatingView.swift */; };
+		FCA272932F3FF5B200C1CB39 /* NftCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCA272922F3FF5AA00C1CB39 /* NftCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -112,6 +113,7 @@
 		FC6342182F36E43F0087B355 /* CatalogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogView.swift; sourceTree = "<group>"; };
 		FC705C112F3FD85B00A4D0E5 /* LikeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeButton.swift; sourceTree = "<group>"; };
 		FC705C132F3FE7F300A4D0E5 /* RatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingView.swift; sourceTree = "<group>"; };
+		FCA272922F3FF5AA00C1CB39 /* NftCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NftCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -295,6 +297,7 @@
 		ABC5E1C82C3203E9002B4068 /* NftDetails */ = {
 			isa = PBXGroup;
 			children = (
+				FCA272922F3FF5AA00C1CB39 /* NftCell.swift */,
 				FC2BA1142F3BE568003C0743 /* CollectionFilter.swift */,
 				FC6342182F36E43F0087B355 /* CatalogView.swift */,
 				FC6342122F355BF60087B355 /* NFTCollection.swift */,
@@ -490,6 +493,7 @@
 				ABC5E16E2C31F5AF002B4068 /* ContentView.swift in Sources */,
 				FC2BA1112F3BD767003C0743 /* LoadingHUD.swift in Sources */,
 				ABC5E1B92C31FD51002B4068 /* TestCatalogView.swift in Sources */,
+				FCA272932F3FF5B200C1CB39 /* NftCell.swift in Sources */,
 				ABC5E1DF2C3204FB002B4068 /* LoadingView.swift in Sources */,
 				FC2BA1152F3BE574003C0743 /* CollectionFilter.swift in Sources */,
 				ABC5E1972C31F656002B4068 /* Colors.swift in Sources */,
