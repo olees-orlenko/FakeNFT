@@ -108,7 +108,7 @@
 		A7145A3E2F3F765E00C29D24 /* Profile */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Profile; sourceTree = "<group>"; };
 		A7145A3F2F3F766D00C29D24 /* Statistic */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Statistic; sourceTree = "<group>"; };
 		A7145A422F3F767300C29D24 /* Catalog */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Catalog; sourceTree = "<group>"; };
-		A7145A432F3F767400C29D24 /* Card */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Card; sourceTree = "<group>"; };
+		A7145A432F3F767400C29D24 /* Cart */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Cart; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,7 +164,7 @@
 				A7145A3E2F3F765E00C29D24 /* Profile */,
 				A7145A3F2F3F766D00C29D24 /* Statistic */,
 				A7145A422F3F767300C29D24 /* Catalog */,
-				A7145A432F3F767400C29D24 /* Card */,
+				A7145A432F3F767400C29D24 /* Cart */,
 				ABC5E16B2C31F5AF002B4068 /* iOS_FakeNFT_ExtendedApp.swift */,
 				ABC5E1E92C32084F002B4068 /* Localizable.strings */,
 				ABC5E19A2C31F687002B4068 /* Foundation */,
@@ -341,7 +341,7 @@
 				A7145A3E2F3F765E00C29D24 /* Profile */,
 				A7145A3F2F3F766D00C29D24 /* Statistic */,
 				A7145A422F3F767300C29D24 /* Catalog */,
-				A7145A432F3F767400C29D24 /* Card */,
+				A7145A432F3F767400C29D24 /* Cart */,
 			);
 			name = "iOS-FakeNFT-Extended";
 			packageProductDependencies = (
