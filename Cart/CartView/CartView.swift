@@ -10,8 +10,7 @@ import SwiftUI
 struct CartView: View {
     // MARK: - Properties
 
-    @State var listData: [CartModel] //Public for preview support
-
+    @State var listData: [CartModel] = [] // Public for preview support
     @State private var isShowingSortMenu = false
     @State private var showDeleteAlert = false
     @State private var itemToDelete: CartModel?
@@ -85,7 +84,7 @@ struct CartView: View {
 
     // MARK: - UI Components
 
-    var list: some View {
+    private var list: some View {
         List {
             ForEach(listData) { item in
                 CartCell(
@@ -107,7 +106,7 @@ struct CartView: View {
         .listRowSpacing(16)
     }
 
-    var makeOrder: some View {
+    private var makeOrder: some View {
         HStack {
             VStack(alignment: .leading) {
                 Text("\(listData.count) NFT")
@@ -138,7 +137,7 @@ struct CartView: View {
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
-    var emptyState: some View {
+    private var emptyState: some View {
         HStack {
             Spacer()
             VStack {
@@ -191,12 +190,12 @@ struct CartView: View {
 // MARK: - Preview
 
 #Preview("Cart Light") {
-    CartView(listData: [MockData.cartMock,MockData.cartMock2,MockData.cartMock3])
+    CartView(listData: [MockData.cartMock, MockData.cartMock2, MockData.cartMock3])
         .preferredColorScheme(.light)
 }
 
 #Preview("Cart Dark") {
-    CartView(listData: [MockData.cartMock,MockData.cartMock2,MockData.cartMock3])
+    CartView(listData: [MockData.cartMock, MockData.cartMock2, MockData.cartMock3])
         .preferredColorScheme(.dark)
 }
 

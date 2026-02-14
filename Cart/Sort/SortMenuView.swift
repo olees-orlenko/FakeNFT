@@ -66,8 +66,7 @@ struct SortMenuView: View {
                         RoundedRectangle(cornerRadius: 13, style: .continuous)
                             .fill(.menuBackground)
                     )
-                    .padding(.horizontal, 8)
-                    .padding(.bottom, 8)
+                    .padding([.horizontal, .bottom], 8)
 
                     // MARK: - Close Button
 
