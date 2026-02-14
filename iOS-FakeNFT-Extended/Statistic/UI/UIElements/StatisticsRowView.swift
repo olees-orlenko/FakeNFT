@@ -9,22 +9,17 @@ struct StatisticsRowView: View {
     
     var body: some View {
         HStack(spacing: 8) {
-            
-            // Номер позиции
             Text("\(position)")
                 .font(.system(size: 15, weight: .regular))
                 .frame(width: 27, alignment: .leading)
+                .foregroundColor(.primary)
             
             ZStack {
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(Color(.systemGray6))
+                    .fill(Color(UIColor.segmentInactive))
                 
                 HStack(spacing: 12) {
-                    
-                    // Аватар
                     avatarView
-                    
-                    // Имя
                     Text(name)
                         .font(.system(size: 22, weight: .bold))
                         .foregroundColor(.primary)
@@ -51,10 +46,14 @@ struct StatisticsRowView: View {
                         .resizable()
                         .scaledToFill()
                 } placeholder: {
-                    ProgressView()
+                    Image("Userpick")
+                        .resizable()
+                        .scaledToFill()
                 }
             } else {
-                Color.gray.opacity(0.3)
+                Image("Userpick")
+                    .resizable()
+                    .scaledToFill()
             }
         }
         .frame(width: 28, height: 28)
@@ -63,5 +62,9 @@ struct StatisticsRowView: View {
 }
 
 #Preview {
-    StatisticsRowView(position: 1, avatarURL: nil, name: "Alex", rating: 228)
+    VStack(spacing: 12) {
+        StatisticsRowView(position: 1, avatarURL: nil, name: "Alex", rating: 228)
+        StatisticsRowView(position: 2, avatarURL: URL(string: "https://i.pravatar.cc/150"), name: "Mila", rating: 210)
+    }
+    .padding()
 }
