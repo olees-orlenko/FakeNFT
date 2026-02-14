@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct CartCell: View {
-    var name: String
-    var image: String
-    var rating: Int
-    var price: Double
-    var deleteAction: () -> Void
+    let name: String
+    let image: String
+    let rating: Int
+    let price: Double
+    let deleteAction: () -> Void
 
     var body: some View {
         HStack {
