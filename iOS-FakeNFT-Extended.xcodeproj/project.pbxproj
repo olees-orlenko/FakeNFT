@@ -202,13 +202,6 @@
 			path = Networking;
 			sourceTree = "<group>";
 		};
-		1F5EEF2C2F4012FC00F29B8D /* UI */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = UI;
-			sourceTree = "<group>";
-		};
 		1F5EEF2D2F4012FC00F29B8D /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
@@ -220,7 +213,7 @@
 			isa = PBXGroup;
 			children = (
 				1F5EEF2B2F4012FC00F29B8D /* Networking */,
-				1F5EEF2C2F4012FC00F29B8D /* UI */,
+				F1E000001122334455667787 /* UI */,
 				1F5EEF2D2F4012FC00F29B8D /* ViewModels */,
 			);
 			path = Profile;
@@ -431,7 +424,6 @@
 				ABC5E1B42C31FC57002B4068 /* TabBarView.swift */,
 				ABC5E1B82C31FD51002B4068 /* TestCatalogView.swift */,
 				ABC5E1E72C320610002B4068 /* NftDetailBridgeView.swift */,
-				F1E000001122334455667787 /* Profile */,
 				ABC5E1C82C3203E9002B4068 /* NftDetails */,
 				ABC5E1952C31F64A002B4068 /* DesignSystem */,
 			);
@@ -472,14 +464,14 @@
 			path = Common;
 			sourceTree = "<group>";
 		};
-		F1E000001122334455667787 /* Profile */ = {
+		F1E000001122334455667787 /* UI */ = {
 			isa = PBXGroup;
 			children = (
 				F1E00000112233445566778C /* FavoritesNFTsView.swift */,
 				F1E00000112233445566778A /* MyNFTsView.swift */,
 				F1E000001122334455667788 /* ProfileView.swift */,
 			);
-			path = Profile;
+			path = UI;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
