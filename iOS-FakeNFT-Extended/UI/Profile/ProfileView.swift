@@ -1,33 +1,131 @@
 import SwiftUI
 import WebKit
 
+final class ProfileFavoritesStore: ObservableObject {
+    @Published private(set) var favoriteNames: Set<String>
+
+    init(initialFavoriteNames: Set<String> = Set(FavoriteNFTItem.defaultFavoriteNames)) {
+        self.favoriteNames = initialFavoriteNames
+    }
+
+    func isFavorite(name: String) -> Bool {
+        favoriteNames.contains(name)
+    }
+
+    func toggle(name: String) {
+        if favoriteNames.contains(name) {
+            favoriteNames.remove(name)
+        } else {
+            favoriteNames.insert(name)
+        }
+    }
+
+    func remove(name: String) {
+        favoriteNames.remove(name)
+    }
+}
+
 struct ProfileView: View {
     private let viewData = ProfileViewData.mock
+    @StateObject private var favoritesStore = ProfileFavoritesStore()
+    @State private var screenState: ProfileScreenState
+
+    init(screenState: ProfileScreenState = .content) {
+        _screenState = State(initialValue: screenState)
+    }
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-                    headerSection
-                    descriptionSection
-                    linkSection
-                    actionsSection
+            Group {
+                switch screenState {
+                case .loading:
+                    loadingStateView
+                case .error(let message):
+                    ZStack {
+                        contentView
+                        errorStateView(message: message)
+                    }
+                case .content:
+                    contentView
                 }
-                .padding(.horizontal, 16)
-                .padding(.top, 12)
-                .padding(.bottom, 24)
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: {}) {
-                        Image(systemName: "square.and.pencil")
-                            .foregroundStyle(Color.primary)
+                if case .content = screenState {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button(action: {}) {
+                            Image(systemName: "square.and.pencil")
+                                .foregroundStyle(Color.primary)
+                        }
+                        .frame(width: 42, height: 42)
+                        .accessibilityLabel("Редактировать профиль")
                     }
-                    .frame(width: 42, height: 42)
-                    .accessibilityLabel("Редактировать профиль")
                 }
             }
+        }
+        .environmentObject(favoritesStore)
+    }
+
+    private var loadingStateView: some View {
+        VStack {
+            Spacer()
+            ProgressView()
+                .progressViewStyle(.circular)
+            Spacer()
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    private var contentView: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 20) {
+                headerSection
+                descriptionSection
+                linkSection
+                actionsSection
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 12)
+            .padding(.bottom, 24)
+        }
+    }
+
+    private func errorStateView(message: String) -> some View {
+        ZStack {
+            Color.black
+                .opacity(0.45)
+                .ignoresSafeArea()
+
+            VStack(spacing: 0) {
+                Text(message)
+                    .font(.system(size: 31.0 / 2, weight: .semibold))
+                    .foregroundStyle(Color(uiColor: UIColor(hexString: "#1A1B22")))
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 20)
+
+                Divider()
+
+                HStack(spacing: 0) {
+                    Button("Отмена") {
+                        screenState = .content
+                    }
+                    .font(.system(size: 17, weight: .regular))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+                    Divider()
+
+                    Button("Повторить") {
+                        screenState = .content
+                    }
+                    .font(.system(size: 17, weight: .semibold))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+                .frame(height: 44)
+            }
+            .background(Color(uiColor: .systemBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .padding(.horizontal, 32)
         }
     }
 
@@ -82,7 +180,7 @@ struct ProfileView: View {
             } label: {
                 ProfileRowView(
                     title: "Избранные NFT",
-                    count: viewData.favoriteNftCount
+                    count: favoritesStore.favoriteNames.count
                 )
             }
             .buttonStyle(.plain)
@@ -170,6 +268,20 @@ private struct ProfileWebView: UIViewRepresentable {
     }
 }
 
+enum ProfileScreenState {
+    case loading
+    case error(String)
+    case content
+}
+
 #Preview {
     ProfileView()
+}
+
+#Preview("Loading") {
+    ProfileView(screenState: .loading)
+}
+
+#Preview("Error") {
+    ProfileView(screenState: .error("Не удалось загрузить профиль"))
 }

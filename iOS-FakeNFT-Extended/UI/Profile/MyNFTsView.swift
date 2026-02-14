@@ -2,38 +2,35 @@ import SwiftUI
 
 struct MyNFTsView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var favoritesStore: ProfileFavoritesStore
     private let items: [MyNFTItem]
     @AppStorage("my_nfts_sort_option") private var selectedSortRawValue = ""
     @State private var isSortSheetPresented = false
+    @State private var screenState: MyNFTsScreenState
 
-    init(items: [MyNFTItem] = MyNFTItem.mock) {
+    init(
+        items: [MyNFTItem] = MyNFTItem.mock,
+        screenState: MyNFTsScreenState = .content
+    ) {
         self.items = items
+        _screenState = State(initialValue: screenState)
     }
 
     var body: some View {
         ZStack(alignment: .bottom) {
-            Group {
-                if items.isEmpty {
-                    VStack {
-                        Spacer()
-                        Text("У Вас ещё нет NFT")
-                            .font(.system(size: 17, weight: .bold))
-                            .foregroundStyle(Color(uiColor: UIColor(hexString: "#1A1B22")))
-                            .frame(maxWidth: .infinity)
-                        Spacer()
-                    }
-                } else {
-                    ScrollView {
-                        VStack(spacing: 0) {
-                            ForEach(sortedItems) { item in
-                                MyNFTRowView(item: item)
-                            }
-                        }
-                    }
+            switch screenState {
+            case .loading:
+                loadingStateView
+            case .error(let message):
+                ZStack {
+                    contentStateView
+                    errorStateView(message: message)
                 }
+            case .content:
+                contentStateView
             }
 
-            if isSortSheetPresented {
+            if isSortSheetPresented, case .content = screenState {
                 Color.black
                     .opacity(0.45)
                     .ignoresSafeArea()
@@ -61,7 +58,7 @@ struct MyNFTsView: View {
                         .foregroundStyle(Color(uiColor: UIColor(hexString: "#1A1B22")))
                 }
             }
-            if !items.isEmpty {
+            if !items.isEmpty, case .content = screenState {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: { isSortSheetPresented = true }) {
                         Image("sort")
@@ -84,6 +81,82 @@ struct MyNFTsView: View {
             return items.sorted { $0.rating > $1.rating }
         case .byName:
             return items.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+        }
+    }
+
+    private var contentStateView: some View {
+        Group {
+            if items.isEmpty {
+                VStack {
+                    Spacer()
+                    Text("У Вас ещё нет NFT")
+                        .font(.system(size: 17, weight: .bold))
+                        .foregroundStyle(Color(uiColor: UIColor(hexString: "#1A1B22")))
+                        .frame(maxWidth: .infinity)
+                    Spacer()
+                }
+            } else {
+                ScrollView {
+                    VStack(spacing: 0) {
+                        ForEach(sortedItems) { item in
+                            MyNFTRowView(
+                                item: item,
+                                isFavorite: favoritesStore.isFavorite(name: item.name),
+                                onLikeTap: { favoritesStore.toggle(name: item.name) }
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private var loadingStateView: some View {
+        VStack {
+            Spacer()
+            ProgressView()
+                .progressViewStyle(.circular)
+            Spacer()
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    private func errorStateView(message: String) -> some View {
+        ZStack {
+            Color.black
+                .opacity(0.45)
+                .ignoresSafeArea()
+
+            VStack(spacing: 0) {
+                Text(message)
+                    .font(.system(size: 31.0 / 2, weight: .semibold))
+                    .foregroundStyle(Color(uiColor: UIColor(hexString: "#1A1B22")))
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 20)
+
+                Divider()
+
+                HStack(spacing: 0) {
+                    Button("Отмена") {
+                        screenState = .content
+                    }
+                    .font(.system(size: 17, weight: .regular))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+                    Divider()
+
+                    Button("Повторить") {
+                        screenState = .content
+                    }
+                    .font(.system(size: 17, weight: .semibold))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+                .frame(height: 44)
+            }
+            .background(Color(uiColor: .systemBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .padding(.horizontal, 32)
         }
     }
 
@@ -142,8 +215,16 @@ struct MyNFTsView: View {
     }
 }
 
+enum MyNFTsScreenState {
+    case loading
+    case error(String)
+    case content
+}
+
 private struct MyNFTRowView: View {
     let item: MyNFTItem
+    let isFavorite: Bool
+    let onLikeTap: () -> Void
 
     var body: some View {
         HStack(spacing: 16) {
@@ -193,12 +274,19 @@ private struct MyNFTRowView: View {
                         .foregroundStyle(.white)
                 }
 
-            Image(systemName: "heart.fill")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 20, height: 20)
-                .foregroundStyle(.white)
-                .padding(8)
+            Button(action: onLikeTap) {
+                Image(systemName: "heart.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 20, height: 20)
+                    .foregroundStyle(
+                        isFavorite
+                        ? Color(uiColor: UIColor(hexString: "#F56B6C"))
+                        : .white
+                    )
+                    .padding(8)
+            }
+            .buttonStyle(.plain)
         }
     }
 
@@ -260,10 +348,26 @@ private enum MyNFTSortOption: String, CaseIterable, Identifiable {
     NavigationStack {
         MyNFTsView()
     }
+    .environmentObject(ProfileFavoritesStore())
 }
 
 #Preview("Empty") {
     NavigationStack {
         MyNFTsView(items: [])
     }
+    .environmentObject(ProfileFavoritesStore())
+}
+
+#Preview("Loading") {
+    NavigationStack {
+        MyNFTsView(screenState: .loading)
+    }
+    .environmentObject(ProfileFavoritesStore())
+}
+
+#Preview("Error") {
+    NavigationStack {
+        MyNFTsView(screenState: .error("Не удалось загрузить список NFT"))
+    }
+    .environmentObject(ProfileFavoritesStore())
 }
