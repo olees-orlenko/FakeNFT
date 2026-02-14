@@ -8,21 +8,19 @@
 import SwiftUI
 
 struct RatingView: View {
-    
     let rating: Int
     let maxRating: Int = 5
-    
+
     var body: some View {
         HStack(spacing: 2) {
-            ForEach(1...maxRating, id: \.self) { index in
+            ForEach(1 ... maxRating, id: \.self) { index in
                 Image(.star)
                     .renderingMode(.template)
                     .foregroundStyle(index <= rating ? .yellow : .gray.opacity(0.3))
             }
-            }
         }
     }
-
+}
 
 #Preview {
     RatingView(rating: 1)
