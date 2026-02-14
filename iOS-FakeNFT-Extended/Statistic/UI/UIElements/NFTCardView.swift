@@ -12,7 +12,6 @@ struct NFTCardView: View {
         
         VStack(alignment: .leading, spacing: 6) {
             
-            // Верхняя картинка + Like
             ZStack(alignment: .topTrailing) {
                 Image("NFT card")
                     .resizable()
@@ -23,26 +22,22 @@ struct NFTCardView: View {
                 LikeButton(isLiked: $isLiked)
                     .padding(9)
             }
-            
-            // Рейтинг
             RatingView(rating: rating)
                 .frame(height: 12)
             
-            // Нижний блок: название+цена слева, корзина справа
             HStack(spacing: 0) {
-                
                 VStack(alignment: .leading, spacing: 2) {
+                    
                     Text(title)
                         .font(.system(size: 17, weight: .bold))
-                        .foregroundColor(.primary)
+                        .foregroundColor(Color(UIColor.textPrimary))
                         .lineLimit(1)
                     
                     Text("\(priceETH) ETH")
                         .font(.system(size: 10, weight: .medium))
-                        .foregroundColor(.primary)
+                        .foregroundColor(Color(UIColor.textSecondary))
                         .lineLimit(1)
                 }
-                // контейнер текста (фиксируем, как ты хотел)
                 .frame(width: 68, height: 40, alignment: .leading)
                 
                 Spacer(minLength: 0)
@@ -50,7 +45,7 @@ struct NFTCardView: View {
                 Image("Cart")
                     .resizable()
                     .renderingMode(.template)
-                    .foregroundStyle(.black)
+                    .foregroundColor(Color(UIColor.segmentActive))
                     .scaledToFit()
                     .frame(width: 40, height: 40)
             }
@@ -59,12 +54,14 @@ struct NFTCardView: View {
         .frame(width: 108, height: 172)
     }
 }
+
 #Preview {
-    NFTCardView(
-        title: "Stella",
-        rating: 4,
-        priceETH: "1.78",
-        isLiked: .constant(false)
-    )
-    .padding()
+    VStack(spacing: 20) {
+        NFTCardView(
+            title: "Stella",
+            rating: 4,
+            priceETH: "1.78",
+            isLiked: .constant(false)
+        )
+    }
 }
