@@ -26,12 +26,16 @@ final class ProfileFavoritesStore: ObservableObject {
 }
 
 struct ProfileView: View {
-    private let viewData = ProfileViewData.mock
     @StateObject private var favoritesStore = ProfileFavoritesStore()
+    @State private var viewData: ProfileViewData
     @State private var screenState: ProfileScreenState
 
-    init(screenState: ProfileScreenState = .content) {
+    init(
+        screenState: ProfileScreenState = .content,
+        viewData: ProfileViewData = .mock
+    ) {
         _screenState = State(initialValue: screenState)
+        _viewData = State(initialValue: viewData)
     }
 
     var body: some View {
@@ -53,7 +57,23 @@ struct ProfileView: View {
             .toolbar {
                 if case .content = screenState {
                     ToolbarItem(placement: .topBarTrailing) {
-                        Button(action: {}) {
+                        NavigationLink {
+                            EditProfileView(
+                                name: viewData.name,
+                                description: viewData.description,
+                                site: viewData.websiteTitle,
+                                avatarURL: viewData.avatarURLString
+                            ) { updatedName, updatedDescription, updatedSite, updatedAvatarURL in
+                                viewData.name = updatedName
+                                viewData.description = updatedDescription
+                                viewData.websiteTitle = updatedSite
+                                viewData.avatarURLString = updatedAvatarURL
+
+                                if let url = makeWebsiteURL(from: updatedSite) {
+                                    viewData.websiteURL = url
+                                }
+                            }
+                        } label: {
                             Image(systemName: "square.and.pencil")
                                 .foregroundStyle(Color.primary)
                         }
@@ -189,6 +209,24 @@ struct ProfileView: View {
     }
 
     private var avatarView: some View {
+        Group {
+            if let avatarURL = URL(string: viewData.avatarURLString), !viewData.avatarURLString.isEmpty {
+                AsyncImage(url: avatarURL) { image in
+                    image
+                        .resizable()
+                        .scaledToFill()
+                } placeholder: {
+                    initialsAvatar
+                }
+            } else {
+                initialsAvatar
+            }
+        }
+        .frame(width: 70, height: 70)
+        .clipShape(Circle())
+    }
+
+    private var initialsAvatar: some View {
         ZStack {
             Circle()
                 .fill(Color(.systemGray5))
@@ -196,7 +234,17 @@ struct ProfileView: View {
                 .font(.system(size: 20, weight: .bold))
                 .foregroundStyle(Color(.systemGray))
         }
-        .frame(width: 70, height: 70)
+    }
+
+    private func makeWebsiteURL(from site: String) -> URL? {
+        let trimmed = site.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+
+        if trimmed.hasPrefix("http://") || trimmed.hasPrefix("https://") {
+            return URL(string: trimmed)
+        }
+
+        return URL(string: "https://\(trimmed)")
     }
 }
 
@@ -218,13 +266,14 @@ private struct ProfileRowView: View {
     }
 }
 
-private struct ProfileViewData {
-    let name: String
-    let description: String
-    let websiteTitle: String
-    let websiteURL: URL
-    let myNftCount: Int
-    let favoriteNftCount: Int
+struct ProfileViewData {
+    var name: String
+    var description: String
+    var websiteTitle: String
+    var websiteURL: URL
+    var myNftCount: Int
+    var favoriteNftCount: Int
+    var avatarURLString: String
 
     var initials: String {
         let parts = name.split(separator: " ")
@@ -238,7 +287,8 @@ private struct ProfileViewData {
         websiteTitle: "Joaquin Phoenix.com",
         websiteURL: URL(string: "https://practicum.yandex.ru/ios-developer/")!,
         myNftCount: 112,
-        favoriteNftCount: 11
+        favoriteNftCount: 11,
+        avatarURLString: ""
     )
 }
 

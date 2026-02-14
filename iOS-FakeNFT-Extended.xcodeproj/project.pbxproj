@@ -52,6 +52,7 @@
 		F1E00000112233445566778B /* MyNFTsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E00000112233445566778A /* MyNFTsView.swift */; };
 		F1E00000112233445566778D /* FavoritesNFTsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E00000112233445566778C /* FavoritesNFTsView.swift */; };
 		F1E000001122334455667789 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E000001122334455667788 /* ProfileView.swift */; };
+		F1E000001122334455667790 /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E00000112233445566778F /* EditProfileView.swift */; };
 		FC705C122F3FD85D00A4D0E5 /* LikeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC705C112F3FD85B00A4D0E5 /* LikeButton.swift */; };
 /* End PBXBuildFile section */
 
@@ -119,6 +120,7 @@
 		F1E00000112233445566778A /* MyNFTsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyNFTsView.swift; sourceTree = "<group>"; };
 		F1E00000112233445566778C /* FavoritesNFTsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesNFTsView.swift; sourceTree = "<group>"; };
 		F1E000001122334455667788 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		F1E00000112233445566778F /* EditProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
 		FC705C112F3FD85B00A4D0E5 /* LikeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -467,6 +469,7 @@
 		F1E000001122334455667787 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				F1E00000112233445566778F /* EditProfileView.swift */,
 				F1E00000112233445566778C /* FavoritesNFTsView.swift */,
 				F1E00000112233445566778A /* MyNFTsView.swift */,
 				F1E000001122334455667788 /* ProfileView.swift */,
@@ -630,6 +633,7 @@
 				ABC5E1D52C320446002B4068 /* NftDetailInput.swift in Sources */,
 				ABC5E16E2C31F5AF002B4068 /* ContentView.swift in Sources */,
 				F1E000001122334455667789 /* ProfileView.swift in Sources */,
+				F1E000001122334455667790 /* EditProfileView.swift in Sources */,
 				ABC5E1B92C31FD51002B4068 /* TestCatalogView.swift in Sources */,
 				1F5EEF272F4012FC00F29B8D /* CartCell.swift in Sources */,
 				1F5EEF282F4012FC00F29B8D /* Model+Mock.swift in Sources */,
