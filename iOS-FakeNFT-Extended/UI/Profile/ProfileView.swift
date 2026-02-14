@@ -1,4 +1,5 @@
 import SwiftUI
+import WebKit
 
 struct ProfileView: View {
     private let viewData = ProfileViewData.mock
@@ -52,9 +53,16 @@ struct ProfileView: View {
     }
 
     private var linkSection: some View {
-        Link(viewData.websiteTitle, destination: viewData.websiteURL)
-            .font(.system(size: 15, weight: .regular))
-            .foregroundStyle(Color.blue)
+        NavigationLink {
+            ProfileWebsiteView(
+                url: viewData.websiteURL
+            )
+        } label: {
+            Text(viewData.websiteTitle)
+                .font(.system(size: 15, weight: .regular))
+                .foregroundStyle(Color.blue)
+        }
+        .buttonStyle(.plain)
     }
 
     private var actionsSection: some View {
@@ -130,10 +138,36 @@ private struct ProfileViewData {
         name: "Joaquin Phoenix",
         description: "Дизайнер из Казани, люблю цифровое искусство и бегать. В моей коллекции уже 100+ NFT, и еще больше — на моем сайте. Открыт к коллаборациям.",
         websiteTitle: "Joaquin Phoenix.com",
-        websiteURL: URL(string: "https://example.com")!,
+        websiteURL: URL(string: "https://practicum.yandex.ru/ios-developer/")!,
         myNftCount: 112,
         favoriteNftCount: 11
     )
+}
+
+private struct ProfileWebsiteView: View {
+    let url: URL
+
+    var body: some View {
+        ProfileWebView(url: url)
+            .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+private struct ProfileWebView: UIViewRepresentable {
+    let url: URL
+
+    func makeUIView(context: Context) -> WKWebView {
+        let webView = WKWebView(frame: .zero)
+        webView.allowsBackForwardNavigationGestures = true
+        webView.scrollView.contentInsetAdjustmentBehavior = .never
+        return webView
+    }
+
+    func updateUIView(_ webView: WKWebView, context: Context) {
+        if webView.url != url {
+            webView.load(URLRequest(url: url))
+        }
+    }
 }
 
 #Preview {
