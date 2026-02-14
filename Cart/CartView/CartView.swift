@@ -10,7 +10,7 @@ import SwiftUI
 struct CartView: View {
     // MARK: - Properties
 
-    @State var listData: [CartModel]
+    @State var listData: [CartModel] //Public for preview support
 
     @State private var isShowingSortMenu = false
     @State private var showDeleteAlert = false
@@ -191,12 +191,12 @@ struct CartView: View {
 // MARK: - Preview
 
 #Preview("Cart Light") {
-    CartView(listData: [cartMock, cartMock2, cartMock3, cartMock])
+    CartView(listData: [MockData.cartMock,MockData.cartMock2,MockData.cartMock3])
         .preferredColorScheme(.light)
 }
 
 #Preview("Cart Dark") {
-    CartView(listData: [cartMock, cartMock2, cartMock3, cartMock])
+    CartView(listData: [MockData.cartMock,MockData.cartMock2,MockData.cartMock3])
         .preferredColorScheme(.dark)
 }
 
