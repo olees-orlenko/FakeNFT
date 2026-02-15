@@ -66,7 +66,7 @@ struct CartView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: { withAnimation { isShowingSortMenu = true }}) {
-                        Image(systemName: "line.horizontal.3")
+                        Image(.sort)
                             .foregroundStyle(.black)
                             .font(.title2)
                             .frame(width: 44, height: 44)
