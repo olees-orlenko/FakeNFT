@@ -11,6 +11,8 @@ struct PaymentCell: View {
     let name: String
     let shortName: String
     let image: String
+    var isSelected: Bool
+    let action: () -> Void
 
     var body: some View {
         HStack(spacing: 4) {
@@ -28,17 +30,23 @@ struct PaymentCell: View {
                     .foregroundStyle(.ypGreen)
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, 12)
         .padding(.vertical, 5)
         .background(RoundedRectangle(cornerRadius: 12).fill(.lightGrayAdaptive))
+        .overlay(RoundedRectangle(cornerRadius: 12)
+            .stroke(isSelected ? Color.blackAdaptive : Color.clear, lineWidth: 2))
+        .onTapGesture {
+            action()
+        }
     }
 }
 
 #Preview("Payment Cell Light") {
-    PaymentCell(name: "Bitcoin", shortName: "BTC", image: "Bitcoin")
+    PaymentCell(name: "Bitcoin", shortName: "BTC", image: "Bitcoin", isSelected: false, action: {})
 }
 
 #Preview("Payment Cell Dark") {
-    PaymentCell(name: "Bitcoin", shortName: "BTC", image: "Bitcoin")
+    PaymentCell(name: "Bitcoin", shortName: "BTC", image: "Bitcoin", isSelected: false, action: {})
         .preferredColorScheme(.dark)
 }
