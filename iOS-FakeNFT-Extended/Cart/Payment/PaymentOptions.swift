@@ -7,19 +7,20 @@
 
 import Foundation
 
-struct PaymentOptions {
+struct PaymentOptions: Identifiable {
+    let id = UUID()
     let name: String
     let shortName: String
     let icon: String
-}
 
-enum PaymentMethods {
-    static let bitcoin = PaymentOptions(name: "Bitcoin", shortName: "BTC", icon: "Bitcoin")
-    static let apeCoin = PaymentOptions(name: "ApeCoin", shortName: "APE", icon: "ApeCoin")
-    static let dogecoin = PaymentOptions(name: "Dogecoin", shortName: "DOGE", icon: "Dogecoin")
-    static let tether = PaymentOptions(name: "Tether", shortName: "USDT", icon: "Tether")
-    static let solana = PaymentOptions(name: "Solana", shortName: "SOL", icon: "Solana")
-    static let ethereum = PaymentOptions(name: "Ethereum", shortName: "ETH", icon: "Ethereum")
-    static let cardano = PaymentOptions(name: "Cardano", shortName: "ADA", icon: "Cardano")
-    static let shibaInu = PaymentOptions(name: "Shiba Inu", shortName: "ADA", icon: "Shiba Inu")
+    static let allOptions: [PaymentOptions] = [
+        PaymentOptions(name: "Bitcoin", shortName: "BTC", icon: "Bitcoin"),
+        PaymentOptions(name: "Dogecoin", shortName: "DOGE", icon: "Dogecoin"),
+        PaymentOptions(name: "Tether", shortName: "USDT", icon: "Tether"),
+        PaymentOptions(name: "ApeCoin", shortName: "APE", icon: "ApeCoin"),
+        PaymentOptions(name: "Solana", shortName: "SOL", icon: "Solana"),
+        PaymentOptions(name: "Ethereum", shortName: "ETH", icon: "Ethereum"),
+        PaymentOptions(name: "Cardano", shortName: "ADA", icon: "Cardano"),
+        PaymentOptions(name: "Shiba Inu", shortName: "SHIB", icon: "ShibaInu"),
+    ]
 }
