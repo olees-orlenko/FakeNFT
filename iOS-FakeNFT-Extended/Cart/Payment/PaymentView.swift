@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct PaymentView: View {
+    @State var isAlertShowed: Bool = false // Delete cuz it placeholder
+
     var body: some View {
         VStack {
             LazyVGrid(columns: [
@@ -37,7 +39,7 @@ struct PaymentView: View {
 
                 Button(action: {}) {
                     Text("Оплатить")
-                        .font(.system(size: 17,weight: .bold))
+                        .font(.system(size: 17, weight: .bold))
                         .foregroundStyle(.whiteAdaptive)
                         .padding()
                 }
@@ -57,6 +59,10 @@ struct PaymentView: View {
                     )
                     .ignoresSafeArea(.all)
             )
+            .alert("Не удалось произвести оплату", isPresented: $isAlertShowed) {
+                Button("Отмена", role: .cancel) { isAlertShowed = false }
+                Button("Повторить") {} // make retry logic
+            }
         }
     }
 }
@@ -70,4 +76,3 @@ struct PaymentView: View {
     PaymentView()
         .preferredColorScheme(.dark)
 }
-
