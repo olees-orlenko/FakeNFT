@@ -39,6 +39,7 @@ struct CartCell: View {
                     .renderingMode(.template)
                     .foregroundStyle(.blackAdaptive)
             }
+            .buttonStyle(.plain)
         }
         .background(.whiteAdaptive)
     }
