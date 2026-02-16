@@ -21,6 +21,6 @@ struct PaymentOptions: Identifiable {
         PaymentOptions(name: "Solana", shortName: "SOL", icon: "Solana"),
         PaymentOptions(name: "Ethereum", shortName: "ETH", icon: "Ethereum"),
         PaymentOptions(name: "Cardano", shortName: "ADA", icon: "Cardano"),
-        PaymentOptions(name: "Shiba Inu", shortName: "SHIB", icon: "ShibaInu"),
+        PaymentOptions(name: "Shiba Inu", shortName: "SHIB", icon: "Shiba Inu"),
     ]
 }
