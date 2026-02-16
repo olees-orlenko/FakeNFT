@@ -35,7 +35,7 @@ struct NFTCardView: View {
                     
                     Text("\(priceETH) ETH")
                         .font(.system(size: 10, weight: .medium))
-                        .foregroundColor(Color(UIColor.textSecondary))
+                        .foregroundColor(Color(UIColor.textPrimary))
                         .lineLimit(1)
                 }
                 .frame(width: 68, height: 40, alignment: .leading)

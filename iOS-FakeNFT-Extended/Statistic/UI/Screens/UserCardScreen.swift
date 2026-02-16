@@ -66,7 +66,7 @@ struct UserCardScreen: View {
             
             Text(about)
                 .font(.system(size: 13, weight: .regular))
-                .foregroundColor(.secondary)
+                .foregroundColor(.primary)
                 .fixedSize(horizontal: false, vertical: true)
         }
         .frame(width: 343, alignment: .leading)
