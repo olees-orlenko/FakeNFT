@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct PaymentView: View {
-    @State var isAlertShowed: Bool = false // Delete cuz it placeholder
+    @Binding var cartPath: NavigationPath
+    @State var isAlertShowed: Bool
+    @State var isSuccessShowed: Bool
     @State private var selectedMethod: PaymentOptions?
 
     var body: some View {
@@ -22,6 +24,7 @@ struct PaymentView: View {
                     Button("Повторить") {} // make retry logic
                 }
         }
+        .background(.whiteAdaptive)
         .navigationTitle("Выберите способ оплаты")
     }
 
@@ -54,7 +57,7 @@ struct PaymentView: View {
                 .foregroundStyle(.link)
                 .padding(.leading)
 
-            Button(action: {}) {
+            Button(action: { validation() }) {
                 Text("Оплатить")
                     .font(.system(size: 17, weight: .bold))
                     .foregroundStyle(.whiteAdaptive)
@@ -77,14 +80,25 @@ struct PaymentView: View {
                 .ignoresSafeArea(.all)
         )
     }
+
+    private func validation() {
+        // MARK: - Add data validation
+        if selectedMethod != nil {
+            cartPath.append(CartRoute.success)
+        } else {
+            isAlertShowed = true
+        }
+    }
 }
 
 #Preview("Payment View Light") {
-    PaymentView()
+    @Previewable @State var previewPath = NavigationPath()
+    PaymentView(cartPath: $previewPath, isAlertShowed: false, isSuccessShowed: false)
         .preferredColorScheme(.light)
 }
 
 #Preview("Payment View Dark") {
-    PaymentView()
+    @Previewable @State var previewPath = NavigationPath()
+    PaymentView(cartPath: $previewPath, isAlertShowed: false, isSuccessShowed: false)
         .preferredColorScheme(.dark)
 }
