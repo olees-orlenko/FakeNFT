@@ -37,7 +37,12 @@ struct PaymentSuccessView: View {
     }
 }
 
-#Preview {
+#Preview ("Payment Success View Light") {
+    PaymentSuccessView()
+        .preferredColorScheme(.light)
+}
+
+#Preview("Payment Success View Dark") {
     PaymentSuccessView()
         .preferredColorScheme(.dark)
 }
