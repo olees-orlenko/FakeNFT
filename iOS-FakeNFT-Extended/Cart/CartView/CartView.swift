@@ -12,7 +12,8 @@ struct CartView: View {
 
     @State var listData: [CartModel] = [] // Public for preview support
     @State private var isShowingSortMenu = false
-    @State private var showDeleteAlert = false
+    @State private var isShowingPaymentView = false
+    @State private var isShowingDeleteAlert = false
     @State private var itemToDelete: CartModel?
 
     // MARK: - Body
@@ -31,7 +32,7 @@ struct CartView: View {
 
                 // MARK: - Delete Alert
 
-                if showDeleteAlert {
+                if isShowingDeleteAlert {
                     Color.clear
                         .ignoresSafeArea(.all)
                         .transition(.opacity)
@@ -45,12 +46,12 @@ struct CartView: View {
                                 deleteItem(item)
                             }
                             withAnimation(.spring(duration: 0.2)) {
-                                showDeleteAlert = false
+                                isShowingDeleteAlert = false
                                 itemToDelete = nil
                             }
                         },
                         onCancel: { withAnimation(.spring(duration: 0.2)) {
-                            showDeleteAlert = false
+                            isShowingDeleteAlert = false
                             itemToDelete = nil
                         }
                         }
@@ -67,19 +68,24 @@ struct CartView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: { withAnimation { isShowingSortMenu = true }}) {
                         Image(.sort)
-                            .foregroundStyle(.black)
+                            .renderingMode(.template)
+                            .foregroundStyle(.blackAdaptive)
                             .font(.title2)
                             .frame(width: 44, height: 44)
                     }
                 }
             }
-            .toolbar(showDeleteAlert ? .hidden : .visible, for: .tabBar)
+            .navigationDestination(isPresented: $isShowingPaymentView) {
+                PaymentView()
+            }
+
+            // MARK: - Sorting Overlay
+
+            .overlay(SortMenuView(isShowingSortMenu: $isShowingSortMenu, title: "Сортировка", options: sortOptions, closeButtonTitle: "Закрыть"))
+            .toolbar(isShowingSortMenu ? .hidden : .visible, for: .tabBar)
+            .toolbar(isShowingDeleteAlert ? .hidden : .visible, for: .tabBar)
+            .toolbar(isShowingPaymentView ? .hidden : .visible, for: .tabBar)
         }
-
-        // MARK: - Sorting Overlay
-
-        .overlay(SortMenuView(isShowingSortMenu: $isShowingSortMenu, title: "Сортировка", options: sortOptions, closeButtonTitle: "Закрыть"))
-        .toolbar(isShowingSortMenu ? .hidden : .visible, for: .tabBar)
     }
 
     // MARK: - UI Components
@@ -94,7 +100,7 @@ struct CartView: View {
                     price: item.price,
                     deleteAction: {
                         itemToDelete = item
-                        showDeleteAlert = true
+                        isShowingDeleteAlert = true
                     }
                 )
                 .listRowSeparator(.hidden)
@@ -121,16 +127,14 @@ struct CartView: View {
 
             Spacer()
 
-            Button(action: {}) {
+            Button(action: { isShowingPaymentView = true }) {
                 Text("К оплате")
                     .foregroundStyle(.whiteAdaptive)
                     .font(.system(size: 17, weight: .bold))
+                    .frame(maxWidth: 240, maxHeight: 44)
+                    .background(.blackAdaptive)
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
             }
-            .frame(maxWidth: 240, maxHeight: 44)
-            .background(.blackAdaptive)
-            .clipShape(RoundedRectangle(cornerRadius: 16))
-
-            .padding(.trailing)
         }
         .padding()
         .background(.lightGrayAdaptive)
