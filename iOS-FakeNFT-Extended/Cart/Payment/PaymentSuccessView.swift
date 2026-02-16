@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct PaymentSuccessView: View {
+    @Binding var cartPath: NavigationPath
+    
     var body: some View {
         VStack {
             Spacer()
@@ -23,7 +25,9 @@ struct PaymentSuccessView: View {
 
             Spacer()
 
-            Button(action: {}) {
+            Button(action: {
+                cartPath = NavigationPath()
+            }) {
                 Text("Вернутся в корзину")
                     .font(.system(size: 17, weight: .bold))
                     .foregroundStyle(.whiteAdaptive)
@@ -33,16 +37,19 @@ struct PaymentSuccessView: View {
             .background(RoundedRectangle(cornerRadius: 12).fill(.blackAdaptive))
             .padding()
         }
+        .navigationBarBackButtonHidden()
         .background(.whiteAdaptive)
     }
 }
 
-#Preview ("Payment Success View Light") {
-    PaymentSuccessView()
+#Preview("Payment Success View Light") {
+    @Previewable @State var previewPath = NavigationPath()
+    PaymentSuccessView(cartPath: $previewPath)
         .preferredColorScheme(.light)
 }
 
 #Preview("Payment Success View Dark") {
-    PaymentSuccessView()
+    @Previewable @State var previewPath = NavigationPath()
+    PaymentSuccessView(cartPath: $previewPath)
         .preferredColorScheme(.dark)
 }
