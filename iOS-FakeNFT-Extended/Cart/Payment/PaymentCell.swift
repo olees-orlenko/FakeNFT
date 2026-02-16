@@ -16,7 +16,7 @@ struct PaymentCell: View {
 
     var body: some View {
         HStack(spacing: 4) {
-            Image(name)
+            Image(image)
                 .resizable()
                 .scaledToFit()
                 .frame(width: 36)
@@ -37,7 +37,9 @@ struct PaymentCell: View {
         .overlay(RoundedRectangle(cornerRadius: 12)
             .stroke(isSelected ? Color.blackAdaptive : Color.clear, lineWidth: 2))
         .onTapGesture {
-            action()
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                action()
+            }
         }
     }
 }
