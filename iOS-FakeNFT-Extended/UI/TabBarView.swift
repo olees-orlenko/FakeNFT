@@ -10,14 +10,7 @@ struct TabBarView: View {
                         systemImage: "square.stack.3d.up.fill"
                     )
                 }
-
-            ProfileView()
-                .tabItem {
-                    Label(
-                        NSLocalizedString("Tab.profile", comment: ""),
-                        systemImage: "person.crop.circle"
-                    )
-                }
+                .backgroundStyle(.background)
         }
     }
 }
