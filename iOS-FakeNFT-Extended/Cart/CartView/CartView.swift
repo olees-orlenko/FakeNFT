@@ -13,7 +13,6 @@ struct CartView: View {
     @State var listData: [CartModel] = [] // Public for preview support
     @State var cartPath = NavigationPath()
     @State private var isShowingSortMenu = false
-    @State private var isShowingPaymentView = false
     @State private var isShowingDeleteAlert = false
     @State private var itemToDelete: CartModel?
 
@@ -39,6 +38,7 @@ struct CartView: View {
                         .transition(.opacity)
                         .background(.ultraThinMaterial)
                         .zIndex(1)
+                        
 
                     DeleteView(
                         imageName: itemToDelete?.image ?? ""
@@ -73,6 +73,7 @@ struct CartView: View {
                             .foregroundStyle(.blackAdaptive)
                             .font(.title2)
                             .frame(width: 44, height: 44)
+                            
                     }
                 }
             }
@@ -91,9 +92,8 @@ struct CartView: View {
             // MARK: - Sorting Overlay
 
             .overlay(SortMenuView(isShowingSortMenu: $isShowingSortMenu, title: "Сортировка", options: sortOptions, closeButtonTitle: "Закрыть"))
-            .toolbar(isShowingSortMenu ? .hidden : .visible, for: .tabBar)
-            .toolbar(isShowingDeleteAlert ? .hidden : .visible, for: .tabBar)
-            .toolbar(cartPath.isEmpty ? .visible : .hidden, for: .tabBar)
+            .toolbar((isShowingSortMenu || isShowingDeleteAlert || !cartPath.isEmpty) ? .hidden : .visible, for: .tabBar)
+            .toolbar(isShowingDeleteAlert ? .hidden : .visible)
         }
         .background(.whiteAdaptive)
     }
