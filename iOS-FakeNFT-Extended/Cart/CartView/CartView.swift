@@ -93,7 +93,7 @@ struct CartView: View {
             .overlay(SortMenuView(isShowingSortMenu: $isShowingSortMenu, title: "Сортировка", options: sortOptions, closeButtonTitle: "Закрыть"))
             .toolbar(isShowingSortMenu ? .hidden : .visible, for: .tabBar)
             .toolbar(isShowingDeleteAlert ? .hidden : .visible, for: .tabBar)
-//            .toolbar(isShowingPaymentView ? .hidden : .visible, for: .tabBar)
+            .toolbar(cartPath.isEmpty ? .visible : .hidden, for: .tabBar)
         }
         .background(.whiteAdaptive)
     }
