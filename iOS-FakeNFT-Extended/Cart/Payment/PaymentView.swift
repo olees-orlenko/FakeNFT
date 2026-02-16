@@ -22,6 +22,7 @@ struct PaymentView: View {
                     Button("Повторить") {} // make retry logic
                 }
         }
+        .navigationTitle("Выберите способ оплаты")
     }
 
     private var paymentMethods: some View {
