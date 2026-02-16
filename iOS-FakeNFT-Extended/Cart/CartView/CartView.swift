@@ -11,6 +11,7 @@ struct CartView: View {
     // MARK: - Properties
 
     @State var listData: [CartModel] = [] // Public for preview support
+    @State var cartPath = NavigationPath()
     @State private var isShowingSortMenu = false
     @State private var isShowingPaymentView = false
     @State private var isShowingDeleteAlert = false
@@ -19,7 +20,7 @@ struct CartView: View {
     // MARK: - Body
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $cartPath) {
             ZStack {
                 VStack {
                     if listData.isEmpty { emptyState }
@@ -75,8 +76,16 @@ struct CartView: View {
                     }
                 }
             }
-            .navigationDestination(isPresented: $isShowingPaymentView) {
-                PaymentView()
+            .navigationDestination(for: CartRoute.self) { route in
+                switch route {
+                case .payment:
+                    PaymentView(cartPath: $cartPath, isAlertShowed: false, isSuccessShowed: false)
+                        .toolbar(.hidden, for: .tabBar)
+                case .success:
+                    PaymentSuccessView(cartPath: $cartPath)
+                        .toolbar(.hidden, for: .tabBar)
+                        .navigationBarBackButtonHidden()
+                }
             }
 
             // MARK: - Sorting Overlay
@@ -84,8 +93,9 @@ struct CartView: View {
             .overlay(SortMenuView(isShowingSortMenu: $isShowingSortMenu, title: "Сортировка", options: sortOptions, closeButtonTitle: "Закрыть"))
             .toolbar(isShowingSortMenu ? .hidden : .visible, for: .tabBar)
             .toolbar(isShowingDeleteAlert ? .hidden : .visible, for: .tabBar)
-            .toolbar(isShowingPaymentView ? .hidden : .visible, for: .tabBar)
+//            .toolbar(isShowingPaymentView ? .hidden : .visible, for: .tabBar)
         }
+        .background(.whiteAdaptive)
     }
 
     // MARK: - UI Components
@@ -127,7 +137,9 @@ struct CartView: View {
 
             Spacer()
 
-            Button(action: { isShowingPaymentView = true }) {
+            Button(action: {
+                cartPath.append(CartRoute.payment)
+            }) {
                 Text("К оплате")
                     .foregroundStyle(.whiteAdaptive)
                     .font(.system(size: 17, weight: .bold))
