@@ -357,8 +357,8 @@ struct EditProfileView: View {
                     .font(.system(size: 31.0 / 2, weight: .semibold))
                     .foregroundStyle(Color(uiColor: UIColor(hexString: "#1A1B22")))
                     .multilineTextAlignment(.center)
-                    .padding(.top, 14)
-                    .padding(.bottom, 14)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 74)
 
                 Divider()
 

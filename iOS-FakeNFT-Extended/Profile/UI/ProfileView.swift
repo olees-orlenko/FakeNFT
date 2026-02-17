@@ -248,50 +248,6 @@ struct ProfileView: View {
     }
 }
 
-private struct ProfileRowView: View {
-    let title: String
-    let count: Int
-
-    var body: some View {
-        HStack {
-            Text("\(title) (\(count))")
-                .font(.system(size: 17, weight: .bold))
-                .foregroundStyle(Color.primary)
-            Spacer()
-            Image(systemName: "chevron.right")
-                .foregroundStyle(Color(.systemGray2))
-        }
-        .frame(height: 54)
-        .padding(.horizontal, 16)
-    }
-}
-
-struct ProfileViewData {
-    var name: String
-    var description: String
-    var websiteTitle: String
-    var websiteURL: URL
-    var myNftCount: Int
-    var favoriteNftCount: Int
-    var avatarURLString: String
-
-    var initials: String {
-        let parts = name.split(separator: " ")
-        let initials = parts.prefix(2).compactMap { $0.first }
-        return String(initials)
-    }
-
-    static let mock = ProfileViewData(
-        name: "Joaquin Phoenix",
-        description: "Дизайнер из Казани, люблю цифровое искусство и бегать. В моей коллекции уже 100+ NFT, и еще больше — на моем сайте. Открыт к коллаборациям.",
-        websiteTitle: "Joaquin Phoenix.com",
-        websiteURL: URL(string: "https://practicum.yandex.ru/ios-developer/")!,
-        myNftCount: 112,
-        favoriteNftCount: 11,
-        avatarURLString: ""
-    )
-}
-
 private struct ProfileWebsiteView: View {
     let url: URL
 
