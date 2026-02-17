@@ -19,6 +19,7 @@ struct NftCell: View {
     let price: String
     var deleteAction: () -> Void
     @State private var isLiked = false
+    @State private var isInCart = false
     
     // MARK: - Body
     
@@ -42,12 +43,7 @@ struct NftCell: View {
                     .font(.system(size: 17, weight: .bold))
                     .foregroundColor(.primary)
                 Spacer()
-                Button(action: deleteAction) {
-                    Image(.trash)
-                        .foregroundColor(.primary)
-                }
-                .contentShape(Rectangle())
-                .padding(.trailing, 12)
+                AddToCartButton(isInCart: $isInCart)
             }
             Text(price)
                 .font(.system(size: 10, weight: .medium))
