@@ -10,15 +10,20 @@ import SwiftUI
 // MARK: - NFT Collection View
 
 struct NFTCollectionView: View {
-    let collection: NFTCollection
-    let items: [NFTItem]
     
     // MARK: - Properties
     
     let columns = Array(repeating: GridItem(.flexible(), spacing: 9), count: 3)
     private let horizontalPadding: CGFloat = 16
     @State private var isShowingAuthorWeb = false
+    @StateObject private var viewModel: NftViewModel
     @Environment(\.dismiss) private var dismiss
+    
+    // MARK: - Init
+    
+    init(collection: NFTCollection) {
+        _viewModel = StateObject(wrappedValue: NftViewModel(collection: collection))
+    }
     
     // MARK: - Body
     
@@ -40,7 +45,7 @@ struct NFTCollectionView: View {
         .background(Color(.systemBackground).ignoresSafeArea())
         .fullScreenCover(isPresented: $isShowingAuthorWeb) {
             NavigationStack {
-                ProfileWebView(url: authorURL)
+                ProfileWebView(url: viewModel.authorURL)
                     .toolbar {
                         toolbarButton
                     }
@@ -70,7 +75,7 @@ struct NFTCollectionView: View {
     
     private var coverView: some View {
         Group {
-            if let url = collection.coverURL {
+            if let url = viewModel.collection.coverURL {
                 AsyncImage(url: url) { image in
                     image
                         .resizable()
@@ -97,7 +102,7 @@ struct NFTCollectionView: View {
     }
     
     private var titleView: some View {
-        Text(collection.title)
+        Text(viewModel.collection.title)
             .font(Font(UIFont.headline3))
     }
     
@@ -109,7 +114,7 @@ struct NFTCollectionView: View {
             Button(action: {
                 isShowingAuthorWeb = true
             }) {
-                Text(collection.authorName ?? "John Doe")
+                Text(viewModel.collection.authorName ?? "John Doe")
                     .font(Font(UIFont.caption1))
                     .foregroundColor(Color.blue)
             }
@@ -117,14 +122,14 @@ struct NFTCollectionView: View {
     }
     
     private var descriptionView: some View {
-        Text(collection.description ?? "")
+        Text(viewModel.collection.description ?? "")
             .font(Font(UIFont.caption2))
             .foregroundColor(.primary)
     }
     
     private var collectionView: some View {
         LazyVGrid(columns: columns, spacing: 0) {
-            ForEach(items) { item in
+            ForEach(viewModel.items) { item in
                 NftCell(
                     name: item.name,
                     image: item.image,
@@ -135,14 +140,6 @@ struct NFTCollectionView: View {
             }
         }
     }
-    
-    private var authorURL: URL {
-        if let authorURL = collection.authorURL {
-            return authorURL
-        } else {
-            return URL(string: "https://practicum.yandex.ru/ios-developer/")!
-        }
-    }
 }
 
 // MARK: - Preview
@@ -150,8 +147,7 @@ struct NFTCollectionView: View {
 #Preview("NFT Collection") {
     Group {
         NFTCollectionView(
-            collection: NFTCollection.mockCollections[0],
-            items: NFTItem.mockItems
+            collection: NFTCollection.mockCollections[0]
         )
     }
 }

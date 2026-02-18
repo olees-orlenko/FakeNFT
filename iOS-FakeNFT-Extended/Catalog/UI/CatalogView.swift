@@ -68,7 +68,7 @@ struct CatalogView: View {
             .toolbar(isShowingSortMenu ? .hidden : .visible, for: .tabBar)
             .fullScreenCover(item: $selectedCollection) { collection in
                 NavigationStack {
-                    NFTCollectionView(collection: collection, items: NFTItem.mockItems)
+                    NFTCollectionView(collection: collection)
                 }
             }
             .task {
