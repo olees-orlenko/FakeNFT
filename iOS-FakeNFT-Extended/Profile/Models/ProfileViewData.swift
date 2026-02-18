@@ -1,18 +1,36 @@
 import Foundation
 
 struct ProfileViewData {
-    var name: String
-    var description: String
-    var websiteTitle: String
-    var websiteURL: URL
-    var myNftCount: Int
-    var favoriteNftCount: Int
-    var avatarURLString: String
+    let name: String
+    let description: String
+    let websiteTitle: String
+    let websiteURL: URL
+    let myNftCount: Int
+    let favoriteNftCount: Int
+    let avatarURLString: String
 
     var initials: String {
         let parts = name.split(separator: " ")
         let initials = parts.prefix(2).compactMap { $0.first }
         return String(initials)
+    }
+
+    func updated(
+        name: String,
+        description: String,
+        websiteTitle: String,
+        websiteURL: URL,
+        avatarURLString: String
+    ) -> ProfileViewData {
+        ProfileViewData(
+            name: name,
+            description: description,
+            websiteTitle: websiteTitle,
+            websiteURL: websiteURL,
+            myNftCount: myNftCount,
+            favoriteNftCount: favoriteNftCount,
+            avatarURLString: avatarURLString
+        )
     }
 
     static let mock = ProfileViewData(

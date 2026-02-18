@@ -59,6 +59,8 @@
 		F1E000001122334455667794 /* MyNFTItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E00000112233445566779E /* MyNFTItem.swift */; };
 		F1E000001122334455667795 /* FavoriteNFTItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E00000112233445566779F /* FavoriteNFTItem.swift */; };
 		F1E000001122334455667796 /* ProfileRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E0000011223344556677A0 /* ProfileRowView.swift */; };
+		F1E0000011223344556677B3 /* MyNFTSortOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E0000011223344556677B1 /* MyNFTSortOption.swift */; };
+		F1E0000011223344556677B4 /* MyNFTsScreenState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E0000011223344556677B2 /* MyNFTsScreenState.swift */; };
 		FC705C122F3FD85D00A4D0E5 /* LikeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC705C112F3FD85B00A4D0E5 /* LikeButton.swift */; };
 /* End PBXBuildFile section */
 
@@ -133,6 +135,8 @@
 		F1E00000112233445566779E /* MyNFTItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyNFTItem.swift; sourceTree = "<group>"; };
 		F1E00000112233445566779F /* FavoriteNFTItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteNFTItem.swift; sourceTree = "<group>"; };
 		F1E0000011223344556677A0 /* ProfileRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileRowView.swift; sourceTree = "<group>"; };
+		F1E0000011223344556677B1 /* MyNFTSortOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyNFTSortOption.swift; sourceTree = "<group>"; };
+		F1E0000011223344556677B2 /* MyNFTsScreenState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyNFTsScreenState.swift; sourceTree = "<group>"; };
 		FC705C112F3FD85B00A4D0E5 /* LikeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -494,6 +498,8 @@
 			children = (
 				F1E00000112233445566778A /* MyNFTsView.swift */,
 				F1E00000112233445566779B /* MyNFTRowView.swift */,
+				F1E0000011223344556677B1 /* MyNFTSortOption.swift */,
+				F1E0000011223344556677B2 /* MyNFTsScreenState.swift */,
 			);
 			path = MyNFTs;
 			sourceTree = "<group>";
@@ -692,6 +698,8 @@
 				ABC5E16C2C31F5AF002B4068 /* iOS_FakeNFT_ExtendedApp.swift in Sources */,
 				F1E00000112233445566778B /* MyNFTsView.swift in Sources */,
 				F1E000001122334455667791 /* MyNFTRowView.swift in Sources */,
+				F1E0000011223344556677B3 /* MyNFTSortOption.swift in Sources */,
+				F1E0000011223344556677B4 /* MyNFTsScreenState.swift in Sources */,
 				F1E00000112233445566778D /* FavoritesNFTsView.swift in Sources */,
 				F1E000001122334455667792 /* FavoriteNFTCardView.swift in Sources */,
 				F1E000001122334455667793 /* ProfileViewData.swift in Sources */,

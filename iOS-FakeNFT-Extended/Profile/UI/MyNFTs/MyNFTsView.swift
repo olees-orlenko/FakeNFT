@@ -1,6 +1,10 @@
 import SwiftUI
 
+// MARK: - MyNFTsView
+
 struct MyNFTsView: View {
+    // MARK: - Properties
+
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var favoritesStore: ProfileFavoritesStore
     private let items: [MyNFTItem]
@@ -15,6 +19,8 @@ struct MyNFTsView: View {
         self.items = items
         _screenState = State(initialValue: screenState)
     }
+
+    // MARK: - Body
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -45,7 +51,7 @@ struct MyNFTsView: View {
             }
         }
         .animation(.easeInOut(duration: 0.2), value: isSortSheetPresented)
-        .navigationTitle("Мои NFT")
+        .navigationTitle(NSLocalizedString("Profile.MyNFTs.title", comment: ""))
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .toolbar {
@@ -71,6 +77,8 @@ struct MyNFTsView: View {
         }
     }
 
+    // MARK: - Subviews
+
     private var sortedItems: [MyNFTItem] {
         guard let selectedSort else { return items }
 
@@ -89,8 +97,8 @@ struct MyNFTsView: View {
             if items.isEmpty {
                 VStack {
                     Spacer()
-                    Text("У Вас ещё нет NFT")
-                        .font(.system(size: 17, weight: .bold))
+                    Text(NSLocalizedString("Profile.MyNFTs.empty", comment: ""))
+                        .font(Font(UIFont.bodyBold))
                         .foregroundStyle(Color(uiColor: UIColor(hexString: "#1A1B22")))
                         .frame(maxWidth: .infinity)
                     Spacer()
@@ -129,7 +137,7 @@ struct MyNFTsView: View {
 
             VStack(spacing: 0) {
                 Text(message)
-                    .font(.system(size: 31.0 / 2, weight: .semibold))
+                    .font(Font(UIFont.bodyBold))
                     .foregroundStyle(Color(uiColor: UIColor(hexString: "#1A1B22")))
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 16)
@@ -138,18 +146,18 @@ struct MyNFTsView: View {
                 Divider()
 
                 HStack(spacing: 0) {
-                    Button("Отмена") {
+                    Button(NSLocalizedString("Common.cancel", comment: "")) {
                         screenState = .content
                     }
-                    .font(.system(size: 17, weight: .regular))
+                    .font(Font(UIFont.bodyRegular))
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
 
                     Divider()
 
-                    Button("Повторить") {
+                    Button(NSLocalizedString("Common.retry", comment: "")) {
                         screenState = .content
                     }
-                    .font(.system(size: 17, weight: .semibold))
+                    .font(Font(UIFont.bodyBold))
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
                 .frame(height: 44)
@@ -163,8 +171,8 @@ struct MyNFTsView: View {
     private var sortSheet: some View {
         VStack(spacing: 8) {
             VStack(spacing: 0) {
-                Text("Сортировка")
-                    .font(.system(size: 13, weight: .regular))
+                Text(NSLocalizedString("Common.sorting", comment: ""))
+                    .font(Font(UIFont.caption2))
                     .foregroundStyle(Color(uiColor: UIColor.systemGray))
                     .frame(maxWidth: .infinity)
                     .frame(height: 36)
@@ -177,7 +185,7 @@ struct MyNFTsView: View {
                         isSortSheetPresented = false
                     }) {
                         Text(option.title)
-                            .font(.system(size: 31.0 / 2, weight: .regular))
+                            .font(Font(UIFont.bodyRegular))
                             .foregroundStyle(Color(uiColor: UIColor.systemBlue))
                             .frame(maxWidth: .infinity)
                             .frame(height: 54)
@@ -193,8 +201,8 @@ struct MyNFTsView: View {
             .clipShape(RoundedRectangle(cornerRadius: 13, style: .continuous))
 
             Button(action: { isSortSheetPresented = false }) {
-                Text("Закрыть")
-                    .font(.system(size: 31.0 / 2, weight: .bold))
+                Text(NSLocalizedString("Common.close", comment: ""))
+                    .font(Font(UIFont.bodyBold))
                     .foregroundStyle(Color(uiColor: UIColor.systemBlue))
                     .frame(maxWidth: .infinity)
                     .frame(height: 60)
@@ -211,31 +219,6 @@ struct MyNFTsView: View {
         }
         nonmutating set {
             selectedSortRawValue = newValue?.rawValue ?? ""
-        }
-    }
-}
-
-enum MyNFTsScreenState {
-    case loading
-    case error(String)
-    case content
-}
-
-private enum MyNFTSortOption: String, CaseIterable, Identifiable {
-    case byPrice
-    case byRating
-    case byName
-
-    var id: Self { self }
-
-    var title: String {
-        switch self {
-        case .byPrice:
-            return "По цене"
-        case .byRating:
-            return "По рейтингу"
-        case .byName:
-            return "По названию"
         }
     }
 }
@@ -263,7 +246,7 @@ private enum MyNFTSortOption: String, CaseIterable, Identifiable {
 
 #Preview("Error") {
     NavigationStack {
-        MyNFTsView(screenState: .error("Не удалось загрузить список NFT"))
+        MyNFTsView(screenState: .error(NSLocalizedString("Profile.MyNFTs.error", comment: "")))
     }
     .environmentObject(ProfileFavoritesStore())
 }

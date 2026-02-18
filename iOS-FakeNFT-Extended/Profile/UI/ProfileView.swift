@@ -64,14 +64,14 @@ struct ProfileView: View {
                                 site: viewData.websiteTitle,
                                 avatarURL: viewData.avatarURLString
                             ) { updatedName, updatedDescription, updatedSite, updatedAvatarURL in
-                                viewData.name = updatedName
-                                viewData.description = updatedDescription
-                                viewData.websiteTitle = updatedSite
-                                viewData.avatarURLString = updatedAvatarURL
-
-                                if let url = makeWebsiteURL(from: updatedSite) {
-                                    viewData.websiteURL = url
-                                }
+                                let nextURL = makeWebsiteURL(from: updatedSite) ?? viewData.websiteURL
+                                viewData = viewData.updated(
+                                    name: updatedName,
+                                    description: updatedDescription,
+                                    websiteTitle: updatedSite,
+                                    websiteURL: nextURL,
+                                    avatarURLString: updatedAvatarURL
+                                )
                             }
                         } label: {
                             Image(systemName: "square.and.pencil")

@@ -1,9 +1,13 @@
 import SwiftUI
 
+// MARK: - MyNFTRowView
+
 struct MyNFTRowView: View {
     let item: MyNFTItem
     let isFavorite: Bool
     let onLikeTap: () -> Void
+
+    // MARK: - Body
 
     var body: some View {
         HStack(spacing: 16) {
@@ -35,6 +39,8 @@ struct MyNFTRowView: View {
         .padding(.horizontal, 16)
         .frame(height: 140)
     }
+
+    // MARK: - Subviews
 
     private var imageBlock: some View {
         ZStack(alignment: .topTrailing) {
