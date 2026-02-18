@@ -15,6 +15,7 @@ struct CatalogView: View {
     
     @StateObject private var viewModel = CatalogViewModel()
     @State private var isShowingSortMenu = false
+    @State private var selectedCollection: NFTCollection?
     
     // MARK: - Body
     
@@ -25,6 +26,9 @@ struct CatalogView: View {
                     .ignoresSafeArea()
                 List(viewModel.collections) { collection in
                     CatalogCollectionCell(collection: collection)
+                        .onTapGesture {
+                            selectedCollection = collection
+                        }
                         .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 8, trailing: 16))
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
@@ -62,9 +66,14 @@ struct CatalogView: View {
                 }
             }
             .toolbar(isShowingSortMenu ? .hidden : .visible, for: .tabBar)
-        }
-        .task {
-            await viewModel.loadCovers()
+            .fullScreenCover(item: $selectedCollection) { collection in
+                NavigationStack {
+                    NFTCollectionView(collection: collection, items: NFTItem.mockItems)
+                }
+            }
+            .task {
+                await viewModel.loadCovers()
+            }
         }
     }
 }

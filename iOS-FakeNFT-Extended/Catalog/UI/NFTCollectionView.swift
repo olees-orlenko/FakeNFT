@@ -18,6 +18,7 @@ struct NFTCollectionView: View {
     let columns = Array(repeating: GridItem(.flexible(), spacing: 9), count: 3)
     private let horizontalPadding: CGFloat = 16
     @State private var isShowingAuthorWeb = false
+    @Environment(\.dismiss) private var dismiss
     
     // MARK: - Body
     
@@ -40,9 +41,24 @@ struct NFTCollectionView: View {
         .sheet(isPresented: $isShowingAuthorWeb) {
         }
         .edgesIgnoringSafeArea(.top)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            toolbarButton
+        }
     }
     
     // MARK: - Subviews
+    
+    private var toolbarButton: some ToolbarContent {
+        ToolbarItem(placement: .navigationBarLeading) {
+            Button {
+                dismiss()
+            } label: {
+                Image(systemName: "chevron.left")
+                    .tint(.primary)
+            }
+        }
+    }
     
     private var coverView: some View {
         Group {
