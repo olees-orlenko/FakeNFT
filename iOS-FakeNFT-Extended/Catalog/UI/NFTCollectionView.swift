@@ -16,6 +16,7 @@ struct NFTCollectionView: View {
     let columns = Array(repeating: GridItem(.flexible(), spacing: 9), count: 3)
     private let horizontalPadding: CGFloat = 16
     @State private var isShowingAuthorWeb = false
+    @State private var showLoadingError = false
     @StateObject private var viewModel: NftViewModel
     @Environment(\.dismiss) private var dismiss
     
@@ -57,6 +58,33 @@ struct NFTCollectionView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             toolbarButton
+        }
+        .task {
+            do {
+                try await viewModel.loadItems()
+            } catch {
+                showLoadingError = true
+            }
+        }
+        .alert(
+            NSLocalizedString("alert.title", comment: ""),
+            isPresented: $showLoadingError
+        ) {
+            Button {
+                Task {
+                    do {
+                        try await viewModel.loadItems()
+                    } catch {
+                        showLoadingError = true
+                    }
+                }
+            } label: {
+                Text(NSLocalizedString("alert.retry", comment: ""))
+            }
+            
+            Button(role: .cancel) { } label: {
+                Text(NSLocalizedString("alert.cancel", comment: ""))
+            }
         }
     }
     
@@ -134,8 +162,7 @@ struct NFTCollectionView: View {
                     name: item.name,
                     image: item.image,
                     rating: item.rating,
-                    price: item.price,
-                    deleteAction: { }
+                    price: item.price
                 )
             }
         }
