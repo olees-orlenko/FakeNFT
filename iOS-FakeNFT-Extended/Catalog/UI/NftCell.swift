@@ -13,11 +13,10 @@ struct NftCell: View {
     
     // MARK: - Properties
     
-    var name: String
-    var image: String
-    var rating: Int
+    let name: String
+    let image: String
+    let rating: Int
     let price: String
-    var deleteAction: () -> Void
     @State private var isLiked = false
     @State private var isInCart = false
     
@@ -57,5 +56,5 @@ struct NftCell: View {
 // MARK: - Preview
 
 #Preview {
-    NftCell(name: "April", image: "April", rating: 2, price: "1 ETH", deleteAction: {})
+    NftCell(name: "April", image: "April", rating: 2, price: "1 ETH")
 }

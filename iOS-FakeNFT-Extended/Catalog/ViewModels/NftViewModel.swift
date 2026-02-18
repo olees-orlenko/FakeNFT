@@ -22,20 +22,19 @@ final class NftViewModel: ObservableObject {
     
     init(collection: NFTCollection) {
         self.collection = collection
-        Task { await loadItems() }
     }
 
     // MARK: - Loading
     
-    func loadItems() async {
+    func loadItems() async throws {
         isLoading = true
+        defer { isLoading = false }
         let all = NFTItem.mockItems
         if collection.itemCount <= 0 {
             items = all
         } else {
             items = Array(all.prefix(collection.itemCount))
         }
-        isLoading = false
     }
 
     var authorURL: URL {
