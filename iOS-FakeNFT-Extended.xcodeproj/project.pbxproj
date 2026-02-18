@@ -45,6 +45,7 @@
 		FC2BA1112F3BD767003C0743 /* LoadingHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2BA1102F3BD763003C0743 /* LoadingHUD.swift */; };
 		FC705C122F3FD85D00A4D0E5 /* LikeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC705C112F3FD85B00A4D0E5 /* LikeButton.swift */; };
 		FC705C142F3FE80100A4D0E5 /* RatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC705C132F3FE7F300A4D0E5 /* RatingView.swift */; };
+		FC95D41E2F455B9700848DAF /* AddToCartButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC95D41D2F455B7900848DAF /* AddToCartButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -104,6 +105,7 @@
 		FC2BA1102F3BD763003C0743 /* LoadingHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingHUD.swift; sourceTree = "<group>"; };
 		FC705C112F3FD85B00A4D0E5 /* LikeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeButton.swift; sourceTree = "<group>"; };
 		FC705C132F3FE7F300A4D0E5 /* RatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingView.swift; sourceTree = "<group>"; };
+		FC95D41D2F455B7900848DAF /* AddToCartButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToCartButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -273,6 +275,7 @@
 		ABC5E1B32C31FC03002B4068 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				FC95D41D2F455B7900848DAF /* AddToCartButton.swift */,
 				FC705C132F3FE7F300A4D0E5 /* RatingView.swift */,
 				FC705C112F3FD85B00A4D0E5 /* LikeButton.swift */,
 				ABC5E16D2C31F5AF002B4068 /* ContentView.swift */,
@@ -487,6 +490,7 @@
 				ABC5E16C2C31F5AF002B4068 /* iOS_FakeNFT_ExtendedApp.swift in Sources */,
 				ABC5E1CB2C3203FC002B4068 /* NftDetailCellModel.swift in Sources */,
 				ABC5E1AB2C31FACD002B4068 /* NftService.swift in Sources */,
+				FC95D41E2F455B9700848DAF /* AddToCartButton.swift in Sources */,
 				ABC5E1B22C31FBD4002B4068 /* ExampleRequest.swift in Sources */,
 				ABC5E1CD2C32040C002B4068 /* NftImageCollectionViewCell.swift in Sources */,
 				ABC5E1A82C31FA90002B4068 /* DateFormatters+Presets.swift in Sources */,
