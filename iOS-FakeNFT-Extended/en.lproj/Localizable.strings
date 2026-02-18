@@ -8,3 +8,7 @@
 "Close.Button" = "Закрыть";
 "Filter.textName" = "По названию";
 "Sorting" = "Сортировка";
+"Author" = "Автор коллекции:";
+"alert.title" = "Не удалось получить данные";
+"alert.retry" = "Повторить";
+"alert.cancel" = "Отмена";
