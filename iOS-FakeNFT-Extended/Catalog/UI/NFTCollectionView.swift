@@ -38,7 +38,15 @@ struct NFTCollectionView: View {
             .padding(.horizontal, horizontalPadding)
         }
         .background(Color(.systemBackground).ignoresSafeArea())
-        .sheet(isPresented: $isShowingAuthorWeb) {
+        .fullScreenCover(isPresented: $isShowingAuthorWeb) {
+            NavigationStack {
+                ProfileWebView(url: authorURL)
+                    .toolbar {
+                        toolbarButton
+                    }
+            }
+            .edgesIgnoringSafeArea(.top)
+            .navigationBarTitleDisplayMode(.inline)
         }
         .edgesIgnoringSafeArea(.top)
         .navigationBarTitleDisplayMode(.inline)
@@ -125,6 +133,14 @@ struct NFTCollectionView: View {
                     deleteAction: { }
                 )
             }
+        }
+    }
+    
+    private var authorURL: URL {
+        if let authorURL = collection.authorURL {
+            return authorURL
+        } else {
+            return URL(string: "https://practicum.yandex.ru/ios-developer/")!
         }
     }
 }

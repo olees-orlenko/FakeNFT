@@ -29,7 +29,7 @@ extension NFTCollection {
                 coverURL: URL(string: "https://code.s3.yandex.net/Mobile/iOS/NFT/Обложки_коллекций/Pink.png"),
                 itemCount: 11,
                 authorName: "John Doe",
-                authorURL: URL(string: "https://example.com"),
+                authorURL: URL(string: "https://practicum.yandex.ru/ios-developer/"),
                 description: """
                 Персиковый — как облака над закатным солнцем в океане. \
                 В этой коллекции совмещены трогательная нежность и живая игривость сказочных зефирных зверей.
