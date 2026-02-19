@@ -1,35 +1,39 @@
-//
-//  NFTCollectionScreen.swift
-//  iOS-FakeNFT-Extended
-//
-//  Created by Филипп Герасимов on 14/02/26.
-//
-
 import SwiftUI
 
 struct NFTCollectionScreen: View {
-    
+
     struct NFTItem: Identifiable {
         let id = UUID()
         let title: String
         let rating: Int
         let price: String
     }
-    
-    @State private var likedItems: Set<UUID> = []
-    
+
+    let userId: String
     let items: [NFTItem]
     var onBack: (() -> Void)? = nil
-    
+
+    @State private var likedItems: Set<UUID> = []
+
     private let columns = [
         GridItem(.fixed(108), spacing: 12),
         GridItem(.fixed(108), spacing: 12),
         GridItem(.fixed(108), spacing: 0)
     ]
-    
+
+    init(
+        userId: String = "",
+        items: [NFTItem],
+        onBack: (() -> Void)? = nil
+    ) {
+        self.userId = userId
+        self.items = items
+        self.onBack = onBack
+    }
+
     var body: some View {
         VStack(spacing: 26) {
-            
+
             NavigationTitleView(
                 title: "Коллекция NFT",
                 systemImage: "chevron.left",
@@ -37,7 +41,7 @@ struct NFTCollectionScreen: View {
                 titleAlignment: .center,
                 onTap: { onBack?() }
             )
-            
+
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 16) {
                     ForEach(items) { item in
@@ -48,11 +52,8 @@ struct NFTCollectionScreen: View {
                             isLiked: Binding(
                                 get: { likedItems.contains(item.id) },
                                 set: { isLiked in
-                                    if isLiked {
-                                        likedItems.insert(item.id)
-                                    } else {
-                                        likedItems.remove(item.id)
-                                    }
+                                    if isLiked { likedItems.insert(item.id) }
+                                    else { likedItems.remove(item.id) }
                                 }
                             )
                         )
@@ -69,6 +70,7 @@ struct NFTCollectionScreen: View {
 
 #Preview {
     NFTCollectionScreen(
+        userId: "Alex",
         items: [
             .init(title: "Stella", rating: 4, price: "1.78"),
             .init(title: "Galaxy", rating: 5, price: "2.10"),

@@ -2,7 +2,7 @@ import SwiftUI
 
 struct StatisticsScreen: View {
     
-    struct UserStat: Identifiable {
+    struct UserStat: Identifiable, Hashable {
         let id = UUID()
         let avatarURL: URL?
         let name: String
@@ -18,7 +18,7 @@ struct StatisticsScreen: View {
             
             NavigationTitleView(
                 title: nil,
-                systemImage: "list.bullet",
+                assetImage: "Light",
                 buttonPosition: .right,
                 titleAlignment: .center,
                 onTap: { onSortTap?() }
@@ -28,16 +28,18 @@ struct StatisticsScreen: View {
                 ForEach(Array(users.enumerated()), id: \.element.id) { index, user in
                     HStack {
                         Spacer()
-                        
+
                         StatisticsRowView(
                             position: index + 1,
                             avatarURL: user.avatarURL,
                             name: user.name,
                             rating: user.rating
                         )
-                        
+
                         Spacer()
                     }
+                    .contentShape(Rectangle())
+                    .onTapGesture { onSelectUser?(user) }
                     .listRowInsets(EdgeInsets())
                     .listRowSeparator(.hidden)
                     .padding(.vertical, 6)
@@ -67,3 +69,4 @@ struct StatisticsScreen: View {
     
     StatisticsScreen(users: mockUsers)
 }
+
