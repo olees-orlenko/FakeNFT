@@ -5,3 +5,15 @@
 "Error.unknown" = "Произошла неизвестная ошибка";
 "Error.repeat" = "Повторить";
 "Error.title" = "Ошибка";
+
+"Common.cancel" = "Отмена";
+"Common.retry" = "Повторить";
+"Common.close" = "Закрыть";
+"Common.sorting" = "Сортировка";
+
+"Profile.MyNFTs.title" = "Мои NFT";
+"Profile.MyNFTs.empty" = "У Вас ещё нет NFT";
+"Profile.MyNFTs.error" = "Не удалось загрузить список NFT";
+"Profile.MyNFTs.sort.price" = "По цене";
+"Profile.MyNFTs.sort.rating" = "По рейтингу";
+"Profile.MyNFTs.sort.name" = "По названию";
