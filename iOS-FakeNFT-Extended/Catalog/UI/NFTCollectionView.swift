@@ -142,7 +142,7 @@ struct NFTCollectionView: View {
             Button(action: {
                 isShowingAuthorWeb = true
             }) {
-                Text(viewModel.collection.authorName ?? "John Doe")
+                Text(viewModel.collection.authorName ?? "")
                     .font(Font(UIFont.caption1))
                     .foregroundColor(Color.blue)
             }
