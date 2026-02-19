@@ -20,7 +20,9 @@ struct ProfileViewData {
         description: String,
         websiteTitle: String,
         websiteURL: URL,
-        avatarURLString: String
+        avatarURLString: String,
+        myNftCount: Int,
+        favoriteNftCount: Int
     ) -> ProfileViewData {
         ProfileViewData(
             name: name,

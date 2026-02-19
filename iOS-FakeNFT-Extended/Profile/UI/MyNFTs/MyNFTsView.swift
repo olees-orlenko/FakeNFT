@@ -6,19 +6,13 @@ struct MyNFTsView: View {
     // MARK: - Properties
 
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject private var favoritesStore: ProfileFavoritesStore
-    private let items: [MyNFTItem]
+    let items: [MyNFTItem]
+    let favoriteIDs: Set<String>
+    @Binding var screenState: ScreenState
+    let onRetry: () -> Void
+    let onLikeTap: (String) -> Void
     @AppStorage("my_nfts_sort_option") private var selectedSortRawValue = ""
     @State private var isSortSheetPresented = false
-    @State private var screenState: MyNFTsScreenState
-
-    init(
-        items: [MyNFTItem] = MyNFTItem.mock,
-        screenState: MyNFTsScreenState = .content
-    ) {
-        self.items = items
-        _screenState = State(initialValue: screenState)
-    }
 
     // MARK: - Body
 
@@ -109,8 +103,8 @@ struct MyNFTsView: View {
                         ForEach(sortedItems) { item in
                             MyNFTRowView(
                                 item: item,
-                                isFavorite: favoritesStore.isFavorite(name: item.name),
-                                onLikeTap: { favoritesStore.toggle(name: item.name) }
+                                isFavorite: favoriteIDs.contains(item.id),
+                                onLikeTap: { onLikeTap(item.id) }
                             )
                         }
                     }
@@ -155,7 +149,7 @@ struct MyNFTsView: View {
                     Divider()
 
                     Button(NSLocalizedString("Common.retry", comment: "")) {
-                        screenState = .content
+                        onRetry()
                     }
                     .font(Font(UIFont.bodyBold))
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -225,28 +219,48 @@ struct MyNFTsView: View {
 
 #Preview {
     NavigationStack {
-        MyNFTsView()
+        MyNFTsView(
+            items: MyNFTItem.mock,
+            favoriteIDs: ["1", "2"],
+            screenState: .constant(.content),
+            onRetry: {},
+            onLikeTap: { _ in }
+        )
     }
-    .environmentObject(ProfileFavoritesStore())
 }
 
 #Preview("Empty") {
     NavigationStack {
-        MyNFTsView(items: [])
+        MyNFTsView(
+            items: [],
+            favoriteIDs: [],
+            screenState: .constant(.content),
+            onRetry: {},
+            onLikeTap: { _ in }
+        )
     }
-    .environmentObject(ProfileFavoritesStore())
 }
 
 #Preview("Loading") {
     NavigationStack {
-        MyNFTsView(screenState: .loading)
+        MyNFTsView(
+            items: [],
+            favoriteIDs: [],
+            screenState: .constant(.loading),
+            onRetry: {},
+            onLikeTap: { _ in }
+        )
     }
-    .environmentObject(ProfileFavoritesStore())
 }
 
 #Preview("Error") {
     NavigationStack {
-        MyNFTsView(screenState: .error(NSLocalizedString("Profile.MyNFTs.error", comment: "")))
+        MyNFTsView(
+            items: MyNFTItem.mock,
+            favoriteIDs: [],
+            screenState: .constant(.error(NSLocalizedString("Profile.MyNFTs.error", comment: ""))),
+            onRetry: {},
+            onLikeTap: { _ in }
+        )
     }
-    .environmentObject(ProfileFavoritesStore())
 }

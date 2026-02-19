@@ -1,8 +1,8 @@
 import Foundation
 
-// MARK: - MyNFTsScreenState
+// MARK: - ScreenState
 
-enum MyNFTsScreenState {
+enum ScreenState {
     case loading
     case error(String)
     case content

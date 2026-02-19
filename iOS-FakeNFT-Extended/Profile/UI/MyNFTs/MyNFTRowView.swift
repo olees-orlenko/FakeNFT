@@ -44,20 +44,21 @@ struct MyNFTRowView: View {
 
     private var imageBlock: some View {
         ZStack(alignment: .topTrailing) {
-            RoundedRectangle(cornerRadius: 12)
-                .fill(
-                    LinearGradient(
-                        colors: [Color.pink.opacity(0.3), Color.purple.opacity(0.35)],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-                .frame(width: 108, height: 108)
-                .overlay {
-                    Text(item.name.prefix(1))
-                        .font(.system(size: 34, weight: .bold))
-                        .foregroundStyle(.white)
+            Group {
+                if let imageURL = item.imageURL {
+                    AsyncImage(url: imageURL) { image in
+                        image
+                            .resizable()
+                            .scaledToFill()
+                    } placeholder: {
+                        placeholderImage
+                    }
+                } else {
+                    placeholderImage
                 }
+            }
+            .frame(width: 108, height: 108)
+            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
 
             Button(action: onLikeTap) {
                 Image(systemName: "heart.fill")
@@ -73,6 +74,22 @@ struct MyNFTRowView: View {
             }
             .buttonStyle(.plain)
         }
+    }
+
+    private var placeholderImage: some View {
+        RoundedRectangle(cornerRadius: 12)
+            .fill(
+                LinearGradient(
+                    colors: [Color.pink.opacity(0.3), Color.purple.opacity(0.35)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
+            .overlay {
+                Text(item.name.prefix(1))
+                    .font(.system(size: 34, weight: .bold))
+                    .foregroundStyle(.white)
+            }
     }
 
     private var starsView: some View {
