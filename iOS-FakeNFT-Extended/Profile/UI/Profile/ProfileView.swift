@@ -19,16 +19,17 @@ struct ProfileView: View {
     private let profileService: ProfileService
     private let shouldLoadOnAppear: Bool
 
+    @MainActor
     init(
         screenState: ScreenState = .content,
         viewData: ProfileViewData = .mock,
         shouldLoadOnAppear: Bool = true,
-        profileService: ProfileService = ProfileServiceImpl(networkClient: DefaultNetworkClient())
+        profileService: ProfileService? = nil
     ) {
         _screenState = State(initialValue: screenState)
         _viewData = State(initialValue: viewData)
         self.shouldLoadOnAppear = shouldLoadOnAppear
-        self.profileService = profileService
+        self.profileService = profileService ?? ProfileServiceImpl(networkClient: DefaultNetworkClient())
     }
 
     var body: some View {
