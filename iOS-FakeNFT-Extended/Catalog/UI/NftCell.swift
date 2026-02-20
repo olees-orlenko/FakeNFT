@@ -18,8 +18,8 @@ struct NftCell: View {
     let rating: Int
     let priceString: String
     let nftID: String
-    @State private var isInCart = false
     @EnvironmentObject private var favoritesManager: FavoritesManager
+    @EnvironmentObject private var cartManager: CartManager
     
     // MARK: - Body
     
@@ -57,7 +57,10 @@ struct NftCell: View {
                     .font(.system(size: 17, weight: .bold))
                     .foregroundColor(.primary)
                 Spacer()
-                AddToCartButton(isInCart: $isInCart)
+                AddToCartButton(
+                    isInCart: cartManager.isInCart(id: nftID),
+                    action: { cartManager.toggleCart(id: nftID) }
+                )
             }
             Text(priceString)
                 .font(.system(size: 10, weight: .medium))
