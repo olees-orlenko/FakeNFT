@@ -23,10 +23,10 @@ struct UserCardScreen: View {
         VStack(spacing: 36) {
             
             NavigationTitleView(
-                title: NSLocalizedString(titleKey, comment: ""),
+                title: nil,
                 systemImage: "chevron.left",
                 buttonPosition: .left,
-                titleAlignment: .center,
+                titleAlignment: .leading,
                 onTap: { onBack?() }
             )
             userInfoBlock
@@ -35,17 +35,21 @@ struct UserCardScreen: View {
             Button {
                 onNext?()
             } label: {
-                NavigationTitleView(
-                    title: "\(NSLocalizedString(titleKey, comment: "")) (112)",
-                    systemImage: "chevron.right",
-                    buttonPosition: .right,
-                    titleAlignment: .leading,
-                    onTap: nil
-                )
+                HStack {
+                    Text("\(NSLocalizedString(titleKey, comment: "")) (112)")
+                        .font(.system(size: 17, weight: .bold))
+                        .foregroundColor(Color(UIColor.textPrimary))
+
+                    Spacer()
+
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(Color(UIColor.segmentActive))
+                }
+                .padding(.horizontal, 16)
+                .frame(height: 42)
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            
             Spacer()
         }
         .padding(.top, 8)
