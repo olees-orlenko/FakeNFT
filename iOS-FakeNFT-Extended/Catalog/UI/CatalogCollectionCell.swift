@@ -74,18 +74,18 @@ struct CatalogCollectionCell: View {
 
 // MARK: - Preview
 
-#Preview("Cell light") {
-    Group {
-        CatalogCollectionCell(collection: NFTCollection.mockCollections[0])
-            .padding()
-    }
-    .preferredColorScheme(.light)
-}
-
-#Preview("Cell dark") {
-    Group {
-        CatalogCollectionCell(collection: NFTCollection.mockCollections[0])
-            .padding()
-    }
-    .preferredColorScheme(.dark)
-}
+//#Preview("Cell light") {
+//    Group {
+//        CatalogCollectionCell(collection: NFTCollection.mockCollections[0])
+//            .padding()
+//    }
+//    .preferredColorScheme(.light)
+//}
+//
+//#Preview("Cell dark") {
+//    Group {
+//        CatalogCollectionCell(collection: NFTCollection.mockCollections[0])
+//            .padding()
+//    }
+//    .preferredColorScheme(.dark)
+//}

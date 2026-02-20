@@ -28,13 +28,13 @@ final class NftViewModel: ObservableObject {
     
     func loadItems() async throws {
         isLoading = true
-        defer { isLoading = false }
-        let all = NFTItem.mockItems
-        if collection.itemCount <= 0 {
-            items = all
-        } else {
-            items = Array(all.prefix(collection.itemCount))
-        }
+//        defer { isLoading = false }
+//        let all = NFTItem.mockItems
+//        if collection.itemCount <= 0 {
+//            items = all
+//        } else {
+//            items = Array(all.prefix(collection.itemCount))
+//        }
     }
 
     var authorURL: URL {
