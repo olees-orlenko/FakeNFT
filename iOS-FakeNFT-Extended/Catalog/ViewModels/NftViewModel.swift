@@ -73,7 +73,13 @@ final class NftViewModel: ObservableObject {
         defer { isLoading = false }
         do {
             let fetched = try await nftService.fetchNFTs(by: collection.nfts)
-            self.items = fetched
+            let nftMap = Dictionary(fetched.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
+            var uniqueIds = Set<String>()
+            self.items = collection.nfts.compactMap { id in
+                guard !uniqueIds.contains(id) else { return nil }
+                uniqueIds.insert(id)
+                return nftMap[id]
+            }
         } catch {
             self.items = []
             self.errorMessage = (error as? NetworkError)?.errorDescription ?? error.localizedDescription

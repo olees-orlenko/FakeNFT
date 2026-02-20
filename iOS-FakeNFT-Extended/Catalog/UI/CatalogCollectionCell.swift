@@ -65,7 +65,7 @@ struct CatalogCollectionCell: View {
     }
     
     private var titleView: some View {
-        Text("\(collection.title) (\(collection.itemCount))")
+        Text("\(collection.title) (\(Set(collection.nfts).count))")
             .font(Font(UIFont.bodyBold))
             .foregroundColor(.primary)
             .lineLimit(1)
