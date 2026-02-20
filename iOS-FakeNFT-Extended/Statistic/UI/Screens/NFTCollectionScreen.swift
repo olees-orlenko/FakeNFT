@@ -65,6 +65,7 @@ struct NFTCollectionScreen: View {
         }
         .padding(.top, 8)
         .background(Color(.systemBackground))
+        .toolbar(.hidden, for: .navigationBar)
     }
 }
 

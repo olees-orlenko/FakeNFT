@@ -17,11 +17,14 @@ struct NavigationTitleView: View {
     let title: String?
 
     let systemImage: String?
-
     let assetImage: String?
 
     let buttonPosition: ButtonPosition
     let titleAlignment: TitleAlignment
+
+    /// Если false — иконка НЕ оборачивается в Button (нужно, когда весь блок кликабельный снаружи)
+    let isIconTappable: Bool
+
     var onTap: (() -> Void)? = nil
 
     init(
@@ -30,6 +33,7 @@ struct NavigationTitleView: View {
         assetImage: String? = nil,
         buttonPosition: ButtonPosition,
         titleAlignment: TitleAlignment,
+        isIconTappable: Bool = true,
         onTap: (() -> Void)? = nil
     ) {
         self.title = title
@@ -37,6 +41,7 @@ struct NavigationTitleView: View {
         self.assetImage = assetImage
         self.buttonPosition = buttonPosition
         self.titleAlignment = titleAlignment
+        self.isIconTappable = isIconTappable
         self.onTap = onTap
     }
 
@@ -94,20 +99,25 @@ struct NavigationTitleView: View {
         }
     }
 
-    // MARK: - Button
+    // MARK: - Button / Icon
 
     @ViewBuilder
     private var buttonView: some View {
         if systemImage != nil || assetImage != nil {
-            Button { onTap?() } label: {
+            if isIconTappable {
+                Button { onTap?() } label: {
+                    imageView
+                }
+                .buttonStyle(.plain)
+            } else {
+                // без Button, чтобы не было "button inside button"
                 imageView
             }
-            .buttonStyle(.plain)
         } else {
             spacerPlaceholder
         }
     }
-    
+
     @ViewBuilder
     private var imageView: some View {
         if let systemImage {
@@ -116,7 +126,9 @@ struct NavigationTitleView: View {
                 .scaledToFit()
                 .frame(width: 20, height: 20)
                 .foregroundColor(Color(UIColor.segmentActive))
+                .contentShape(Rectangle())
         } else if let assetImage {
+            // Требование: tap-зона 42×42 и сама иконка 42×42
             Image(assetImage)
                 .resizable()
                 .scaledToFit()
@@ -168,6 +180,22 @@ struct NavigationTitleView: View {
             buttonPosition: .right,
             titleAlignment: .center
         )
+
+        // Пример для "весь блок кликабельный снаружи"
+        Button("Тест клика") {} // просто чтобы было видно
+        Button {
+            print("Tapped whole row")
+        } label: {
+            NavigationTitleView(
+                title: "\(title) (112)",
+                systemImage: "chevron.right",
+                buttonPosition: .right,
+                titleAlignment: .leading,
+                isIconTappable: false
+            )
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
     }
     .padding()
     .background(Color(UIColor.background))

@@ -3,6 +3,7 @@ import SwiftUI
 struct TabBarView: View {
     var body: some View {
         TabView {
+            
             TestCatalogView()
                 .tabItem {
                     Label(
@@ -10,7 +11,14 @@ struct TabBarView: View {
                         systemImage: "square.stack.3d.up.fill"
                     )
                 }
-                .backgroundStyle(.background)
+            
+            StatisticsFlowView()
+                .tabItem {
+                    Label(
+                        "Статистика",
+                        systemImage: "chart.bar.fill"
+                    )
+                }
         }
     }
 }

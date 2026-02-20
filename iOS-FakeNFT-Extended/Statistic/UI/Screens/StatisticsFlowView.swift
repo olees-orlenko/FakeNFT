@@ -58,13 +58,13 @@ struct StatisticsFlowView: View {
             .sheet(item: $safariURL) { item in
                 SafariView(url: item.url)
             }
-            .overlay(
+            .sheet(isPresented: $viewModel.isSortSheetPresented) {
                 StatisticsSortSheet(
                     isPresented: $viewModel.isSortSheetPresented,
                     selected: viewModel.sortType,
                     onSelect: viewModel.selectSort
                 )
-            )
+            }
         }
     }
 

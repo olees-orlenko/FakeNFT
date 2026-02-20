@@ -32,19 +32,26 @@ struct UserCardScreen: View {
             userInfoBlock
             websiteButton
             
-            NavigationTitleView(
-                title: "\(NSLocalizedString(titleKey, comment: "")) (112)",
-                systemImage: "chevron.right",
-                buttonPosition: .right,
-                titleAlignment: .leading,
-                onTap: { onNext?() }
-            )
+            Button {
+                onNext?()
+            } label: {
+                NavigationTitleView(
+                    title: "\(NSLocalizedString(titleKey, comment: "")) (112)",
+                    systemImage: "chevron.right",
+                    buttonPosition: .right,
+                    titleAlignment: .leading,
+                    onTap: nil
+                )
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
             
             Spacer()
         }
         .padding(.top, 8)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background(Color(.systemBackground))
+        .toolbar(.hidden, for: .navigationBar)
     }
     
     // MARK: - Blocks

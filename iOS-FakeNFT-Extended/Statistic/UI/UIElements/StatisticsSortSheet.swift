@@ -1,10 +1,3 @@
-//
-//  StatisticsSortSheet.swift
-//  iOS-FakeNFT-Extended
-//
-//  Created by Филипп Герасимов on 19/02/26.
-//
-
 import SwiftUI
 
 struct StatisticsSortSheet: View {
@@ -13,15 +6,57 @@ struct StatisticsSortSheet: View {
     let onSelect: (StatisticsSortType) -> Void
 
     var body: some View {
-        EmptyView()
-            .confirmationDialog("Сортировка", isPresented: $isPresented, titleVisibility: .visible) {
-                ForEach(StatisticsSortType.allCases, id: \ .self) { type in
-                    Button(type.rawValue) {
-                        onSelect(type)
-                    }
+        VStack(spacing: 16) {
+            Text("Сортировка")
+                .font(.system(size: 17, weight: .bold))
+                .padding(.top, 12)
+
+            VStack(spacing: 0) {
+                sheetRow(title: StatisticsSortType.byName.rawValue, isSelected: selected == .byName) {
+                    onSelect(.byName)
+                    isPresented = false
                 }
-                Button("Закрыть", role: .cancel) {}
+
+                Divider()
+
+                sheetRow(title: StatisticsSortType.byRating.rawValue, isSelected: selected == .byRating) {
+                    onSelect(.byRating)
+                    isPresented = false
+                }
             }
+            .background(Color(.secondarySystemBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 16))
+
+            Button("Закрыть") {
+                isPresented = false
+            }
+            .font(.system(size: 17, weight: .regular))
+            .frame(maxWidth: .infinity, minHeight: 52)
+            .background(Color(.secondarySystemBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 16))
+            .padding(.bottom, 12)
+        }
+        .padding(.horizontal, 16)
+        .presentationDetents([.height(260)])
+        .presentationDragIndicator(.visible)
+    }
+
+    private func sheetRow(title: String, isSelected: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack {
+                Text(title)
+                    .font(.system(size: 17, weight: .regular))
+                    .foregroundColor(.primary)
+                Spacer()
+                if isSelected {
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 17, weight: .bold))
+                }
+            }
+            .padding(.horizontal, 16)
+            .frame(height: 56)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
     }
 }
-
