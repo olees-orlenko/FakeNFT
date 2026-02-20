@@ -60,23 +60,20 @@ struct NFTCollectionView: View {
             toolbarButton
         }
         .task {
-            do {
-                try await viewModel.loadItems()
-            } catch {
-                showLoadingError = true
+            await viewModel.fetchCollection()
+            await viewModel.loadItems()
+            if viewModel.errorMessage != nil {
+                viewModel.errorAlertPresented = true
             }
         }
         .alert(
             NSLocalizedString("alert.title", comment: ""),
-            isPresented: $showLoadingError
+            isPresented: $viewModel.errorAlertPresented
         ) {
             Button {
                 Task {
-                    do {
-                        try await viewModel.loadItems()
-                    } catch {
-                        showLoadingError = true
-                    }
+                    await viewModel.fetchCollection()
+                    await viewModel.loadItems()
                 }
             } label: {
                 Text(NSLocalizedString("alert.retry", comment: ""))
@@ -160,9 +157,9 @@ struct NFTCollectionView: View {
             ForEach(viewModel.items) { item in
                 NftCell(
                     name: item.name,
-                    image: item.image,
+                    imageURL: item.image,
                     rating: item.rating,
-                    price: item.price
+                    priceString: item.priceString
                 )
             }
         }

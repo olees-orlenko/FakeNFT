@@ -11,30 +11,59 @@ import Foundation
 
 @MainActor
 final class NftViewModel: ObservableObject {
+    
     // MARK: - Properties
     
     @Published private(set) var items: [NFTItem] = []
     @Published private(set) var isLoading: Bool = false
-    let collection: NFTCollection
-    let defaultAuthorURL = URL(string: "https://practicum.yandex.ru/ios-developer/")!
-
+    @Published private(set) var collection: NFTCollection
+    @Published var errorMessage: String?
+    @Published var errorAlertPresented: Bool = false
+    private let defaultAuthorURL = URL(string: "https://practicum.yandex.ru/ios-developer/")!
+    private let nftService: NFTService
+    
     // MARK: - Init
     
-    init(collection: NFTCollection) {
+    init(collection: NFTCollection, nftService: NFTService = NFTService()) {
         self.collection = collection
+        self.nftService = nftService
     }
-
+    
+    // MARK: - Fetching Collection
+    
+    func fetchCollection() async {
+        isLoading = true
+        errorMessage = nil
+        errorAlertPresented = false
+        defer { isLoading = false }
+        do {
+            let updated = try await nftService.fetchCollection(by: collection.id)
+            self.collection = updated
+        } catch {
+            self.errorMessage = (error as? NetworkError)?.errorDescription ?? error.localizedDescription
+            self.errorAlertPresented = true
+        }
+    }
+    
     // MARK: - Loading
     
-    func loadItems() async throws {
+    func loadItems() async {
+        guard !collection.nfts.isEmpty else {
+            self.items = []
+            return
+        }
         isLoading = true
-//        defer { isLoading = false }
-//        let all = NFTItem.mockItems
-//        if collection.itemCount <= 0 {
-//            items = all
-//        } else {
-//            items = Array(all.prefix(collection.itemCount))
-//        }
+        errorMessage = nil
+        errorAlertPresented = false
+        defer { isLoading = false }
+        do {
+            let fetched = try await nftService.fetchNFTs(by: collection.nfts)
+            self.items = fetched
+        } catch {
+            self.items = []
+            self.errorMessage = (error as? NetworkError)?.errorDescription ?? error.localizedDescription
+            self.errorAlertPresented = true
+        }
     }
 
     var authorURL: URL {

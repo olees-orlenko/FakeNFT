@@ -14,9 +14,9 @@ struct NftCell: View {
     // MARK: - Properties
     
     let name: String
-    let image: String
+    let imageURL: URL?
     let rating: Int
-    let price: String
+    let priceString: String
     @State private var isLiked = false
     @State private var isInCart = false
     
@@ -25,12 +25,23 @@ struct NftCell: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             ZStack(alignment: .topTrailing) {
-                Image(image)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 108, height: 108)
-                    .clipped()
-                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                AsyncImage(url: imageURL) { image in
+                    image
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 108, height: 108)
+                        .clipped()
+                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                } placeholder: {
+                    Color(.secondarySystemBackground)
+                        .frame(width: 108, height: 108)
+                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        .overlay(
+                            Image(systemName: "photo")
+                                .font(.system(size: 24))
+                                .foregroundColor(.gray)
+                        )
+                }
                 LikeButton(isLiked: $isLiked)
                     .padding(10)
             }
@@ -44,7 +55,7 @@ struct NftCell: View {
                 Spacer()
                 AddToCartButton(isInCart: $isInCart)
             }
-            Text(price)
+            Text(priceString)
                 .font(.system(size: 10, weight: .medium))
                 .foregroundColor(.primary)
             Spacer()
@@ -55,6 +66,6 @@ struct NftCell: View {
 
 // MARK: - Preview
 
-#Preview {
-    NftCell(name: "April", image: "April", rating: 2, price: "1 ETH")
-}
+//#Preview {
+//    NftCell(name: "April", image: "April", rating: 2, price: "1 ETH")
+//}
