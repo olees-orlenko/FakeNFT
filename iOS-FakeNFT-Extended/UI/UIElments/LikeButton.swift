@@ -13,16 +13,13 @@ struct LikeButton: View {
     
     // MARK: - Properties
     
-    @Binding var isLiked: Bool
+    let isLiked: Bool
+    let action: () -> Void
     
     // MARK: - Body
     
     var body: some View {
-        Button {
-            withAnimation(.spring(response: 0.35, dampingFraction: 0.6)) {
-                isLiked.toggle()
-            }
-        } label: {
+        Button(action: action) {
             Image(isLiked ? "heart" : "white_heart")
                 .resizable()
                 .scaledToFit()
@@ -37,11 +34,11 @@ struct LikeButton: View {
 
 // MARK: - Preview
 
-#Preview("Liked") {
-    LikeButton(isLiked: .constant(true))
-}
-
-#Preview("Not liked") {
-    LikeButton(isLiked: .constant(false))
-        .background(Color(.red))
-}
+//#Preview("Liked") {
+//    LikeButton(isLiked: .constant(true))
+//}
+//
+//#Preview("Not liked") {
+//    LikeButton(isLiked: .constant(false))
+//        .background(Color(.red))
+//}

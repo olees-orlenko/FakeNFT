@@ -18,6 +18,7 @@ struct NFTCollectionView: View {
     @State private var isShowingAuthorWeb = false
     @StateObject private var viewModel: NftViewModel
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var favoritesManager: FavoritesManager
     
     // MARK: - Init
     
@@ -74,7 +75,6 @@ struct NFTCollectionView: View {
             } label: {
                 Text(NSLocalizedString("alert.retry", comment: ""))
             }
-            
             Button(role: .cancel) { } label: {
                 Text(NSLocalizedString("alert.cancel", comment: ""))
             }
@@ -155,7 +155,8 @@ struct NFTCollectionView: View {
                     name: item.name,
                     imageURL: item.image,
                     rating: item.rating,
-                    priceString: item.priceString
+                    priceString: item.priceString,
+                    nftID: item.id
                 )
             }
         }

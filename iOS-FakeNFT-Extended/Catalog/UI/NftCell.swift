@@ -17,8 +17,9 @@ struct NftCell: View {
     let imageURL: URL?
     let rating: Int
     let priceString: String
-    @State private var isLiked = false
+    let nftID: String
     @State private var isInCart = false
+    @EnvironmentObject private var favoritesManager: FavoritesManager
     
     // MARK: - Body
     
@@ -42,8 +43,11 @@ struct NftCell: View {
                                 .foregroundColor(.gray)
                         )
                 }
-                LikeButton(isLiked: $isLiked)
-                    .padding(10)
+                LikeButton(
+                    isLiked: favoritesManager.isFavorite(id: nftID),
+                    action: { favoritesManager.toggleFavorite(id: nftID) }
+                )
+                .padding(10)
             }
             RatingView(rating: rating)
                 .padding(.leading, 2)
