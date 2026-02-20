@@ -29,7 +29,11 @@ final class CatalogViewModel: ObservableObject {
     @Published var collections: [NFTCollection] = []
     @Published var isLoading: Bool = false
     @Published private(set) var currentSort: SortOption = .none
-    @Published var errorMessage: String?
+    @Published var errorMessage: String? {
+        didSet {
+            errorAlertPresented = errorMessage != nil
+        }
+    }
     @Published var errorAlertPresented: Bool = false
     @AppStorage("catalog.sortType") private var storedType: Int = SortType.count.rawValue
     @AppStorage("catalog.sortAscending") private var storedAscending: Bool = false
