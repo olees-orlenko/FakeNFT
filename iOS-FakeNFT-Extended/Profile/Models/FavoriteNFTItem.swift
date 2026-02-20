@@ -5,6 +5,29 @@ struct FavoriteNFTItem: Identifiable {
     let name: String
     let rating: Int
     let price: String
+    let imageURL: URL?
+
+    init(
+        id: String,
+        name: String,
+        rating: Int,
+        price: String,
+        imageURL: URL? = nil
+    ) {
+        self.id = id
+        self.name = name
+        self.rating = rating
+        self.price = price
+        self.imageURL = imageURL
+    }
+
+    init(nft: Nft) {
+        self.id = nft.id
+        self.name = nft.name
+        self.rating = nft.rating
+        self.price = Self.formattedPrice(from: nft.price)
+        self.imageURL = nft.images.first
+    }
 
     static let catalog: [FavoriteNFTItem] = [
         FavoriteNFTItem(id: "1", name: "Archie", rating: 1, price: "1,78 ETH"),
@@ -16,12 +39,7 @@ struct FavoriteNFTItem: Identifiable {
         FavoriteNFTItem(id: "7", name: "Spring", rating: 3, price: "1,78 ETH")
     ]
 
-    static let defaultFavoriteNames = [
-        "Archie",
-        "Pixi",
-        "Melissa",
-        "April",
-        "Daisy",
-        "Lilo"
-    ]
+    private static func formattedPrice(from value: Double) -> String {
+        String(format: "%.2f ETH", value).replacingOccurrences(of: ".", with: ",")
+    }
 }

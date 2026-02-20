@@ -26,14 +26,14 @@ struct EditProfileView: View {
     private let initialDescription: String
     private let initialSite: String
     private let initialAvatarURL: String
-    private let onSave: (String, String, String, String) -> Void
+    private let onSave: (String, String, String, String) async -> Bool
 
     init(
         name: String,
         description: String,
         site: String,
         avatarURL: String,
-        onSave: @escaping (String, String, String, String) -> Void
+        onSave: @escaping (String, String, String, String) async -> Bool
     ) {
         self.initialName = name
         self.initialDescription = description
@@ -406,10 +406,12 @@ struct EditProfileView: View {
         let trimmedSite = site.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedAvatarURL = avatarURL.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-            onSave(trimmedName, trimmedDescription, trimmedSite, trimmedAvatarURL)
+        Task {
+            let isSaved = await onSave(trimmedName, trimmedDescription, trimmedSite, trimmedAvatarURL)
             isSaving = false
-            dismiss()
+            if isSaved {
+                dismiss()
+            }
         }
     }
 
@@ -441,6 +443,8 @@ struct EditProfileView: View {
             description: ProfileViewData.mock.description,
             site: ProfileViewData.mock.websiteTitle,
             avatarURL: ProfileViewData.mock.avatarURLString
-        ) { _, _, _, _ in }
+        ) { _, _, _, _ in
+            true
+        }
     }
 }

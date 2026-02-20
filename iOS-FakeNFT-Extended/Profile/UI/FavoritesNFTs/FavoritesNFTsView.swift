@@ -1,19 +1,43 @@
 import SwiftUI
 
+// MARK: - FavoritesNFTsView
+
 struct FavoritesNFTsView: View {
+    // MARK: - Properties
+
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject private var favoritesStore: ProfileFavoritesStore
+    let items: [FavoriteNFTItem]
+    @Binding var screenState: ScreenState
+    let onRetry: () -> Void
+    let onLikeTap: (String) -> Void
     private let columns = [
         GridItem(.fixed(168), spacing: 7),
         GridItem(.fixed(168), spacing: 7)
     ]
-    @State private var screenState: FavoritesNFTsScreenState
 
-    init(screenState: FavoritesNFTsScreenState = .content) {
-        _screenState = State(initialValue: screenState)
-    }
+    // MARK: - Body
 
     var body: some View {
+        content
+            .navigationTitle(NSLocalizedString("Profile.Favorites.title", comment: ""))
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(action: { dismiss() }) {
+                        Image(systemName: "chevron.left")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 24, height: 24)
+                            .foregroundStyle(Color(uiColor: UIColor(hexString: "#1A1B22")))
+                    }
+                }
+            }
+    }
+
+    // MARK: - Subviews
+
+    private var content: some View {
         Group {
             switch screenState {
             case .loading:
@@ -25,20 +49,6 @@ struct FavoritesNFTsView: View {
                 }
             case .content:
                 contentStateView
-            }
-        }
-        .navigationTitle("Избранные NFT")
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button(action: { dismiss() }) {
-                    Image(systemName: "chevron.left")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 24, height: 24)
-                        .foregroundStyle(Color(uiColor: UIColor(hexString: "#1A1B22")))
-                }
             }
         }
     }
@@ -58,8 +68,8 @@ struct FavoritesNFTsView: View {
             if items.isEmpty {
                 VStack {
                     Spacer()
-                    Text("У Вас ещё нет избранных NFT")
-                        .font(.system(size: 17, weight: .bold))
+                    Text(NSLocalizedString("Profile.Favorites.empty", comment: ""))
+                        .font(Font(UIFont.bodyBold))
                         .foregroundStyle(Color(uiColor: UIColor(hexString: "#1A1B22")))
                         .frame(maxWidth: .infinity)
                     Spacer()
@@ -69,7 +79,7 @@ struct FavoritesNFTsView: View {
                     LazyVGrid(columns: columns, alignment: .leading, spacing: 20) {
                         ForEach(items) { item in
                             FavoriteNFTCardView(item: item) {
-                                removeFromFavorites(name: item.name)
+                                onLikeTap(item.id)
                             }
                         }
                     }
@@ -88,7 +98,7 @@ struct FavoritesNFTsView: View {
 
             VStack(spacing: 0) {
                 Text(message)
-                    .font(.system(size: 31.0 / 2, weight: .semibold))
+                    .font(Font(UIFont.bodyBold))
                     .foregroundStyle(Color(uiColor: UIColor(hexString: "#1A1B22")))
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 16)
@@ -97,18 +107,18 @@ struct FavoritesNFTsView: View {
                 Divider()
 
                 HStack(spacing: 0) {
-                    Button("Отмена") {
+                    Button(NSLocalizedString("Common.cancel", comment: "")) {
                         screenState = .content
                     }
-                    .font(.system(size: 17, weight: .regular))
+                    .font(Font(UIFont.bodyRegular))
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
 
                     Divider()
 
-                    Button("Повторить") {
-                        screenState = .content
+                    Button(NSLocalizedString("Common.retry", comment: "")) {
+                        onRetry()
                     }
-                    .font(.system(size: 17, weight: .semibold))
+                    .font(Font(UIFont.bodyBold))
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
                 .frame(height: 44)
@@ -118,49 +128,48 @@ struct FavoritesNFTsView: View {
             .padding(.horizontal, 32)
         }
     }
-
-    private var items: [FavoriteNFTItem] {
-        FavoriteNFTItem.catalog.filter { favoritesStore.isFavorite(name: $0.name) }
-    }
-
-    private func removeFromFavorites(name: String) {
-        withAnimation(.easeInOut(duration: 0.2)) {
-            favoritesStore.remove(name: name)
-        }
-    }
-}
-
-enum FavoritesNFTsScreenState {
-    case loading
-    case error(String)
-    case content
 }
 
 #Preview {
     NavigationStack {
-        FavoritesNFTsView()
+        FavoritesNFTsView(
+            items: FavoriteNFTItem.catalog,
+            screenState: .constant(.content),
+            onRetry: {},
+            onLikeTap: { _ in }
+        )
     }
-    .environmentObject(ProfileFavoritesStore())
 }
 
 #Preview("Empty") {
-    let store = ProfileFavoritesStore(initialFavoriteNames: Set<String>())
     NavigationStack {
-        FavoritesNFTsView()
+        FavoritesNFTsView(
+            items: [],
+            screenState: .constant(.content),
+            onRetry: {},
+            onLikeTap: { _ in }
+        )
     }
-    .environmentObject(store)
 }
 
 #Preview("Loading") {
     NavigationStack {
-        FavoritesNFTsView(screenState: .loading)
+        FavoritesNFTsView(
+            items: [],
+            screenState: .constant(.loading),
+            onRetry: {},
+            onLikeTap: { _ in }
+        )
     }
-    .environmentObject(ProfileFavoritesStore())
 }
 
 #Preview("Error") {
     NavigationStack {
-        FavoritesNFTsView(screenState: .error("Не удалось загрузить избранные NFT"))
+        FavoritesNFTsView(
+            items: FavoriteNFTItem.catalog,
+            screenState: .constant(.error(NSLocalizedString("Profile.Favorites.error", comment: ""))),
+            onRetry: {},
+            onLikeTap: { _ in }
+        )
     }
-    .environmentObject(ProfileFavoritesStore())
 }
