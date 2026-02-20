@@ -65,6 +65,7 @@
 		F1E0000011223344556677C7 /* ProfileUpdateRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E0000011223344556677C3 /* ProfileUpdateRequest.swift */; };
 		F1E0000011223344556677C8 /* NFTListRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E0000011223344556677C4 /* NFTListRequest.swift */; };
 		F1E0000011223344556677C9 /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E0000011223344556677CA /* ProfileService.swift */; };
+		F1E0000011223344556677CB /* ProfileUpdateDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E0000011223344556677CC /* ProfileUpdateDTO.swift */; };
 		F1E0000011223344556677D5 /* ScreenState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E0000011223344556677D1 /* ScreenState.swift */; };
 		F1E0000011223344556677D6 /* ProfileFavoritesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E0000011223344556677D2 /* ProfileFavoritesViewModel.swift */; };
 		F1E0000011223344556677D7 /* ProfileWebsiteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E0000011223344556677D3 /* ProfileWebsiteView.swift */; };
@@ -149,6 +150,7 @@
 		F1E0000011223344556677C3 /* ProfileUpdateRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileUpdateRequest.swift; sourceTree = "<group>"; };
 		F1E0000011223344556677C4 /* NFTListRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFTListRequest.swift; sourceTree = "<group>"; };
 		F1E0000011223344556677CA /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
+		F1E0000011223344556677CC /* ProfileUpdateDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileUpdateDTO.swift; sourceTree = "<group>"; };
 		F1E0000011223344556677D1 /* ScreenState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenState.swift; sourceTree = "<group>"; };
 		F1E0000011223344556677D2 /* ProfileFavoritesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileFavoritesViewModel.swift; sourceTree = "<group>"; };
 		F1E0000011223344556677D3 /* ProfileWebsiteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileWebsiteView.swift; sourceTree = "<group>"; };
@@ -237,6 +239,7 @@
 				F1E0000011223344556677C3 /* ProfileUpdateRequest.swift */,
 				F1E0000011223344556677C4 /* NFTListRequest.swift */,
 				F1E0000011223344556677CA /* ProfileService.swift */,
+				F1E0000011223344556677CC /* ProfileUpdateDTO.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -738,6 +741,7 @@
 				F1E0000011223344556677C7 /* ProfileUpdateRequest.swift in Sources */,
 				F1E0000011223344556677C8 /* NFTListRequest.swift in Sources */,
 				F1E0000011223344556677C9 /* ProfileService.swift in Sources */,
+				F1E0000011223344556677CB /* ProfileUpdateDTO.swift in Sources */,
 				F1E0000011223344556677D5 /* ScreenState.swift in Sources */,
 				F1E0000011223344556677D6 /* ProfileFavoritesViewModel.swift in Sources */,
 				F1E00000112233445566778D /* FavoritesNFTsView.swift in Sources */,
