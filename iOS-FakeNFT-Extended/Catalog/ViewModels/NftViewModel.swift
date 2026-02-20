@@ -17,7 +17,11 @@ final class NftViewModel: ObservableObject {
     @Published private(set) var items: [NFTItem] = []
     @Published private(set) var isLoading: Bool = false
     @Published private(set) var collection: NFTCollection
-    @Published var errorMessage: String?
+    @Published var errorMessage: String? {
+        didSet {
+            errorAlertPresented = errorMessage != nil
+        }
+    }
     @Published var errorAlertPresented: Bool = false
     private let defaultAuthorURL = URL(string: "https://practicum.yandex.ru/ios-developer/")!
     private let nftService: NFTService
@@ -41,7 +45,18 @@ final class NftViewModel: ObservableObject {
             self.collection = updated
         } catch {
             self.errorMessage = (error as? NetworkError)?.errorDescription ?? error.localizedDescription
-            self.errorAlertPresented = true
+            self.items = []
+            self.collection = NFTCollection(
+                id: self.collection.id,
+                title: self.collection.title,
+                coverURL: self.collection.coverURL?.absoluteString,
+                nfts: [],
+                authorName: self.collection.authorName,
+                authorURL: self.collection.authorURL?.absoluteString,
+                description: self.collection.description,
+                createdAt: self.collection.createdAt
+            )
+            print("Ошибка загрузки всех данных для коллекции: \(error.localizedDescription)")
         }
     }
     
@@ -65,7 +80,7 @@ final class NftViewModel: ObservableObject {
             self.errorAlertPresented = true
         }
     }
-
+    
     var authorURL: URL {
         collection.authorURL ?? defaultAuthorURL
     }
