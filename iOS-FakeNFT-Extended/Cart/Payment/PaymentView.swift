@@ -13,6 +13,8 @@ struct PaymentView: View {
     @State var isSuccessShowed: Bool
     @State private var selectedMethod: PaymentOptions?
 
+    let columns = Array(repeating: GridItem(.flexible(), spacing: 7), count: 2)
+
     var body: some View {
         VStack {
             paymentMethods
@@ -28,11 +30,10 @@ struct PaymentView: View {
         .navigationTitle("Выберите способ оплаты")
     }
 
+    // MARK: - UI Components
+
     private var paymentMethods: some View {
-        LazyVGrid(columns: [
-            GridItem(.flexible()),
-            GridItem(.flexible()),
-        ]) {
+        LazyVGrid(columns: columns, spacing: 7) {
             ForEach(PaymentOptions.allOptions) { option in
                 PaymentCell(
                     name: option.name,
@@ -81,8 +82,11 @@ struct PaymentView: View {
         )
     }
 
+    // MARK: - Private Func
+
     private func validation() {
         // MARK: - Add data validation
+
         if selectedMethod != nil {
             cartPath.append(CartRoute.success)
         } else {
@@ -90,6 +94,8 @@ struct PaymentView: View {
         }
     }
 }
+
+// MARK: - Preview
 
 #Preview("Payment View Light") {
     @Previewable @State var previewPath = NavigationPath()
