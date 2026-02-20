@@ -27,14 +27,14 @@ struct FavoriteNFTCardView: View {
 
     private var name: some View {
         Text(item.name)
-            .font(.system(size: 17, weight: .bold))
+            .font(Font(UIFont.bodyBold))
             .foregroundStyle(Color(uiColor: UIColor(hexString: "#1A1B22")))
             .lineLimit(1)
     }
 
     private var price: some View {
         Text(item.price)
-            .font(.system(size: 17, weight: .regular))
+            .font(Font(UIFont.bodyRegular))
             .foregroundStyle(Color(uiColor: UIColor(hexString: "#1A1B22")))
             .lineLimit(1)
     }
