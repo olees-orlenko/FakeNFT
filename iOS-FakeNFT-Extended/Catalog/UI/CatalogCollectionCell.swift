@@ -71,21 +71,3 @@ struct CatalogCollectionCell: View {
             .lineLimit(1)
     }
 }
-
-// MARK: - Preview
-
-//#Preview("Cell light") {
-//    Group {
-//        CatalogCollectionCell(collection: NFTCollection.mockCollections[0])
-//            .padding()
-//    }
-//    .preferredColorScheme(.light)
-//}
-//
-//#Preview("Cell dark") {
-//    Group {
-//        CatalogCollectionCell(collection: NFTCollection.mockCollections[0])
-//            .padding()
-//    }
-//    .preferredColorScheme(.dark)
-//}

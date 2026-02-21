@@ -31,14 +31,3 @@ struct LikeButton: View {
         
     }
 }
-
-// MARK: - Preview
-
-//#Preview("Liked") {
-//    LikeButton(isLiked: .constant(true))
-//}
-//
-//#Preview("Not liked") {
-//    LikeButton(isLiked: .constant(false))
-//        .background(Color(.red))
-//}

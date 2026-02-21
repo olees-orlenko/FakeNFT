@@ -162,13 +162,3 @@ struct NFTCollectionView: View {
         }
     }
 }
-
-// MARK: - Preview
-
-//#Preview("NFT Collection") {
-//    Group {
-//        NFTCollectionView(
-//            collection: NFTCollection.mockCollections[0]
-//        )
-//    }
-//}

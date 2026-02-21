@@ -70,9 +70,3 @@ struct NftCell: View {
         .frame(width: 108, height: 192, alignment: .topLeading)
     }
 }
-
-// MARK: - Preview
-
-//#Preview {
-//    NftCell(name: "April", image: "April", rating: 2, price: "1 ETH")
-//}
