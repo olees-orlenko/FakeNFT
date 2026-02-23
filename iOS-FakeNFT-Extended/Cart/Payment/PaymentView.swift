@@ -9,8 +9,8 @@ import SwiftUI
 
 struct PaymentView: View {
     @Binding var cartPath: NavigationPath
-    @State var isAlertShowed: Bool
-    @State var isSuccessShowed: Bool
+    @State private var isAlertShowed: Bool = false
+    @State private var isSuccessShowed: Bool = false
     @State private var selectedMethod: PaymentOptions?
 
     let columns = Array(repeating: GridItem(.flexible(), spacing: 7), count: 2)
@@ -99,12 +99,12 @@ struct PaymentView: View {
 
 #Preview("Payment View Light") {
     @Previewable @State var previewPath = NavigationPath()
-    PaymentView(cartPath: $previewPath, isAlertShowed: false, isSuccessShowed: false)
+    PaymentView(cartPath: $previewPath)
         .preferredColorScheme(.light)
 }
 
 #Preview("Payment View Dark") {
     @Previewable @State var previewPath = NavigationPath()
-    PaymentView(cartPath: $previewPath, isAlertShowed: false, isSuccessShowed: false)
+    PaymentView(cartPath: $previewPath)
         .preferredColorScheme(.dark)
 }
