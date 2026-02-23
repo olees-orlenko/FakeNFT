@@ -263,7 +263,6 @@
 			children = (
 				A7EF65BE2F4C6F3D009BFD0F /* Network NFT */,
 				A7A2980E2F4B340F00E5BE5D /* UsersService.swift */,
-				A7A2980B2F4B33FB00E5BE5D /* UserDTO.swift */,
 				A7A298082F4B33E100E5BE5D /* UserByIdRequest.swift */,
 				A7A298062F4B33CE00E5BE5D /* UsersRequest.swift */,
 			);
@@ -327,7 +326,6 @@
 			children = (
 				A7EF65C32F4C6F90009BFD0F /* NftItemsService.swift */,
 				A7EF65C12F4C6F83009BFD0F /* NftItemByIdRequest.swift */,
-				A7EF65BF2F4C6F50009BFD0F /* NftItemDTO.swift */,
 			);
 			path = "Network NFT";
 			sourceTree = "<group>";
@@ -335,6 +333,8 @@
 		A7EF65C72F4C8033009BFD0F /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				A7EF65BF2F4C6F50009BFD0F /* NftItemDTO.swift */,
+				A7A2980B2F4B33FB00E5BE5D /* UserDTO.swift */,
 				A7EF65BC2F4C5B70009BFD0F /* StatisticsRoute.swift */,
 			);
 			path = Models;
