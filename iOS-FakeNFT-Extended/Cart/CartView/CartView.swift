@@ -10,12 +10,12 @@ import SwiftUI
 struct CartView: View {
     // MARK: - Properties
 
+    @StateObject private var viewModel = CartViewModel()
     @State var listData: [CartModel] = [] // Public for preview support
     @State var cartPath = NavigationPath()
     @State private var isShowingSortMenu = false
     @State private var isShowingDeleteAlert = false
     @State private var itemToDelete: CartModel?
-    
 
     // MARK: - Body
 
@@ -23,7 +23,7 @@ struct CartView: View {
         NavigationStack(path: $cartPath) {
             ZStack {
                 VStack {
-                    if listData.isEmpty { emptyState }
+                    if viewModel.nfts.isEmpty { emptyState }
                     else { list
                         Spacer()
                         makeOrder
@@ -39,7 +39,6 @@ struct CartView: View {
                         .transition(.opacity)
                         .background(.ultraThinMaterial)
                         .zIndex(1)
-                        
 
                     DeleteView(
                         imageName: itemToDelete?.image ?? ""
@@ -74,7 +73,6 @@ struct CartView: View {
                             .foregroundStyle(.blackAdaptive)
                             .font(.title2)
                             .frame(width: 44, height: 44)
-                            
                     }
                 }
             }
@@ -97,6 +95,9 @@ struct CartView: View {
             .toolbar(isShowingDeleteAlert ? .hidden : .visible)
         }
         .background(.whiteAdaptive)
+        .task {
+            await viewModel.loadCart()
+        }
     }
 
     // MARK: - UI Components
@@ -170,13 +171,14 @@ struct CartView: View {
     }
 
     // MARK: - Computed Properties
+
     private func shouldShowTabBar() -> Bool {
         isShowingSortMenu || isShowingDeleteAlert || !cartPath.isEmpty
     }
-    
+
     private var totalPrice: Double {
-        listData.reduce(0) { $0 + $1.price }
-    }
+            viewModel.nfts.reduce(0) { $0 + $1.price }
+        }
 
     private var formattedTotalPrice: String {
         String(format: "%.2f", totalPrice).replacingOccurrences(of: ".", with: ",")
@@ -201,8 +203,8 @@ struct CartView: View {
     // MARK: - Private Methods
 
     private func deleteItem(_ item: CartModel) {
-        if let index = listData.firstIndex(where: { $0.id == item.id }) {
-            listData.remove(at: index)
+        Task {
+            await viewModel.deleteItem(item)
         }
     }
 }
