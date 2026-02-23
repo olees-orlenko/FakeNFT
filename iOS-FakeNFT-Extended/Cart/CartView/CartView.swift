@@ -15,6 +15,7 @@ struct CartView: View {
     @State private var isShowingSortMenu = false
     @State private var isShowingDeleteAlert = false
     @State private var itemToDelete: CartModel?
+    
 
     // MARK: - Body
 
@@ -92,7 +93,7 @@ struct CartView: View {
             // MARK: - Sorting Overlay
 
             .overlay(SortMenuView(isShowingSortMenu: $isShowingSortMenu, title: "Сортировка", options: sortOptions, closeButtonTitle: "Закрыть"))
-            .toolbar((isShowingSortMenu || isShowingDeleteAlert || !cartPath.isEmpty) ? .hidden : .visible, for: .tabBar)
+            .toolbar(shouldShowTabBar() ? .hidden : .visible, for: .tabBar)
             .toolbar(isShowingDeleteAlert ? .hidden : .visible)
         }
         .background(.whiteAdaptive)
@@ -169,7 +170,10 @@ struct CartView: View {
     }
 
     // MARK: - Computed Properties
-
+    private func shouldShowTabBar() -> Bool {
+        isShowingSortMenu || isShowingDeleteAlert || !cartPath.isEmpty
+    }
+    
     private var totalPrice: Double {
         listData.reduce(0) { $0 + $1.price }
     }
