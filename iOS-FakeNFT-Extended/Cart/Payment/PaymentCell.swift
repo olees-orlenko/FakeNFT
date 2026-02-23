@@ -10,13 +10,13 @@ import SwiftUI
 struct PaymentCell: View {
     let name: String
     let shortName: String
-    let image: String
+    let imageName: String
     var isSelected: Bool
     let action: () -> Void
 
     var body: some View {
         HStack(spacing: 4) {
-            Image(image)
+            Image(imageName)
                 .resizable()
                 .scaledToFit()
                 .frame(width: 36)
@@ -45,10 +45,10 @@ struct PaymentCell: View {
 }
 
 #Preview("Payment Cell Light") {
-    PaymentCell(name: "Bitcoin", shortName: "BTC", image: "Bitcoin", isSelected: false, action: {})
+    PaymentCell(name: "Bitcoin", shortName: "BTC", imageName: "Bitcoin", isSelected: false, action: {})
 }
 
 #Preview("Payment Cell Dark") {
-    PaymentCell(name: "Bitcoin", shortName: "BTC", image: "Bitcoin", isSelected: false, action: {})
+    PaymentCell(name: "Bitcoin", shortName: "BTC", imageName: "Bitcoin", isSelected: false, action: {})
         .preferredColorScheme(.dark)
 }

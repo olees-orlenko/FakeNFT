@@ -38,7 +38,7 @@ struct PaymentView: View {
                 PaymentCell(
                     name: option.name,
                     shortName: option.shortName,
-                    image: option.icon,
+                    imageName: option.icon,
                     isSelected: selectedMethod?.id == option.id,
                     action: {
                         selectedMethod = option
