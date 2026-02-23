@@ -11,62 +11,41 @@ import SwiftUI
 final class CartViewModel: ObservableObject {
     @Published var nfts: [CartModel] = []
     @Published var isLoading = false
-
-    private let client: NetworkClient
-
-    init(client: NetworkClient = DefaultNetworkClient()) {
-        self.client = client
-    }
+    
+    private let cartService = CartService()
 
     func loadCart() async {
         isLoading = true
         defer { isLoading = false }
-
+        
+        print("🚀 Переходим к плану Б: Грузим данные напрямую из каталога")
+        
         do {
-            // Используем твой новый OrderRequest
-            let order: OrderDTO = try await client.send(request: OrderRequest())
-
-            // Загружаем данные для каждого NFT через NFTRequest
-            // Используем TaskGroup для параллельной загрузки (чтобы не ждать по очереди)
-            nfts = try await withThrowingTaskGroup(of: CartModel?.self) { group in
-                for id in order.nfts {
-                    group.addTask {
-                        let dto: NftDTO = try await self.client.send(request: NFTRequest(id: id))
-                        return CartModel(
-                            id: dto.id,
-                            name: dto.name,
-                            image: dto.images.first ?? "",
-                            rating: dto.rating,
-                            price: dto.price
-                        )
-                    }
-                }
-
-                var loadedNfts: [CartModel] = []
-                for try await nft in group {
-                    if let nft = nft { loadedNfts.append(nft) }
-                }
-                return loadedNfts
+            
+            let url = URL(string: "https://d5dn3j2ouj72b0ejucbl.apigw.yandexcloud.net/api/v1/collections")!
+            var request = URLRequest(url: url)
+            request.setValue(RequestConstants.token, forHTTPHeaderField: "X-Practicum-Mobile-Token")
+            
+            let (data, _) = try await URLSession.shared.data(for: request)
+            let collections = try JSONDecoder().decode([NFTCollection].self, from: data)
+            
+            let firstNftIds = Array(collections.first?.nfts.prefix(3) ?? [])
+            print("DEBUG: Нашли NFT в каталоге: \(firstNftIds)")
+            
+            let items = try await cartService.fetchNFTs(by: firstNftIds)
+            
+            self.nfts = items.map { item in
+                CartModel(id: item.id, name: item.name, image: item.images.first ?? "", rating: item.rating, price: item.price)
             }
+            print("✅ Успешно отобразили \(self.nfts.count) товаров!")
+            
         } catch {
-            print("Ошибка загрузки корзины: \(error)")
+            print("❌ План Б тоже подвел: \(error)")
         }
     }
 
     func deleteItem(_ item: CartModel) async {
-        // 1. Сначала удаляем из массива локально (для мгновенного UI)
-        if let index = nfts.firstIndex(where: { $0.id == item.id }) {
-            nfts.remove(at: index)
-        }
-
-        // 2. Потом отправляем запрос в сеть
-        let updatedIds = nfts.map { $0.id }
-        do {
-            // Твой UpdateOrderRequest
-            let _: OrderDTO = try await client.send(request: UpdateOrderRequest(nfts: updatedIds))
-        } catch {
-            print("Ошибка при удалении на сервере: \(error)")
-            // Если хочешь, тут можно вернуть item обратно в nfts при ошибке
-        }
+        nfts.removeAll { $0.id == item.id }
+        try? await cartService.updateOrder(nftIds: nfts.map { $0.id })
     }
 }
