@@ -80,7 +80,7 @@ struct CartView: View {
             .navigationDestination(for: CartRoute.self) { route in
                 switch route {
                 case .payment:
-                    PaymentView(cartPath: $cartPath, isAlertShowed: false, isSuccessShowed: false)
+                    PaymentView(cartPath: $cartPath)
                         .toolbar(.hidden, for: .tabBar)
                 case .success:
                     PaymentSuccessView(cartPath: $cartPath)
