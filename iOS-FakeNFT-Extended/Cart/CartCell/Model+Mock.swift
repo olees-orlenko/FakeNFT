@@ -8,7 +8,7 @@
 import Foundation
 
 struct CartModel: Identifiable {
-    let id = UUID()
+    let id: String
     let name: String
     let image: String
     let rating: Int
@@ -16,7 +16,7 @@ struct CartModel: Identifiable {
 }
 
 enum MockData {
-    static let cartMock = CartModel(name: "April", image: "April", rating: 3, price: 3.14)
-    static let cartMock2 = CartModel(name: "Greena", image: "Greena", rating: 4, price: 2.28)
-    static let cartMock3 = CartModel(name: "Spring", image: "Spring", rating: 5, price: 3.22)
+    static let cartMock = CartModel(id: "1", name: "April", image: "April", rating: 3, price: 3.14)
+    static let cartMock2 = CartModel(id: "2",name: "Greena", image: "Greena", rating: 4, price: 2.28)
+    static let cartMock3 = CartModel(id: "3",name: "Spring", image: "Spring", rating: 5, price: 3.22)
 }
