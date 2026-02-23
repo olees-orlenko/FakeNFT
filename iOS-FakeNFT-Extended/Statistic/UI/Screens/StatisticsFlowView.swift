@@ -35,16 +35,11 @@ struct StatisticsFlowView: View {
             }
             .navigationDestination(for: StatisticsRoute.self) { route in
                 switch route {
-
                 case .userCard(let userId):
                     userCardDestination(userId: userId)
 
                 case .nftCollection(let userId):
-                    NFTCollectionScreen(
-                        userId: userId,
-                        items: mockNFTItems(for: userId),
-                        onBack: { popIfPossible() }
-                    )
+                    nftCollectionDestination(userId: userId)
                 }
             }
             .sheet(item: $safariURL) { item in
@@ -67,10 +62,14 @@ struct StatisticsFlowView: View {
         if case .content(let users) = viewModel.state,
            let user = users.first(where: { $0.id == userId }) {
 
+            let nftIds = viewModel.userNftIds(for: user)
+            let nftCount = nftIds.count
+
             UserCardScreen(
                 avatarURL: user.avatarURL,
                 name: user.name,
                 about: viewModel.aboutText(for: user),
+                nftCount: nftCount,
                 onBack: { popIfPossible() },
                 onOpenWebsite: {
                     if let url = viewModel.websiteURL(for: user) {
@@ -92,21 +91,34 @@ struct StatisticsFlowView: View {
         }
     }
 
+    @ViewBuilder
+    private func nftCollectionDestination(userId: String) -> some View {
+        if case .content(let users) = viewModel.state,
+           let user = users.first(where: { $0.id == userId }) {
+
+            let nftIds = viewModel.userNftIds(for: user)
+
+            NFTCollectionScreen(
+                userId: userId,
+                nftIds: nftIds,
+                onBack: { popIfPossible() }
+            )
+
+        } else {
+            VStack(spacing: 12) {
+                ProgressView()
+                Text("Загрузка...")
+                    .foregroundColor(.secondary)
+                Button("Назад") { popIfPossible() }
+            }
+        }
+    }
+
     // MARK: - Helpers
 
     private func popIfPossible() {
         guard !path.isEmpty else { return }
         path.removeLast()
-    }
-
-    private func mockNFTItems(for userId: String) -> [NFTCollectionScreen.NFTItem] {
-        [
-            .init(title: "Stella", rating: 4, price: "1.78"),
-            .init(title: "Galaxy", rating: 5, price: "2.10"),
-            .init(title: "Ocean", rating: 3, price: "0.98"),
-            .init(title: "Neon", rating: 5, price: "3.45"),
-            .init(title: "Dream", rating: 2, price: "1.12")
-        ]
     }
 }
 

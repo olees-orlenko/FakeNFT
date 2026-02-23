@@ -1,19 +1,22 @@
 import SwiftUI
+import Foundation
 
 struct NFTCollectionScreen: View {
 
     struct NFTItem: Identifiable {
-        let id = UUID()
+        let id: String
         let title: String
         let rating: Int
         let price: String
+        let imageURL: URL?
     }
 
     let userId: String
-    let items: [NFTItem]
+    let nftIds: [String]
     var onBack: (() -> Void)? = nil
 
-    @State private var likedItems: Set<UUID> = []
+    @StateObject private var viewModel: NFTCollectionViewModel
+    @State private var likedItems: Set<String> = []
 
     private let columns = [
         GridItem(.fixed(108), spacing: 12),
@@ -23,12 +26,14 @@ struct NFTCollectionScreen: View {
 
     init(
         userId: String = "",
-        items: [NFTItem],
+        nftIds: [String],
+        service: NftItemsService = NftItemsServiceImpl(),
         onBack: (() -> Void)? = nil
     ) {
         self.userId = userId
-        self.items = items
+        self.nftIds = nftIds
         self.onBack = onBack
+        _viewModel = StateObject(wrappedValue: NFTCollectionViewModel(nftIds: nftIds, service: service))
     }
 
     var body: some View {
@@ -42,42 +47,72 @@ struct NFTCollectionScreen: View {
                 onTap: { onBack?() }
             )
 
-            ScrollView {
-                LazyVGrid(columns: columns, spacing: 16) {
-                    ForEach(items) { item in
-                        NFTCardView(
-                            title: item.title,
-                            rating: item.rating,
-                            priceETH: item.price,
-                            isLiked: Binding(
-                                get: { likedItems.contains(item.id) },
-                                set: { isLiked in
-                                    if isLiked { likedItems.insert(item.id) }
-                                    else { likedItems.remove(item.id) }
-                                }
-                            )
-                        )
-                    }
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal, 16)
-            }
+            content
         }
         .padding(.top, 8)
         .background(Color(.systemBackground))
         .toolbar(.hidden, for: .navigationBar)
+        .task {
+            await viewModel.load()
+        }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        switch viewModel.state {
+        case .loading:
+            VStack {
+                ProgressView().padding()
+                Spacer()
+            }
+
+        case .error(let message):
+            VStack(spacing: 12) {
+                Text("Ошибка: \(message)")
+                    .foregroundColor(.red)
+                Button("Повторить") {
+                    Task { await viewModel.load() }
+                }
+            }
+            .padding(.horizontal, 16)
+
+        case .content(let items):
+            if items.isEmpty {
+                VStack(spacing: 12) {
+                    Text("Коллекция пуста")
+                        .foregroundColor(.secondary)
+                    Spacer()
+                }
+            } else {
+                ScrollView {
+                    LazyVGrid(columns: columns, spacing: 16) {
+                        ForEach(items) { item in
+                            NFTCardView(
+                                title: item.title,
+                                rating: item.rating,
+                                priceETH: item.price,
+                                imageURL: item.imageURL,
+                                isLiked: Binding(
+                                    get: { likedItems.contains(item.id) },
+                                    set: { isLiked in
+                                        if isLiked { likedItems.insert(item.id) }
+                                        else { likedItems.remove(item.id) }
+                                    }
+                                )
+                            )
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal, 16)
+                }
+            }
+        }
     }
 }
 
 #Preview {
     NFTCollectionScreen(
-        userId: "Alex",
-        items: [
-            .init(title: "Stella", rating: 4, price: "1.78"),
-            .init(title: "Galaxy", rating: 5, price: "2.10"),
-            .init(title: "Ocean", rating: 3, price: "0.98"),
-            .init(title: "Neon", rating: 5, price: "3.45"),
-            .init(title: "Dream", rating: 2, price: "1.12")
-        ]
+        userId: "3",
+        nftIds: ["1", "2", "3"]
     )
 }

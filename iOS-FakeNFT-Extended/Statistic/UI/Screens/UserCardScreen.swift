@@ -12,6 +12,7 @@ struct UserCardScreen: View {
     let avatarURL: URL?
     let name: String
     let about: String
+    let nftCount: Int
     
     var onBack: (() -> Void)?
     var onOpenWebsite: (() -> Void)?
@@ -36,7 +37,7 @@ struct UserCardScreen: View {
                 onNext?()
             } label: {
                 HStack {
-                    Text("\(NSLocalizedString(titleKey, comment: "")) (112)")
+                    Text("\(NSLocalizedString(titleKey, comment: "")) (\(nftCount))")
                         .font(.system(size: 17, weight: .bold))
                         .foregroundColor(Color(UIColor.textPrimary))
 
@@ -127,6 +128,7 @@ struct UserCardScreen: View {
     UserCardScreen(
         avatarURL: nil,
         name: "Joaquin Phoenix",
-        about: "Дизайнер из Казани, люблю цифровое искусство  и бейглы. В моей коллекции уже 100+ NFT,  и еще больше — на моём сайте. Открыт  к коллаборациям."
+        about: "Описание пользователя",
+        nftCount: 112
     )
 }
