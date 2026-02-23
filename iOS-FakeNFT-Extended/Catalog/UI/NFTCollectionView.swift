@@ -16,9 +16,9 @@ struct NFTCollectionView: View {
     let columns = Array(repeating: GridItem(.flexible(), spacing: 9), count: 3)
     private let horizontalPadding: CGFloat = 16
     @State private var isShowingAuthorWeb = false
-    @State private var showLoadingError = false
     @StateObject private var viewModel: NftViewModel
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var favoritesManager: FavoritesManager
     
     // MARK: - Init
     
@@ -29,21 +29,34 @@ struct NFTCollectionView: View {
     // MARK: - Body
     
     var body: some View {
-        ScrollView {
-            coverView
-            VStack(alignment: .leading, spacing: 16) {
-                titleView
-                    .padding(.top, 8)
-                VStack(alignment: .leading, spacing: 8) {
-                    authorView
-                    descriptionView
+        ZStack {
+            Color(.systemBackground)
+                .ignoresSafeArea()
+            ScrollView {
+                coverView
+                VStack(alignment: .leading, spacing: 16) {
+                    titleView
+                        .padding(.top, 8)
+                    VStack(alignment: .leading, spacing: 8) {
+                        authorView
+                        descriptionView
+                    }
+                    if viewModel.isLoading {
+                        VStack {
+                            Spacer()
+                            LoadingHUD()
+                                .offset(y: -10)
+                            Spacer()
+                        }
+                        .frame(maxWidth: .infinity)
+                    } else {
+                        collectionView
+                            .padding(.top, 8)
+                    }
                 }
-                collectionView
-                    .padding(.top, 8)
+                .padding(.horizontal, horizontalPadding)
             }
-            .padding(.horizontal, horizontalPadding)
         }
-        .background(Color(.systemBackground).ignoresSafeArea())
         .fullScreenCover(isPresented: $isShowingAuthorWeb) {
             NavigationStack {
                 ProfileWebView(url: viewModel.authorURL)
@@ -60,28 +73,21 @@ struct NFTCollectionView: View {
             toolbarButton
         }
         .task {
-            do {
-                try await viewModel.loadItems()
-            } catch {
-                showLoadingError = true
-            }
+            await viewModel.fetchCollection()
+            await viewModel.loadItems()
         }
         .alert(
             NSLocalizedString("alert.title", comment: ""),
-            isPresented: $showLoadingError
+            isPresented: $viewModel.errorAlertPresented
         ) {
             Button {
                 Task {
-                    do {
-                        try await viewModel.loadItems()
-                    } catch {
-                        showLoadingError = true
-                    }
+                    await viewModel.fetchCollection()
+                    await viewModel.loadItems()
                 }
             } label: {
                 Text(NSLocalizedString("alert.retry", comment: ""))
             }
-            
             Button(role: .cancel) { } label: {
                 Text(NSLocalizedString("alert.cancel", comment: ""))
             }
@@ -160,21 +166,12 @@ struct NFTCollectionView: View {
             ForEach(viewModel.items) { item in
                 NftCell(
                     name: item.name,
-                    image: item.image,
+                    imageURL: item.image,
                     rating: item.rating,
-                    price: item.price
+                    priceString: item.priceString,
+                    nftID: item.id
                 )
             }
         }
-    }
-}
-
-// MARK: - Preview
-
-#Preview("NFT Collection") {
-    Group {
-        NFTCollectionView(
-            collection: NFTCollection.mockCollections[0]
-        )
     }
 }

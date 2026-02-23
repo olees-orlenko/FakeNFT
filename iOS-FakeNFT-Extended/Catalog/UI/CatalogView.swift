@@ -74,6 +74,22 @@ struct CatalogView: View {
             .task {
                 await viewModel.loadCovers()
             }
+            .alert(
+                NSLocalizedString("alert.title", comment: ""),
+                isPresented: $viewModel.errorAlertPresented
+            ) {
+                Button {
+                    Task {
+                        await viewModel.loadCovers()
+                    }
+                } label: {
+                    Text(NSLocalizedString("alert.retry", comment: ""))
+                }
+                
+                Button(role: .cancel) { } label: {
+                    Text(NSLocalizedString("alert.cancel", comment: ""))
+                }
+            }
         }
     }
 }

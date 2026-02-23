@@ -65,27 +65,9 @@ struct CatalogCollectionCell: View {
     }
     
     private var titleView: some View {
-        Text("\(collection.title) (\(collection.itemCount))")
+        Text("\(collection.title) (\(Set(collection.nfts).count))")
             .font(Font(UIFont.bodyBold))
             .foregroundColor(.primary)
             .lineLimit(1)
     }
-}
-
-// MARK: - Preview
-
-#Preview("Cell light") {
-    Group {
-        CatalogCollectionCell(collection: NFTCollection.mockCollections[0])
-            .padding()
-    }
-    .preferredColorScheme(.light)
-}
-
-#Preview("Cell dark") {
-    Group {
-        CatalogCollectionCell(collection: NFTCollection.mockCollections[0])
-            .padding()
-    }
-    .preferredColorScheme(.dark)
 }

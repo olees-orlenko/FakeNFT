@@ -13,14 +13,15 @@ struct AddToCartButton: View {
     
     // MARK: - Properties
     
-    @Binding var isInCart: Bool
+    let isInCart: Bool
+    let action: () -> Void
     
     // MARK: - Body
     
     var body: some View {
         Button {
             withAnimation(.spring(response: 0.35, dampingFraction: 0.6)) {
-                isInCart.toggle()
+                action()
             }
         } label: {
             Image(isInCart ? "trash" : "Cart")

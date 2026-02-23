@@ -14,7 +14,7 @@ final class CatalogViewModel: ObservableObject {
     
     // MARK: - Sort options
     
-    enum SortOption {
+    enum SortOption: Equatable {
         case none
         case byName(ascending: Bool)
         case byCount(ascending: Bool)
@@ -26,42 +26,48 @@ final class CatalogViewModel: ObservableObject {
     
     // MARK: - Properties
     
-    @Published var collections: [NFTCollection]
+    @Published var collections: [NFTCollection] = []
     @Published var isLoading: Bool = false
     @Published private(set) var currentSort: SortOption = .none
+    @Published var errorMessage: String? {
+        didSet {
+            errorAlertPresented = errorMessage != nil
+        }
+    }
+    @Published var errorAlertPresented: Bool = false
     @AppStorage("catalog.sortType") private var storedType: Int = SortType.count.rawValue
     @AppStorage("catalog.sortAscending") private var storedAscending: Bool = false
-    private var originalCollections: [NFTCollection]
+    private var originalCollections: [NFTCollection] = []
+    private let nftService: NFTService
     
     // MARK: - Init
     
-    init(collections: [NFTCollection] = NFTCollection.mockCollections) {
-        self.originalCollections = collections
-        self.collections = collections
+    init(nftService: NFTService = NFTService()) {
+        self.nftService = nftService
         updateCurrentSortFromStorage()
     }
     
     // MARK: - Loading
     
     func loadCovers() async {
-        let urls = collections.compactMap { $0.coverURL }
-        guard !urls.isEmpty else { return }
         isLoading = true
-        print("Начата загрузка обложек")
+        errorMessage = nil
+        errorAlertPresented = false
+        print("Начата загрузка коллекций")
         defer { isLoading = false }
-        await withTaskGroup(of: Void.self) { group in
-            for url in urls {
-                group.addTask {
-                    do {
-                        let _ = try await URLSession.shared.data(from: url)
-                    } catch {
-                    }
-                }
-            }
-            await group.waitForAll()
+        do {
+            let fetchedCollections = try await nftService.fetchCatalogCollection()
+            self.originalCollections = fetchedCollections
+            self.collections = fetchedCollections
+            applySort(currentSort, isSave: false)
+            print("Загрузка коллекций завершена. Количество: \(collections.count)")
+        } catch {
+            self.errorMessage = (error as? NetworkError)?.localizedDescription ?? error.localizedDescription
+            self.errorAlertPresented = true
+            self.originalCollections = []
+            self.collections = []
+            print("Ошибка загрузки коллекций: \(error.localizedDescription)")
         }
-        isLoading = false
-        print("Загрузка обложек завершена")
     }
     
     // MARK: - Filtering
@@ -83,7 +89,9 @@ final class CatalogViewModel: ObservableObject {
             }
         case .byCount(let ascending):
             collections = originalCollections.sorted {
-                ascending ? $0.itemCount < $1.itemCount : $0.itemCount > $1.itemCount
+                let firstCollection = Set($0.nfts).count
+                let secondCollection = Set($1.nfts).count
+                return ascending ? firstCollection < secondCollection : firstCollection > secondCollection
             }
         }
         if isSave {
