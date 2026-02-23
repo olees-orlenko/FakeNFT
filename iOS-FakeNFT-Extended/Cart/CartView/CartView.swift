@@ -10,7 +10,7 @@ import SwiftUI
 struct CartView: View {
     // MARK: - Properties
 
-    @StateObject private var viewModel = CartViewModel()
+    @ObservedObject private var viewModel = CartViewModel()
     @State var listData: [CartModel] = [] // Public for preview support
     @State var cartPath = NavigationPath()
     @State private var isShowingSortMenu = false
@@ -104,7 +104,7 @@ struct CartView: View {
 
     private var list: some View {
         List {
-            ForEach(listData) { item in
+            ForEach(viewModel.nfts) { item in
                 CartCell(
                     name: item.name,
                     image: item.image,
