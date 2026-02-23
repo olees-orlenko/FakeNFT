@@ -5,11 +5,12 @@
       "scale" : "1x"
     },
     {
-      "filename" : "Light@2x.png",
+      "filename" : "Tether@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "Tether@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
