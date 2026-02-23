@@ -1,4 +1,5 @@
 import SwiftUI
+import Foundation
 
 enum StatisticsScreenState {
     case loading
@@ -11,44 +12,31 @@ enum StatisticsSortType: String, CaseIterable {
     case byRating = "По рейтингу"
 }
 
+@MainActor
 final class StatisticsViewModel: ObservableObject {
+
     @Published var state: StatisticsScreenState = .loading
     @Published var sortType: StatisticsSortType = .byRating
     @Published var isSortSheetPresented = false
 
     private let sortKey = "StatisticsSortType"
-    private var allUsers: [StatisticsScreen.UserStat] = []
+    private let usersService: UsersService
 
-    init() {
+    private var allUsers: [UserDTO] = []
+
+    private var page: Int = 0
+    private let size: Int = 25
+    private var isLoading: Bool = false
+
+    init(usersService: UsersService = UsersServiceImpl()) {
+        self.usersService = usersService
         loadSortType()
-        loadUsers()
-    }
 
-    func loadUsers() {
-        state = .loading
-
-        DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
-            let users = [
-                StatisticsScreen.UserStat(avatarURL: nil, name: "Alex", rating: 228),
-                StatisticsScreen.UserStat(avatarURL: nil, name: "Mila", rating: 210),
-                StatisticsScreen.UserStat(avatarURL: nil, name: "Sasha", rating: 199),
-                StatisticsScreen.UserStat(avatarURL: nil, name: "Daria", rating: 187),
-                StatisticsScreen.UserStat(avatarURL: nil, name: "Ilya", rating: 176),
-                StatisticsScreen.UserStat(avatarURL: nil, name: "Anya", rating: 165),
-                StatisticsScreen.UserStat(avatarURL: nil, name: "Oleg", rating: 152),
-                StatisticsScreen.UserStat(avatarURL: nil, name: "Nikita", rating: 141),
-                StatisticsScreen.UserStat(avatarURL: nil, name: "Vera", rating: 133),
-                StatisticsScreen.UserStat(avatarURL: nil, name: "Tim", rating: 120)
-            ]
-            DispatchQueue.main.async {
-                self.allUsers = users
-                self.applySort()
-            }
-        }
+        Task { await loadUsersInitial() }
     }
 
     func retry() {
-        loadUsers()
+        Task { await loadUsersInitial() }
     }
 
     func showSortSheet() {
@@ -58,45 +46,111 @@ final class StatisticsViewModel: ObservableObject {
     func selectSort(_ type: StatisticsSortType) {
         sortType = type
         saveSortType()
-        applySort()
+        applySortAndPublish()
         isSortSheetPresented = false
     }
 
-    // MARK: - Helpers for next screens (пока моки)
+    // MARK: - Helpers for next screens
 
-    func websiteURL(for user: StatisticsScreen.UserStat) -> URL {
-        // временно — потом придёт с API
-        URL(string: "https://example.com")!
+    func websiteURL(for user: StatisticsScreen.UserStat) -> URL? {
+        guard let dto = allUsers.first(where: { $0.stableId == user.id }),
+              let website = dto.website,
+              let url = URL(string: website) else { return nil }
+        return url
     }
 
     func aboutText(for user: StatisticsScreen.UserStat) -> String {
-        // временно — потом придёт с API
-        "Пользователь \(user.name). Здесь будет описание из API."
+        guard let dto = allUsers.first(where: { $0.stableId == user.id }) else { return "" }
+        return dto.description
     }
 
-    func nftItems(for user: StatisticsScreen.UserStat) -> [NFTCollectionScreen.NFTItem] {
-        // временно — потом придёт с API
-        return [
-            .init(title: "Stella", rating: 4, price: "1.78"),
-            .init(title: "Galaxy", rating: 5, price: "2.10"),
-            .init(title: "Ocean", rating: 3, price: "0.98"),
-            .init(title: "Neon", rating: 5, price: "3.45"),
-            .init(title: "Dream", rating: 2, price: "1.12")
-        ]
+    func userNftIds(for user: StatisticsScreen.UserStat) -> [String] {
+        guard let dto = allUsers.first(where: { $0.stableId == user.id }) else { return [] }
+        return dto.nfts
     }
 
-    // MARK: - Private
+    // MARK: - Loading
 
-    private func applySort() {
+    private func loadUsersInitial() async {
+        guard !isLoading else { return }
+        isLoading = true
+
+        state = .loading
+        page = 0
+        allUsers = []
+
+        do {
+            let users = try await loadUsersWithRetry()
+            allUsers = users
+            applySortAndPublish()
+        } catch {
+            state = .error(userMessage(for: error))
+        }
+
+        isLoading = false
+    }
+
+    private func loadUsersWithRetry() async throws -> [UserDTO] {
+        do {
+            return try await requestUsers()
+        } catch let error as NetworkClientError {
+            if case .httpStatusCode(502) = error {
+                print("⚠️ Retry after 502...")
+                try await Task.sleep(nanoseconds: 700_000_000)
+                return try await requestUsers()
+            }
+            throw error
+        }
+    }
+
+    private func requestUsers() async throws -> [UserDTO] {
+        let sortBy: String? = nil
+        return try await usersService.loadUsers(page: page, size: size, sortBy: sortBy)
+    }
+
+    // MARK: - Mapping + Sorting
+
+    private func applySortAndPublish() {
+        let mapped = allUsers.map { StatisticsScreen.UserStat(dto: $0) }
+
         let sorted: [StatisticsScreen.UserStat]
         switch sortType {
         case .byName:
-            sorted = allUsers.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+            sorted = mapped.sorted {
+                $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
+            }
         case .byRating:
-            sorted = allUsers.sorted { $0.rating > $1.rating }
+            sorted = mapped.sorted { $0.rating > $1.rating }
         }
+
         state = .content(sorted)
     }
+
+    // MARK: - Errors
+
+    private func userMessage(for error: Error) -> String {
+        if let urlError = error as? URLError, urlError.code == .notConnectedToInternet {
+            return "Нет подключения к интернету"
+        }
+
+        if let networkError = error as? NetworkClientError {
+            switch networkError {
+            case .httpStatusCode(let code):
+                if code == 502 { return "Сервер временно недоступен. Попробуйте ещё раз." }
+                return "Ошибка сервера (\(code))"
+            case .parsingError:
+                return "Не удалось прочитать данные"
+            case .urlRequestError(let e):
+                return "Сетевая ошибка: \(e.localizedDescription)"
+            default:
+                return "Не удалось загрузить данные"
+            }
+        }
+
+        return "Не удалось загрузить данные"
+    }
+
+    // MARK: - Persistence
 
     private func saveSortType() {
         UserDefaults.standard.set(sortType.rawValue, forKey: sortKey)
