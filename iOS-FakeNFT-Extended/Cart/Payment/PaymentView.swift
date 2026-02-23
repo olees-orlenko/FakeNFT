@@ -78,7 +78,7 @@ struct PaymentView: View {
                         topTrailingRadius: 12
                     )
                 )
-                .ignoresSafeArea(.all)
+                .ignoresSafeArea()
         )
     }
 
