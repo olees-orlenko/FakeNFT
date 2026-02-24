@@ -89,7 +89,7 @@ struct CartView: View {
 
             // MARK: - Sorting Overlay
 
-            .overlay(SortMenuView(isShowingSortMenu: $isShowingSortMenu, title: "Сортировка", options: sortOptions, closeButtonTitle: "Закрыть"))
+            .overlay(SortMenuView(isShowingSortMenu: $isShowingSortMenu, title: "Sort.title", options: sortOptions, closeButtonTitle: "Sort.close"))
             .toolbar(shouldShowTabBar() ? .hidden : .visible, for: .tabBar)
             .toolbar(isShowingDeleteAlert ? .hidden : .visible)
         }
@@ -141,7 +141,7 @@ struct CartView: View {
             Button(action: {
                 cartPath.append(CartRoute.payment)
             }) {
-                Text("К оплате")
+                Text("Cart.checkout")
                     .foregroundStyle(.whiteAdaptive)
                     .font(.system(size: 17, weight: .bold))
                     .frame(maxWidth: 240, maxHeight: 44)
@@ -159,7 +159,7 @@ struct CartView: View {
             Spacer()
             VStack {
                 Spacer()
-                Text("Корзина пуста")
+                Text("Cart.empty")
                     .foregroundStyle(.blackAdaptive)
                     .font(.system(size: 17, weight: .bold))
                 Spacer()
@@ -185,15 +185,15 @@ struct CartView: View {
 
     private var sortOptions: [SortOption] {
         [
-            SortOption(title: "По цене") {
+            SortOption(title: "Sort.price") {
                 withAnimation { viewModel.nfts.sort {
                     $0.price < $1.price
                 } }
             },
-            SortOption(title: "По названию") {
+            SortOption(title: "Sort.name") {
                 withAnimation { viewModel.nfts.sort { $0.name < $1.name } }
             },
-            SortOption(title: "По рейтингу") {
+            SortOption(title: "Sort.rating") {
                 withAnimation { viewModel.nfts.sort { $0.rating > $1.rating } }
             },
         ]

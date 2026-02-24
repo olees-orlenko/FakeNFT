@@ -36,14 +36,14 @@ struct DeleteView: View {
             .frame(width: 108, height: 108)
             .clipShape(RoundedRectangle(cornerRadius: 16))
 
-            Text("Вы уверены,что хотите \nудалить этот объект из корзины?")
+            Text("Cart.deleteConfirm")
                 .foregroundStyle(.blackAdaptive)
                 .font(.system(size: 13, weight: .regular))
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
             HStack(alignment: .center, spacing: 8) {
                 Button(action: onDelete) {
-                    Text("Удалить")
+                    Text("Cart.delete")
                         .foregroundStyle(.ypRed)
                 }
                 .frame(width: 127)
@@ -52,7 +52,7 @@ struct DeleteView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 16))
 
                 Button(action: onCancel) {
-                    Text("Вернуться")
+                    Text("Cart.cancel")
                         .foregroundStyle(.whiteAdaptive)
                 }
                 .frame(width: 127)
