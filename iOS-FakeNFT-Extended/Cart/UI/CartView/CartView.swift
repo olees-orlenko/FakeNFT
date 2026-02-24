@@ -11,7 +11,6 @@ struct CartView: View {
     // MARK: - Properties
 
     @ObservedObject private var viewModel = CartViewModel()
-    @State var listData: [CartModel] = [] // Public for preview support
     @State var cartPath = NavigationPath()
     @State private var isShowingSortMenu = false
     @State private var isShowingDeleteAlert = false
@@ -127,7 +126,7 @@ struct CartView: View {
     private var makeOrder: some View {
         HStack {
             VStack(alignment: .leading) {
-                Text("\(listData.count) NFT")
+                Text("\(viewModel.nfts.count) NFT")
                     .font(.system(size: 15))
                     .foregroundStyle(.blackAdaptive)
                 Text("\(formattedTotalPrice) ETH")
@@ -187,15 +186,15 @@ struct CartView: View {
     private var sortOptions: [SortOption] {
         [
             SortOption(title: "По цене") {
-                withAnimation { listData.sort {
+                withAnimation { viewModel.nfts.sort {
                     $0.price < $1.price
                 } }
             },
             SortOption(title: "По названию") {
-                withAnimation { listData.sort { $0.name < $1.name } }
+                withAnimation { viewModel.nfts.sort { $0.name < $1.name } }
             },
             SortOption(title: "По рейтингу") {
-                withAnimation { listData.sort { $0.rating > $1.rating } }
+                withAnimation { viewModel.nfts.sort { $0.rating > $1.rating } }
             },
         ]
     }
@@ -212,21 +211,21 @@ struct CartView: View {
 // MARK: - Preview
 
 #Preview("Cart Light") {
-    CartView(listData: [MockData.cartMock, MockData.cartMock2, MockData.cartMock3])
+    CartView()
         .preferredColorScheme(.light)
 }
 
 #Preview("Cart Dark") {
-    CartView(listData: [MockData.cartMock, MockData.cartMock2, MockData.cartMock3])
+    CartView()
         .preferredColorScheme(.dark)
 }
 
 #Preview("Cart empty state light") {
-    CartView(listData: [])
+    CartView()
         .preferredColorScheme(.light)
 }
 
 #Preview("Cart empty state dark") {
-    CartView(listData: [])
+    CartView()
         .preferredColorScheme(.dark)
 }

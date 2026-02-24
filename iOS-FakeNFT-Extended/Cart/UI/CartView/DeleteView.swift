@@ -14,10 +14,28 @@ struct DeleteView: View {
 
     var body: some View {
         VStack {
-            Image(imageName)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 108, height: 108)
+            AsyncImage(url: URL(string: imageName)) { phase in
+                switch phase {
+                case .empty:
+                    ZStack {
+                        Color.gray.opacity(0.1)
+                    }
+                case let .success(image):
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(maxWidth: 108)
+                case .failure:
+                    Image(.april)
+                        .foregroundStyle(.gray)
+                @unknown default:
+                    EmptyView()
+                }
+            }
+            .aspectRatio(contentMode: .fit)
+            .frame(width: 108, height: 108)
+            .clipShape(RoundedRectangle(cornerRadius: 16))
+
             Text("Вы уверены,что хотите \nудалить этот объект из корзины?")
                 .foregroundStyle(.blackAdaptive)
                 .font(.system(size: 13, weight: .regular))
@@ -46,7 +64,7 @@ struct DeleteView: View {
     }
 }
 
-#Preview ("Delete view light") {
+#Preview("Delete view light") {
     DeleteView(imageName: "April", onDelete: {}, onCancel: {})
         .preferredColorScheme(.light)
 }
