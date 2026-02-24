@@ -1,5 +1,5 @@
 //
-//  PaymentOptions.swift
+//  Currency.swift
 //  iOS-FakeNFT-Extended
 //
 //  Created by Игнат Рогачевич on 15.02.26.
