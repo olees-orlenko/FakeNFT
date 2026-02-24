@@ -89,7 +89,7 @@ struct CartView: View {
 
             // MARK: - Sorting Overlay
 
-            .overlay(SortMenuView(isShowingSortMenu: $isShowingSortMenu, title: "Sort.title", options: sortOptions, closeButtonTitle: "Sort.close"))
+            .overlay(SortMenuView(isShowingSortMenu: $isShowingSortMenu, title: "Сортировка", options: sortOptions, closeButtonTitle: "Закрыть"))
             .toolbar(shouldShowTabBar() ? .hidden : .visible, for: .tabBar)
             .toolbar(isShowingDeleteAlert ? .hidden : .visible)
         }
@@ -190,20 +190,19 @@ struct CartView: View {
 
     private var sortOptions: [SortOption] {
         [
-            SortOption(title: "Sort.price") {
+            SortOption(title: "По цене") {
                 withAnimation { viewModel.nfts.sort {
                     $0.price < $1.price
                 } }
             },
-            SortOption(title: "Sort.name") {
+            SortOption(title: "По имени") {
                 withAnimation { viewModel.nfts.sort { $0.name < $1.name } }
             },
-            SortOption(title: "Sort.rating") {
+            SortOption(title: "По рейтингу") {
                 withAnimation { viewModel.nfts.sort { $0.rating > $1.rating } }
             },
         ]
     }
-
     // MARK: - Private Methods
 
     private func deleteItem(_ item: CartModel) {
