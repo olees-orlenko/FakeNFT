@@ -3,12 +3,13 @@ import SwiftUI
 struct TabBarView: View {
     var body: some View {
         TabView {
-            TestCatalogView()
+            CatalogView()
                 .tabItem {
-                    Label(
-                        NSLocalizedString("Tab.catalog", comment: ""),
-                        systemImage: "square.stack.3d.up.fill"
-                    )
+                    Label {
+                        Text(NSLocalizedString("Tab.catalog", comment: ""))
+                    } icon: {
+                        Image("Tab Bar Catalog")
+                    }
                 }
 
             ProfileView()
