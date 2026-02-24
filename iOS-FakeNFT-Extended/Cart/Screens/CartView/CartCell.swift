@@ -44,7 +44,7 @@ struct CartCell: View {
                     .padding(.bottom, 4)
                 RatingView(rating: rating)
                     .padding(.bottom, 12)
-                Text("Цена")
+                Text("Cart.price")
                     .font(.system(size: 13, weight: .regular))
                     .foregroundStyle(.blackAdaptive)
                     .padding(.bottom, 2)

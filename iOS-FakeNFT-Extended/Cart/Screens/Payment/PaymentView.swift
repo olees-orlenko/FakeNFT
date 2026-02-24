@@ -21,16 +21,16 @@ struct PaymentView: View {
                 .padding()
             Spacer()
             paymentConfirm
-                .alert("Не удалось произвести оплату", isPresented: $isAlertShowed) {
-                    Button("Отмена", role: .cancel) { isAlertShowed = false }
-                    Button("Повторить") { validation() } 
+                .alert("Payment.alert", isPresented: $isAlertShowed) {
+                    Button("Cart.cancel", role: .cancel) { isAlertShowed = false }
+                    Button("Common.retry") { validation() } 
                 }
         }
         .task {
             await viewModel.loadCurrencies()
         }
         .background(.whiteAdaptive)
-        .navigationTitle("Выберите способ оплаты")
+        .navigationTitle("Payment.title")
     }
 
     // MARK: - UI Components
@@ -53,16 +53,16 @@ struct PaymentView: View {
 
     private var paymentConfirm: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Совершая покупку, вы соглашаетесь с условиями")
+            Text("Payment.agreement")
                 .font(.system(size: 13))
                 .padding([.leading, .top])
-            Text("Пользовательского соглашения")
+            Text("Payment.link")
                 .font(.system(size: 13))
                 .foregroundStyle(.link)
                 .padding(.leading)
 
             Button(action: { validation() }) {
-                Text("Оплатить")
+                Text("Payment.pay")
                     .font(.system(size: 17, weight: .bold))
                     .foregroundStyle(.whiteAdaptive)
                     .padding()
