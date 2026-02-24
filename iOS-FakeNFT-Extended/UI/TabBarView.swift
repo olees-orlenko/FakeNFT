@@ -11,7 +11,14 @@ struct TabBarView: View {
                         Image("Tab Bar Catalog")
                     }
                 }
-                .backgroundStyle(.background)
+
+            ProfileView()
+                .tabItem {
+                    Label(
+                        NSLocalizedString("Tab.profile", comment: ""),
+                        systemImage: "person.crop.circle"
+                    )
+                }
         }
     }
 }
