@@ -89,9 +89,9 @@ final class CatalogViewModel: ObservableObject {
             }
         case .byCount(let ascending):
             collections = originalCollections.sorted {
-                let count1 = Set($0.nfts).count
-                let count2 = Set($1.nfts).count
-                return ascending ? count1 < count2 : count1 > count2
+                let firstCollection = Set($0.nfts).count
+                let secondCollection = Set($1.nfts).count
+                return ascending ? firstCollection < secondCollection : firstCollection > secondCollection
             }
         }
         if isSave {

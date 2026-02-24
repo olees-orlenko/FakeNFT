@@ -11,15 +11,23 @@ import Foundation
 
 actor NFTService {
     
-    // MARK: - Properties 
+    // MARK: - Properties
     
     private let baseURL = RequestConstants.baseURL
     private let token = RequestConstants.token
+    private let successStatusCode = 200
+    
+    // MARK: - Endpoints
+    
+    private enum Endpoints {
+        static let collections = "/api/v1/collections"
+        static let nft = "/api/v1/nft"
+    }
     
     // MARK: - Fetching Catalog of Collections
     
     func fetchCatalogCollection() async throws -> [NFTCollection] {
-        guard let url = URL(string: "\(baseURL)/api/v1/collections") else {
+        guard let url = URL(string: baseURL + Endpoints.collections) else {
             throw NetworkError.invalidURL
         }
         var request = URLRequest(url: url)
@@ -31,7 +39,7 @@ actor NFTService {
             guard let httpResponse = response as? HTTPURLResponse else {
                 throw NetworkError.noData
             }
-            guard httpResponse.statusCode == 200 else {
+            guard httpResponse.statusCode == successStatusCode else {
                 throw NetworkError.serverError(httpResponse.statusCode)
             }
             let decoder = JSONDecoder()
@@ -46,7 +54,7 @@ actor NFTService {
     // MARK: - Fetching Collection
     
     func fetchCollection(by id: String) async throws -> NFTCollection {
-        guard let url = URL(string: "\(baseURL)/api/v1/collections/\(id)") else {
+        guard let url = URL(string: baseURL + Endpoints.collections + "/\(id)") else {
             throw NetworkError.invalidURL
         }
         var request = URLRequest(url: url)
@@ -58,7 +66,7 @@ actor NFTService {
             guard let httpResponse = response as? HTTPURLResponse else {
                 throw NetworkError.noData
             }
-            guard httpResponse.statusCode == 200 else {
+            guard httpResponse.statusCode == successStatusCode else {
                 throw NetworkError.serverError(httpResponse.statusCode)
             }
             let decoder = JSONDecoder()
@@ -77,7 +85,7 @@ actor NFTService {
         try await withThrowingTaskGroup(of: NFTItem?.self) { group in
             for id in ids {
                 group.addTask {
-                    guard let url = URL(string: "\(self.baseURL)/api/v1/nft/\(id)") else {
+                    guard let url = URL(string: self.baseURL + Endpoints.nft + "/\(id)") else {
                         throw NetworkError.invalidURL
                     }
                     var request = URLRequest(url: url)
@@ -89,7 +97,7 @@ actor NFTService {
                         guard let httpResponse = response as? HTTPURLResponse else {
                             throw NetworkError.noData
                         }
-                        guard httpResponse.statusCode == 200 else {
+                        guard httpResponse.statusCode == self.successStatusCode else {
                             throw NetworkError.serverError(httpResponse.statusCode)
                         }
                         let decoder = JSONDecoder()
@@ -101,7 +109,7 @@ actor NFTService {
                 }
             }
             for try await item in group {
-                if let item = item {
+                if let item {
                     fetchedItems.append(item)
                 }
             }

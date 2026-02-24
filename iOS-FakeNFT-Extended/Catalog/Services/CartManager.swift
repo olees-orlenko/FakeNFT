@@ -8,15 +8,23 @@
 import SwiftUI
 
 final class CartManager: ObservableObject {
+    
+    // MARK: - Properties
+    
+    var count: Int {
+        cartItems.count
+    }
     @AppStorage("cartNFTs") private var cartIDsString: String = ""
     @Published private(set) var cartItems: Set<String> = []
     
+    // MARK: - Init
+    
     init() {
-        let ids = cartIDsString.isEmpty
-        ? []
-        : cartIDsString.split(separator: ",").map(String.init)
+        let ids = cartIDsString.isEmpty ? [] : cartIDsString.split(separator: ",").map(String.init)
         cartItems = Set(ids)
     }
+    
+    // MARK: - Methods
     
     private func persist() {
         cartIDsString = cartItems.sorted().joined(separator: ",")
@@ -42,9 +50,5 @@ final class CartManager: ObservableObject {
         } else {
             addToCart(id)
         }
-    }
-    
-    var count: Int {
-        cartItems.count
     }
 }
