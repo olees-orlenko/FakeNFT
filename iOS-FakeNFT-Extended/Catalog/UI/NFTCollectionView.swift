@@ -29,21 +29,34 @@ struct NFTCollectionView: View {
     // MARK: - Body
     
     var body: some View {
-        ScrollView {
-            coverView
-            VStack(alignment: .leading, spacing: 16) {
-                titleView
-                    .padding(.top, 8)
-                VStack(alignment: .leading, spacing: 8) {
-                    authorView
-                    descriptionView
+        ZStack {
+            Color(.systemBackground)
+                .ignoresSafeArea()
+            ScrollView {
+                coverView
+                VStack(alignment: .leading, spacing: 16) {
+                    titleView
+                        .padding(.top, 8)
+                    VStack(alignment: .leading, spacing: 8) {
+                        authorView
+                        descriptionView
+                    }
+                    if viewModel.isLoading {
+                        VStack {
+                            Spacer()
+                            LoadingHUD()
+                                .offset(y: -10)
+                            Spacer()
+                        }
+                        .frame(maxWidth: .infinity)
+                    } else {
+                        collectionView
+                            .padding(.top, 8)
+                    }
                 }
-                collectionView
-                    .padding(.top, 8)
+                .padding(.horizontal, horizontalPadding)
             }
-            .padding(.horizontal, horizontalPadding)
         }
-        .background(Color(.systemBackground).ignoresSafeArea())
         .fullScreenCover(isPresented: $isShowingAuthorWeb) {
             NavigationStack {
                 ProfileWebView(url: viewModel.authorURL)
