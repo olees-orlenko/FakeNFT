@@ -11,7 +11,7 @@ struct PaymentView: View {
     @Binding var cartPath: NavigationPath
     @State private var isAlertShowed: Bool = false
     @State private var isSuccessShowed: Bool = false
-    @State private var selectedMethod: PaymentOptions?
+    @StateObject private var viewModel = PaymentViewModel()
 
     let columns = Array(repeating: GridItem(.flexible(), spacing: 7), count: 2)
 
@@ -23,8 +23,11 @@ struct PaymentView: View {
             paymentConfirm
                 .alert("Не удалось произвести оплату", isPresented: $isAlertShowed) {
                     Button("Отмена", role: .cancel) { isAlertShowed = false }
-                    Button("Повторить") {} // make retry logic
+                    Button("Повторить") { validation() } 
                 }
+        }
+        .task {
+            await viewModel.loadCurrencies()
         }
         .background(.whiteAdaptive)
         .navigationTitle("Выберите способ оплаты")
@@ -34,14 +37,14 @@ struct PaymentView: View {
 
     private var paymentMethods: some View {
         LazyVGrid(columns: columns, spacing: 7) {
-            ForEach(PaymentOptions.allOptions) { option in
+            ForEach(viewModel.currencies) { currency in
                 PaymentCell(
-                    name: option.name,
-                    shortName: option.shortName,
-                    imageName: option.icon,
-                    isSelected: selectedMethod?.id == option.id,
+                    name: currency.title,
+                    shortName: currency.name,
+                    imageName: currency.image,
+                    isSelected: viewModel.selectedCurrency?.id == currency.id,
                     action: {
-                        selectedMethod = option
+                        viewModel.selectedCurrency = currency
                     }
                 )
             }
@@ -85,10 +88,15 @@ struct PaymentView: View {
     // MARK: - Private Func
 
     private func validation() {
-        // MARK: - Add data validation
-
-        if selectedMethod != nil {
-            cartPath.append(CartRoute.success)
+        if viewModel.selectedCurrency != nil {
+            Task {
+                let success = await viewModel.processPayment()
+                if success {
+                    cartPath.append(CartRoute.success)
+                } else {
+                    isAlertShowed = true
+                }
+            }
         } else {
             isAlertShowed = true
         }
