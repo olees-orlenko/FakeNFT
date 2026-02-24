@@ -85,7 +85,7 @@ actor CartService {
         return try JSONDecoder().decode(OrderDTO.self, from: data)
     }
 
-    private func performRequest<T: Decodable>(path: String) async throws -> T {
+     func performRequest<T: Decodable>(path: String) async throws -> T {
         guard let url = URL(string: "\(baseURL)\(path)") else { throw NetworkError.invalidURL }
 
         var request = URLRequest(url: url)
