@@ -16,7 +16,6 @@ struct NFTCollectionScreen: View {
     var onBack: (() -> Void)? = nil
 
     @StateObject private var viewModel: NFTCollectionViewModel
-    @State private var likedItems: Set<String> = []
 
     private let columns = [
         GridItem(.fixed(108), spacing: 12),
@@ -52,9 +51,7 @@ struct NFTCollectionScreen: View {
         .padding(.top, 8)
         .background(Color(.systemBackground))
         .toolbar(.hidden, for: .navigationBar)
-        .task {
-            await viewModel.load()
-        }
+        .task { await viewModel.load() }
     }
 
     @ViewBuilder
@@ -77,42 +74,33 @@ struct NFTCollectionScreen: View {
             .padding(.horizontal, 16)
 
         case .content(let items):
-            if items.isEmpty {
-                VStack(spacing: 12) {
-                    Text("Коллекция пуста")
-                        .foregroundColor(.secondary)
-                    Spacer()
-                }
-            } else {
-                ScrollView {
-                    LazyVGrid(columns: columns, spacing: 16) {
-                        ForEach(items) { item in
-                            NFTCardView(
-                                title: item.title,
-                                rating: item.rating,
-                                priceETH: item.price,
-                                imageURL: item.imageURL,
-                                isLiked: Binding(
-                                    get: { likedItems.contains(item.id) },
-                                    set: { isLiked in
-                                        if isLiked { likedItems.insert(item.id) }
-                                        else { likedItems.remove(item.id) }
-                                    }
-                                )
+            ScrollView {
+                LazyVGrid(columns: columns, spacing: 16) {
+                    ForEach(items) { item in
+                        NFTCardView(
+                            title: item.title,
+                            rating: item.rating,
+                            priceETH: item.price,
+                            imageURL: item.imageURL,
+                            isLiked: Binding(
+                                get: { viewModel.likedIds.contains(item.id) },
+                                set: { newValue in
+                                    Task { await viewModel.setLiked(nftId: item.id, isLiked: newValue) }
+                                }
+                            ),
+
+                            isInCart: Binding(
+                                get: { viewModel.cartIds.contains(item.id) },
+                                set: { newValue in
+                                    Task { await viewModel.setInCart(nftId: item.id, isInCart: newValue) }
+                                }
                             )
-                        }
+                        )
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(.horizontal, 16)
                 }
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, 16)
             }
         }
     }
-}
-
-#Preview {
-    NFTCollectionScreen(
-        userId: "3",
-        nftIds: ["1", "2", "3"]
-    )
 }
