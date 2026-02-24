@@ -95,7 +95,9 @@ struct CartView: View {
         }
         .background(.whiteAdaptive)
         .task {
-            await viewModel.loadCart()
+            if viewModel.nfts.isEmpty {
+                await viewModel.loadCart()
+            }
         }
     }
 
@@ -117,6 +119,9 @@ struct CartView: View {
                 .listRowSeparator(.hidden)
                 .listRowBackground(Color.whiteAdaptive)
             }
+        }
+        .refreshable {
+            await viewModel.loadCart()
         }
         .background(.whiteAdaptive)
         .listStyle(.plain)
