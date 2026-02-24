@@ -9,12 +9,16 @@ import Foundation
 
 @MainActor
 final class PaymentViewModel: ObservableObject {
+    // MARK: - Published Properties
+
     @Published var currencies: [Currency] = []
     @Published var selectedCurrency: Currency?
     @Published var isLoading = false
     @Published var paymentError = false
 
     private let service = CartService()
+
+    // MARK: - Public Methods
 
     func loadCurrencies() async {
         isLoading = true
@@ -31,7 +35,7 @@ final class PaymentViewModel: ObservableObject {
         guard let currencyId = selectedCurrency?.id else { return false }
         isLoading = true
         defer { isLoading = false }
-        
+
         do {
             return try await service.performPayment(currencyId: currencyId)
         } catch {

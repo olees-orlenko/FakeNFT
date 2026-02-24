@@ -1,3 +1,11 @@
+//
+//  CartService.swift
+//  iOS-FakeNFT-Extended
+//
+//  Created by Игнат Рогачевич on 15.02.26.
+//
+
+
 import Foundation
 
 struct OrderDTO: Codable {
@@ -64,7 +72,7 @@ actor CartService {
 
         request.setValue(token, forHTTPHeaderField: "X-Practicum-Mobile-Token")
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        request.setValue("application/json", forHTTPHeaderField: "Accept") // Добавляем явно Accept JSON
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
 
         let bodyString = nftIds.map { "nfts=\($0)" }.joined(separator: "&")
         request.httpBody = bodyString.data(using: .utf8)
@@ -73,7 +81,6 @@ actor CartService {
 
         guard let httpResponse = response as? HTTPURLResponse else { throw NetworkError.noData }
 
-        print("DEBUG: Код ответа сервера: \(httpResponse.statusCode)")
 
         if httpResponse.statusCode != 200 {
             if let serverError = String(data: data, encoding: .utf8) {
