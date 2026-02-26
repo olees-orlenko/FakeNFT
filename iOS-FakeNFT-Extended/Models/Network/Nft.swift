@@ -3,14 +3,12 @@ import Foundation
 /// Модель NFT, получаемая из API.
 /// Используется на экранах профиля, каталога и карточки NFT.
 struct Nft: Decodable {
+
     /// Дата создания NFT в формате ISO8601.
     let createdAt: String
 
     /// Название токена.
     let name: String
-
-    /// Уникальный идентификатор NFT.
-    let id: String
 
     /// Массив ссылок на изображения токена.
     let images: [URL]
@@ -29,4 +27,7 @@ struct Nft: Decodable {
 
     /// Ссылка на сайт проекта или автора.
     let website: String
+
+    /// Уникальный идентификатор NFT.
+    let id: String
 }

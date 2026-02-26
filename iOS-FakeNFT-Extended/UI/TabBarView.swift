@@ -19,6 +19,15 @@ struct TabBarView: View {
                         systemImage: "person.crop.circle"
                     )
                 }
+
+            StatisticsFlowView()
+                .tabItem {
+                    Label {
+                        Text(NSLocalizedString("Tab.statistics", comment: ""))
+                    } icon: {
+                        Image("sort")
+                    }
+                }
         }
     }
 }
