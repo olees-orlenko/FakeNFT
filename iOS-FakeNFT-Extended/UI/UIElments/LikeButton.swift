@@ -8,7 +8,7 @@
 import SwiftUI
 
 // MARK: - LikeButton
- 
+
 struct LikeButton: View {
     
     // MARK: - Properties

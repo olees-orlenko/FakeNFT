@@ -84,7 +84,7 @@ struct NFTCollectionScreen: View {
                             imageURL: item.imageURL,
                             isLiked: Binding(
                                 get: { viewModel.likedIds.contains(item.id) },
-                                set: { _ in }
+                                set: { _ in } 
                             ),
                             isInCart: Binding(
                                 get: { viewModel.cartIds.contains(item.id) },
