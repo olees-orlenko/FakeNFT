@@ -1,4 +1,5 @@
 import SwiftUI
+import Foundation
 
 struct StatisticsFlowView: View {
     @StateObject private var viewModel = StatisticsViewModel()
@@ -10,7 +11,10 @@ struct StatisticsFlowView: View {
             Group {
                 switch viewModel.state {
                 case .loading:
-                    VStack { ProgressView().padding(); Spacer() }
+                    VStack {
+                        ProgressView().padding()
+                        Spacer()
+                    }
 
                 case .error(let message):
                     VStack(spacing: 12) {
@@ -24,35 +28,18 @@ struct StatisticsFlowView: View {
                         users: users,
                         onSortTap: { viewModel.showSortSheet() },
                         onSelectUser: { user in
-                            // пока нет реального userId — используем name как id
-                            path.append(.userCard(userId: user.name))
+                            path.append(.userCard(userId: user.id))
                         }
                     )
                 }
             }
             .navigationDestination(for: StatisticsRoute.self) { route in
                 switch route {
-
                 case .userCard(let userId):
-                    UserCardScreen(
-                        avatarURL: nil,
-                        name: userId,
-                        about: mockAbout(for: userId),
-                        onBack: { popIfPossible() },
-                        onOpenWebsite: {
-                            safariURL = IdentifiableURL(url: mockWebsite(for: userId))
-                        },
-                        onNext: {
-                            path.append(.nftCollection(userId: userId))
-                        }
-                    )
+                    userCardDestination(userId: userId)
 
                 case .nftCollection(let userId):
-                    NFTCollectionScreen(
-                        userId: userId,
-                        items: mockNFTItems(for: userId),
-                        onBack: { popIfPossible() }
-                    )
+                    nftCollectionDestination(userId: userId)
                 }
             }
             .sheet(item: $safariURL) { item in
@@ -68,31 +55,73 @@ struct StatisticsFlowView: View {
         }
     }
 
+    // MARK: - Destinations
+
+    @ViewBuilder
+    private func userCardDestination(userId: String) -> some View {
+        if case .content(let users) = viewModel.state,
+           let user = users.first(where: { $0.id == userId }) {
+
+            let nftIds = viewModel.userNftIds(for: user)
+            let nftCount = nftIds.count
+
+            UserCardScreen(
+                avatarURL: user.avatarURL,
+                name: user.name,
+                about: viewModel.aboutText(for: user),
+                nftCount: nftCount,
+                onBack: { popIfPossible() },
+                onOpenWebsite: {
+                    if let url = viewModel.websiteURL(for: user) {
+                        safariURL = IdentifiableURL(url: url)
+                    }
+                },
+                onNext: {
+                    path.append(.nftCollection(userId: userId))
+                }
+            )
+
+        } else {
+            VStack(spacing: 12) {
+                ProgressView()
+                Text("Загрузка...")
+                    .foregroundColor(.secondary)
+                Button("Назад") { popIfPossible() }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func nftCollectionDestination(userId: String) -> some View {
+        if case .content(let users) = viewModel.state,
+           let user = users.first(where: { $0.id == userId }) {
+
+            let nftIds = viewModel.userNftIds(for: user)
+
+            NFTCollectionScreen(
+                userId: userId,
+                nftIds: nftIds,
+                onBack: { popIfPossible() }
+            )
+
+        } else {
+            VStack(spacing: 12) {
+                ProgressView()
+                Text("Загрузка...")
+                    .foregroundColor(.secondary)
+                Button("Назад") { popIfPossible() }
+            }
+        }
+    }
+
     // MARK: - Helpers
 
     private func popIfPossible() {
         guard !path.isEmpty else { return }
         path.removeLast()
     }
-
-    private func mockWebsite(for userId: String) -> URL {
-        URL(string: "https://example.com")!
-    }
-
-    private func mockAbout(for userId: String) -> String {
-        "Пользователь \(userId). Описание будет приходить из API на этапе 3/3."
-    }
-
-    private func mockNFTItems(for userId: String) -> [NFTCollectionScreen.NFTItem] {
-        [
-            .init(title: "Stella", rating: 4, price: "1.78"),
-            .init(title: "Galaxy", rating: 5, price: "2.10"),
-            .init(title: "Ocean", rating: 3, price: "0.98"),
-            .init(title: "Neon", rating: 5, price: "3.45"),
-            .init(title: "Dream", rating: 2, price: "1.12")
-        ]
-    }
 }
+
 struct IdentifiableURL: Identifiable {
     let id = UUID()
     let url: URL

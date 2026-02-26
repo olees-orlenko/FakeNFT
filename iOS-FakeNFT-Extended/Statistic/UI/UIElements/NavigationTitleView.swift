@@ -21,8 +21,6 @@ struct NavigationTitleView: View {
 
     let buttonPosition: ButtonPosition
     let titleAlignment: TitleAlignment
-
-    /// Если false — иконка НЕ оборачивается в Button (нужно, когда весь блок кликабельный снаружи)
     let isIconTappable: Bool
 
     var onTap: (() -> Void)? = nil
@@ -110,7 +108,6 @@ struct NavigationTitleView: View {
                 }
                 .buttonStyle(.plain)
             } else {
-                // без Button, чтобы не было "button inside button"
                 imageView
             }
         } else {
@@ -128,7 +125,6 @@ struct NavigationTitleView: View {
                 .foregroundColor(Color(UIColor.segmentActive))
                 .contentShape(Rectangle())
         } else if let assetImage {
-            // Требование: tap-зона 42×42 и сама иконка 42×42
             Image(assetImage)
                 .resizable()
                 .scaledToFit()
@@ -180,9 +176,7 @@ struct NavigationTitleView: View {
             buttonPosition: .right,
             titleAlignment: .center
         )
-
-        // Пример для "весь блок кликабельный снаружи"
-        Button("Тест клика") {} // просто чтобы было видно
+        Button("Тест клика") {}
         Button {
             print("Tapped whole row")
         } label: {
