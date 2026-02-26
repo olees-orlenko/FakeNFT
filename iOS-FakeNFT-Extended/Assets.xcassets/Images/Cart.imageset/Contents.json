@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Group 1.png",
+      "filename" : "Cart.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Group 1@2x.png",
+      "filename" : "Cart 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Group 1@3x.png",
+      "filename" : "Cart 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
@@ -19,8 +19,5 @@
   "info" : {
     "author" : "xcode",
     "version" : 1
-  },
-  "properties" : {
-    "template-rendering-intent" : "template"
   }
 }

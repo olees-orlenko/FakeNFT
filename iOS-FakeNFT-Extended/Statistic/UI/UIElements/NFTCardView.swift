@@ -10,6 +10,9 @@ struct NFTCardView: View {
     @Binding var isLiked: Bool
     @Binding var isInCart: Bool
 
+    let onTapLike: () -> Void
+    let onTapCart: () -> Void
+
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
 
@@ -19,8 +22,10 @@ struct NFTCardView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 12))
                     .clipped()
 
-                LikeButton(isLiked: $isLiked)
-                    .padding(9)
+                LikeButton(isLiked: isLiked) {
+                    onTapLike()
+                }
+                .padding(9)
             }
 
             RatingView(rating: rating)
@@ -44,7 +49,7 @@ struct NFTCardView: View {
                 Spacer(minLength: 0)
 
                 Button {
-                    isInCart.toggle()
+                    onTapCart()
                 } label: {
                     Image(isInCart ? "CartBlack" : "Cart")
                         .resizable()

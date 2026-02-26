@@ -1,3 +1,9 @@
 iOS-FakeNFT-Extended.xcodeproj/xcuserdata/*
 iOS-FakeNFT-Extended.xcodeproj/project.xcworkspace/xcuserdata/*
 .DS_Store
+
+# --- Xcode / placeholders ---
+**/.gitkeep
+**/.DS_Store
+# случайные файлы-ловушки
+**/.swift

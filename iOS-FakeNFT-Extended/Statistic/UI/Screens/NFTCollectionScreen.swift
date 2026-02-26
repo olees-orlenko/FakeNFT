@@ -84,17 +84,20 @@ struct NFTCollectionScreen: View {
                             imageURL: item.imageURL,
                             isLiked: Binding(
                                 get: { viewModel.likedIds.contains(item.id) },
-                                set: { newValue in
-                                    Task { await viewModel.setLiked(nftId: item.id, isLiked: newValue) }
-                                }
+                                set: { _ in }
                             ),
-
                             isInCart: Binding(
                                 get: { viewModel.cartIds.contains(item.id) },
-                                set: { newValue in
-                                    Task { await viewModel.setInCart(nftId: item.id, isInCart: newValue) }
-                                }
-                            )
+                                set: { _ in }
+                            ),
+                            onTapLike: {
+                                let newValue = !viewModel.likedIds.contains(item.id)
+                                Task { await viewModel.setLiked(nftId: item.id, isLiked: newValue) }
+                            },
+                            onTapCart: {
+                                let newValue = !viewModel.cartIds.contains(item.id)
+                                Task { await viewModel.setInCart(nftId: item.id, isInCart: newValue) }
+                            }
                         )
                     }
                 }

@@ -25,7 +25,7 @@ struct TabBarView: View {
                     Label {
                         Text(NSLocalizedString("Tab.statistics", comment: ""))
                     } icon: {
-                        Image("sort")
+                        Image("Tab Bar Statistic")
                     }
                 }
         }

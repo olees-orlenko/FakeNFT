@@ -24,7 +24,7 @@ struct AddToCartButton: View {
                 action()
             }
         } label: {
-            Image(isInCart ? "trash" : "Cart")
+            Image(isInCart ? "trash" : "trash empty")
                 .foregroundColor(.primary)
         }
         .buttonStyle(PlainButtonStyle())
