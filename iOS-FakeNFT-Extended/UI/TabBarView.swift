@@ -11,11 +11,11 @@ struct TabBarView: View {
                     )
                 }
 
-            ProfileView()
+            CartView()
                 .tabItem {
                     Label(
                         NSLocalizedString("Tab.profile", comment: ""),
-                        systemImage: "person.crop.circle"
+                        systemImage: "cart"
                     )
                 }
         }

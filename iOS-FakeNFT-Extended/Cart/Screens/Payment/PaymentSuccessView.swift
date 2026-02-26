@@ -15,7 +15,7 @@ struct PaymentSuccessView: View {
             Spacer()
 
             Image(.paymentSuccess)
-            Text("Успех! Оплата прошла,\n поздравляем с покупкой!")
+            Text("Success.message")
                 .font(.system(size: 22, weight: .bold))
                 .foregroundStyle(.blackAdaptive)
                 .multilineTextAlignment(.center)
@@ -28,7 +28,7 @@ struct PaymentSuccessView: View {
             Button(action: {
                 cartPath = NavigationPath()
             }) {
-                Text("Вернутся в корзину")
+                Text("Success.back")
                     .font(.system(size: 17, weight: .bold))
                     .foregroundStyle(.whiteAdaptive)
                     .padding()

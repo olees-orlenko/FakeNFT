@@ -16,10 +16,24 @@ struct PaymentCell: View {
 
     var body: some View {
         HStack(spacing: 4) {
-            Image(imageName)
-                .resizable()
-                .scaledToFit()
-                .frame(width: 36)
+            AsyncImage(url: URL(string: imageName)) { phase in
+                switch phase {
+                case .empty:
+                    ZStack {
+                        Color.gray.opacity(0.1)
+                    }
+                case let .success(image):
+                    image
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 36)
+                case .failure:
+                    Image(.april)
+                        .foregroundStyle(.gray)
+                @unknown default:
+                    EmptyView()
+                }
+            }
 
             VStack(alignment: .leading, spacing: 0) {
                 Text(name)
