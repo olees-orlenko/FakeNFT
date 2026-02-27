@@ -13,7 +13,7 @@ struct OrderDTO: Codable {
     let id: String
 }
 
-struct NFTItem: Codable {
+struct NFTCartItem: Codable {
     let id: String
     let name: String
     let images: [String]
@@ -21,7 +21,7 @@ struct NFTItem: Codable {
     let price: Double
 }
 
-enum NetworkError: Error, LocalizedError {
+enum NetworkCartError: Error, LocalizedError {
     case invalidURL
     case noData
     case serverError(Int)
@@ -49,9 +49,9 @@ actor CartService {
         try await performRequest(path: "/api/v1/orders/1")
     }
 
-    func fetchNFTs(by ids: [String]) async throws -> [NFTItem] {
-        var fetchedItems: [NFTItem] = []
-        try await withThrowingTaskGroup(of: NFTItem?.self) { group in
+    func fetchNFTs(by ids: [String]) async throws -> [NFTCartItem] {
+        var fetchedItems: [NFTCartItem] = []
+        try await withThrowingTaskGroup(of: NFTCartItem?.self) { group in
             for id in ids {
                 group.addTask {
                     try? await self.performRequest(path: "/api/v1/nft/\(id)")
@@ -79,21 +79,21 @@ actor CartService {
 
         let (data, response) = try await URLSession.shared.data(for: request)
 
-        guard let httpResponse = response as? HTTPURLResponse else { throw NetworkError.noData }
+        guard let httpResponse = response as? HTTPURLResponse else { throw NetworkCartError.noData }
 
 
         if httpResponse.statusCode != 200 {
             if let serverError = String(data: data, encoding: .utf8) {
                 print("DEBUG: Ошибка сервера (тело): \(serverError)")
             }
-            throw NetworkError.serverError(httpResponse.statusCode)
+            throw NetworkCartError.serverError(httpResponse.statusCode)
         }
 
         return try JSONDecoder().decode(OrderDTO.self, from: data)
     }
 
      func performRequest<T: Decodable>(path: String) async throws -> T {
-        guard let url = URL(string: "\(baseURL)\(path)") else { throw NetworkError.invalidURL }
+        guard let url = URL(string: "\(baseURL)\(path)") else { throw NetworkCartError.invalidURL }
 
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
@@ -101,13 +101,13 @@ actor CartService {
         request.setValue("application/json", forHTTPHeaderField: "Accept")
 
         let (data, response) = try await URLSession.shared.data(for: request)
-        guard let httpResponse = response as? HTTPURLResponse else { throw NetworkError.noData }
-        guard httpResponse.statusCode == 200 else { throw NetworkError.serverError(httpResponse.statusCode) }
+        guard let httpResponse = response as? HTTPURLResponse else { throw NetworkCartError.noData }
+        guard httpResponse.statusCode == 200 else { throw NetworkCartError.serverError(httpResponse.statusCode) }
 
         do {
             return try JSONDecoder().decode(T.self, from: data)
         } catch {
-            throw NetworkError.decodingError(error)
+            throw NetworkCartError.decodingError(error)
         }
     }
 }

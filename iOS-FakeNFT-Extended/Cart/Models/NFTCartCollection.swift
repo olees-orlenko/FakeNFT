@@ -1,12 +1,12 @@
 //
-//  NFTCollection.swift
+//  NFTCartCollection.swift
 //  iOS-FakeNFT-Extended
 //
 //  Created by Игнат Рогачевич on 23.02.26.
 //
 
 
-struct NFTCollection: Codable {
+struct NFTCartCollection: Codable {
     let createdAt: String
     let name: String
     let cover: String
