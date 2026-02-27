@@ -2,6 +2,7 @@
 "Tab.catalog" = "Каталог";
 "Tab.profile" = "Профиль";
 "Tab.statistics" = "Статистика";
+"Tab.cart" = "Корзина";
 
 // MARK: - Catalog
 "Catalog.openNft" = "Открыть Nft";
@@ -45,3 +46,25 @@
 // MARK: - Statistic
 "Statistic.nftCollectionTitle" = "Коллекция NFT";
 "Statistic.openUserWebsite" = "Перейти на сайт пользователя";
+// MARK: - Cart
+"Cart.checkout" = "К оплате";
+"Cart.price" = "Цена";
+"Cart.empty" = "Корзина пуста";
+"Cart.deleteConfirm" = "Вы уверены, что хотите удалить объект из корзины?";
+"Cart.delete" = "Удалить";
+"Cart.cancel" = "Отмена";
+"Payment.title" = "Выберите способ оплаты";
+"Payment.pay" = "Оплатить";
+"Payment.alert" = "Не удалось произвести оплату";
+"Payment.agreement" = "Совершая покупку, вы соглашаетесь с условиями";
+"Payment.link" = "Пользовательского соглашения";
+"Success.message" = "Успех! Оплата прошла,\nпоздравляем с покупкой!";
+"Success.back" = "Вернуться в корзину";
+
+// MARK: - Sort Overlay
+"Sort.title" = "Сортировка";
+"Sort.close" = "Закрыть";
+"Sort.price" = "По цене";
+"Sort.name" = "По имени";
+"Sort.rating" = "По рейтингу";
+
