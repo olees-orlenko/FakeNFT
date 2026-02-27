@@ -16,26 +16,7 @@ struct CartCell: View {
 
     var body: some View {
         HStack {
-            AsyncImage(url: URL(string: image)) { phase in
-                switch phase {
-                case .empty:
-                    ZStack {
-                        Color.gray.opacity(0.1)
-                    }
-                case let .success(image):
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(maxWidth: 108)
-                case .failure:
-                    Image(.april)
-                        .foregroundStyle(.gray)
-                @unknown default:
-                    EmptyView()
-                }
-            }
-            .clipShape(RoundedRectangle(cornerRadius: 12))
-            .clipped()
+            Image(name)
 
             VStack(alignment: .leading, spacing: 0) {
                 Text(name)
@@ -44,7 +25,7 @@ struct CartCell: View {
                     .padding(.bottom, 4)
                 RatingView(rating: rating)
                     .padding(.bottom, 12)
-                Text("Cart.price")
+                Text("Цена")
                     .font(.system(size: 13, weight: .regular))
                     .foregroundStyle(.blackAdaptive)
                     .padding(.bottom, 2)
@@ -58,7 +39,6 @@ struct CartCell: View {
                     .renderingMode(.template)
                     .foregroundStyle(.blackAdaptive)
             }
-            .buttonStyle(.plain)
         }
         .background(.whiteAdaptive)
     }

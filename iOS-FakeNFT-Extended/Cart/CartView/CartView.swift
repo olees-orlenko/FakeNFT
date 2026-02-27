@@ -10,19 +10,18 @@ import SwiftUI
 struct CartView: View {
     // MARK: - Properties
 
-    @ObservedObject private var viewModel = CartViewModel()
-    @State var cartPath = NavigationPath()
+    @State var listData: [CartModel] = [] // Public for preview support
     @State private var isShowingSortMenu = false
-    @State private var isShowingDeleteAlert = false
+    @State private var showDeleteAlert = false
     @State private var itemToDelete: CartModel?
 
     // MARK: - Body
 
     var body: some View {
-        NavigationStack(path: $cartPath) {
+        NavigationStack {
             ZStack {
                 VStack {
-                    if viewModel.nfts.isEmpty { emptyState }
+                    if listData.isEmpty { emptyState }
                     else { list
                         Spacer()
                         makeOrder
@@ -32,7 +31,7 @@ struct CartView: View {
 
                 // MARK: - Delete Alert
 
-                if isShowingDeleteAlert {
+                if showDeleteAlert {
                     Color.clear
                         .ignoresSafeArea(.all)
                         .transition(.opacity)
@@ -46,12 +45,12 @@ struct CartView: View {
                                 deleteItem(item)
                             }
                             withAnimation(.spring(duration: 0.2)) {
-                                isShowingDeleteAlert = false
+                                showDeleteAlert = false
                                 itemToDelete = nil
                             }
                         },
                         onCancel: { withAnimation(.spring(duration: 0.2)) {
-                            isShowingDeleteAlert = false
+                            showDeleteAlert = false
                             itemToDelete = nil
                         }
                         }
@@ -67,45 +66,27 @@ struct CartView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: { withAnimation { isShowingSortMenu = true }}) {
-                        Image(.sort)
-                            .renderingMode(.template)
-                            .foregroundStyle(.blackAdaptive)
+                        Image(systemName: "line.horizontal.3")
+                            .foregroundStyle(.black)
                             .font(.title2)
                             .frame(width: 44, height: 44)
                     }
                 }
             }
-            .navigationDestination(for: CartRoute.self) { route in
-                switch route {
-                case .payment:
-                    PaymentView(cartPath: $cartPath)
-                        .toolbar(.hidden, for: .tabBar)
-                case .success:
-                    PaymentSuccessView(cartPath: $cartPath)
-                        .toolbar(.hidden, for: .tabBar)
-                        .navigationBarBackButtonHidden()
-                }
-            }
-
-            // MARK: - Sorting Overlay
-
-            .overlay(SortMenuView(isShowingSortMenu: $isShowingSortMenu, title: "Сортировка", options: sortOptions, closeButtonTitle: "Закрыть"))
-            .toolbar(shouldShowTabBar() ? .hidden : .visible, for: .tabBar)
-            .toolbar(isShowingDeleteAlert ? .hidden : .visible)
+            .toolbar(showDeleteAlert ? .hidden : .visible, for: .tabBar)
         }
-        .background(.whiteAdaptive)
-        .task {
-            if viewModel.nfts.isEmpty {
-                await viewModel.loadCart()
-            }
-        }
+
+        // MARK: - Sorting Overlay
+
+        .overlay(SortMenuView(isShowingSortMenu: $isShowingSortMenu, title: "Сортировка", options: sortOptions, closeButtonTitle: "Закрыть"))
+        .toolbar(isShowingSortMenu ? .hidden : .visible, for: .tabBar)
     }
 
     // MARK: - UI Components
 
     private var list: some View {
         List {
-            ForEach(viewModel.nfts) { item in
+            ForEach(listData) { item in
                 CartCell(
                     name: item.name,
                     image: item.image,
@@ -113,15 +94,12 @@ struct CartView: View {
                     price: item.price,
                     deleteAction: {
                         itemToDelete = item
-                        isShowingDeleteAlert = true
+                        showDeleteAlert = true
                     }
                 )
                 .listRowSeparator(.hidden)
                 .listRowBackground(Color.whiteAdaptive)
             }
-        }
-        .refreshable {
-            await viewModel.loadCart()
         }
         .background(.whiteAdaptive)
         .listStyle(.plain)
@@ -131,7 +109,7 @@ struct CartView: View {
     private var makeOrder: some View {
         HStack {
             VStack(alignment: .leading) {
-                Text("\(viewModel.nfts.count) NFT")
+                Text("\(listData.count) NFT")
                     .font(.system(size: 15))
                     .foregroundStyle(.blackAdaptive)
                 Text("\(formattedTotalPrice) ETH")
@@ -143,16 +121,16 @@ struct CartView: View {
 
             Spacer()
 
-            Button(action: {
-                cartPath.append(CartRoute.payment)
-            }) {
-                Text("Cart.checkout")
+            Button(action: {}) {
+                Text("К оплате")
                     .foregroundStyle(.whiteAdaptive)
                     .font(.system(size: 17, weight: .bold))
-                    .frame(maxWidth: 240, maxHeight: 44)
-                    .background(.blackAdaptive)
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
             }
+            .frame(maxWidth: 240, maxHeight: 44)
+            .background(.blackAdaptive)
+            .clipShape(RoundedRectangle(cornerRadius: 16))
+
+            .padding(.trailing)
         }
         .padding()
         .background(.lightGrayAdaptive)
@@ -164,7 +142,7 @@ struct CartView: View {
             Spacer()
             VStack {
                 Spacer()
-                Text("Cart.empty")
+                Text("Корзина пуста")
                     .foregroundStyle(.blackAdaptive)
                     .font(.system(size: 17, weight: .bold))
                 Spacer()
@@ -176,13 +154,9 @@ struct CartView: View {
 
     // MARK: - Computed Properties
 
-    private func shouldShowTabBar() -> Bool {
-        isShowingSortMenu || isShowingDeleteAlert || !cartPath.isEmpty
-    }
-
     private var totalPrice: Double {
-            viewModel.nfts.reduce(0) { $0 + $1.price }
-        }
+        listData.reduce(0) { $0 + $1.price }
+    }
 
     private var formattedTotalPrice: String {
         String(format: "%.2f", totalPrice).replacingOccurrences(of: ".", with: ",")
@@ -191,23 +165,24 @@ struct CartView: View {
     private var sortOptions: [SortOption] {
         [
             SortOption(title: "По цене") {
-                withAnimation { viewModel.nfts.sort {
+                withAnimation { listData.sort {
                     $0.price < $1.price
                 } }
             },
-            SortOption(title: "По имени") {
-                withAnimation { viewModel.nfts.sort { $0.name < $1.name } }
+            SortOption(title: "По названию") {
+                withAnimation { listData.sort { $0.name < $1.name } }
             },
             SortOption(title: "По рейтингу") {
-                withAnimation { viewModel.nfts.sort { $0.rating > $1.rating } }
+                withAnimation { listData.sort { $0.rating > $1.rating } }
             },
         ]
     }
+
     // MARK: - Private Methods
 
     private func deleteItem(_ item: CartModel) {
-        Task {
-            await viewModel.deleteItem(item)
+        if let index = listData.firstIndex(where: { $0.id == item.id }) {
+            listData.remove(at: index)
         }
     }
 }
@@ -215,21 +190,21 @@ struct CartView: View {
 // MARK: - Preview
 
 #Preview("Cart Light") {
-    CartView()
+    CartView(listData: [MockData.cartMock, MockData.cartMock2, MockData.cartMock3])
         .preferredColorScheme(.light)
 }
 
 #Preview("Cart Dark") {
-    CartView()
+    CartView(listData: [MockData.cartMock, MockData.cartMock2, MockData.cartMock3])
         .preferredColorScheme(.dark)
 }
 
 #Preview("Cart empty state light") {
-    CartView()
+    CartView(listData: [])
         .preferredColorScheme(.light)
 }
 
 #Preview("Cart empty state dark") {
-    CartView()
+    CartView(listData: [])
         .preferredColorScheme(.dark)
 }
