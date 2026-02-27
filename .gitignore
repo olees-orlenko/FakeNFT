@@ -1,3 +1,61 @@
-iOS-FakeNFT-Extended.xcodeproj/xcuserdata/*
-iOS-FakeNFT-Extended.xcodeproj/project.xcworkspace/xcuserdata/*
+# =========================
+# macOS
+# =========================
 .DS_Store
+
+# =========================
+# Xcode
+# =========================
+build/
+DerivedData/
+*.xcworkspace
+!default.xcworkspace
+
+# User data
+xcuserdata/
+**/*.xcuserdatad/
+*.xcuserstate
+
+# SwiftPM
+SourcePackages/
+.swiftpm/
+
+# CocoaPods (если появятся)
+Pods/
+
+# Carthage (если появится)
+Carthage/
+
+# Fastlane (если появится)
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.swp
+*.lock
+
+# Git keep garbage
+.gitkeep
+
+# Xcode schemes user
+*.xcscheme
+
+# Archives
+*.xcarchive
+
+# App bundles
+*.ipa
+
+# =========================
+# Secrets
+# =========================
+*.env
+*.key
+*.pem
+*.p12
