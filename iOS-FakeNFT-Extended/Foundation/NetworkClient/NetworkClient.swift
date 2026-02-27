@@ -30,37 +30,14 @@ actor DefaultNetworkClient: NetworkClient {
 
     func send(request: NetworkRequest) async throws -> Data {
         let urlRequest = try create(request: request)
-
-        print("🌐 [REQUEST] \(urlRequest.httpMethod ?? "") \(urlRequest.url?.absoluteString ?? "nil")")
-        print("🌐 [HEADERS] \(urlRequest.allHTTPHeaderFields ?? [:])")
-
-        do {
-            let (data, response) = try await session.data(for: urlRequest)
-
-            guard let http = response as? HTTPURLResponse else {
-                print("❌ [RESPONSE] not HTTPURLResponse")
-                throw NetworkClientError.urlSessionError
-            }
-
-            print("✅ [RESPONSE] status=\(http.statusCode) url=\(http.url?.absoluteString ?? "nil")")
-
-            if let raw = String(data: data, encoding: .utf8) {
-                print("📦 [BODY preview]\n\(String(raw.prefix(500)))")
-            }
-
-            guard 200 ..< 300 ~= http.statusCode else {
-                throw NetworkClientError.httpStatusCode(http.statusCode)
-            }
-
-            return data
-        } catch let error as NetworkClientError {
-            // важно: не заворачиваем наши ошибки повторно
-            print("❌ [NETWORK CLIENT ERROR] \(error)")
-            throw error
-        } catch {
-            print("❌ [URLSession ERROR] \(error)")
-            throw NetworkClientError.urlRequestError(error)
+        let (data, response) = try await session.data(for: urlRequest)
+        guard let response = response as? HTTPURLResponse else {
+            throw NetworkClientError.urlSessionError
         }
+        guard 200 ..< 300 ~= response.statusCode else {
+            throw NetworkClientError.httpStatusCode(response.statusCode)
+        }
+        return data
     }
 
     func send<T: Decodable>(request: NetworkRequest) async throws -> T {
@@ -92,10 +69,6 @@ actor DefaultNetworkClient: NetworkClient {
         do {
             return try decoder.decode(T.self, from: data)
         } catch {
-            if let raw = String(data: data, encoding: .utf8) {
-                print("❌ [DECODING ERROR] \(T.self)")
-                print("📦 [RAW]\n\(String(raw.prefix(800)))")
-            }
             throw NetworkClientError.parsingError
         }
     }

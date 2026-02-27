@@ -3,13 +3,12 @@ import SwiftUI
 struct TabBarView: View {
     var body: some View {
         TabView {
-            CatalogView()
+            TestCatalogView()
                 .tabItem {
-                    Label {
-                        Text(NSLocalizedString("Tab.catalog", comment: ""))
-                    } icon: {
-                        Image("Tab Bar Catalog")
-                    }
+                    Label(
+                        NSLocalizedString("Tab.catalog", comment: ""),
+                        systemImage: "square.stack.3d.up.fill"
+                    )
                 }
 
             CartView()
@@ -18,15 +17,6 @@ struct TabBarView: View {
                         NSLocalizedString("Tab.profile", comment: ""),
                         systemImage: "cart"
                     )
-                }
-
-            StatisticsFlowView()
-                .tabItem {
-                    Label {
-                        Text(NSLocalizedString("Tab.statistics", comment: ""))
-                    } icon: {
-                        Image("Tab Bar Statistic")
-                    }
                 }
         }
     }

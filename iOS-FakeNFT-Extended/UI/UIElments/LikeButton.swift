@@ -13,13 +13,16 @@ struct LikeButton: View {
     
     // MARK: - Properties
     
-    let isLiked: Bool
-    let action: () -> Void
+    @Binding var isLiked: Bool
     
     // MARK: - Body
     
     var body: some View {
-        Button(action: action) {
+        Button {
+            withAnimation(.spring(response: 0.35, dampingFraction: 0.6)) {
+                isLiked.toggle()
+            }
+        } label: {
             Image(isLiked ? "heart" : "white_heart")
                 .resizable()
                 .scaledToFit()
@@ -30,4 +33,15 @@ struct LikeButton: View {
         .accessibilityLabel(isLiked ? "Liked" : "Not liked")
         
     }
+}
+
+// MARK: - Preview
+
+#Preview("Liked") {
+    LikeButton(isLiked: .constant(true))
+}
+
+#Preview("Not liked") {
+    LikeButton(isLiked: .constant(false))
+        .background(Color(.red))
 }
