@@ -22,6 +22,7 @@ struct FavoritesNFTsView: View {
             .navigationTitle(NSLocalizedString("Profile.Favorites.title", comment: ""))
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)
+            .toolbar(.hidden, for: .tabBar)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(action: { dismiss() }) {
