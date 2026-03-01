@@ -13,19 +13,20 @@ struct EditProfileView: View {
     @State private var description: String
     @State private var site: String
     @State private var avatarURL: String
+    @State private var savedName: String
+    @State private var savedDescription: String
+    @State private var savedSite: String
+    @State private var savedAvatarURL: String
 
     @State private var isSaving = false
     @State private var isPhotoSheetPresented = false
     @State private var isPhotoLinkAlertPresented = false
     @State private var isExitAlertPresented = false
     @State private var pendingPhotoURL = ""
+    @State private var keyboardHeight: CGFloat = 0
     @FocusState private var focusedField: FocusField?
     @FocusState private var isPhotoLinkFieldFocused: Bool
 
-    private let initialName: String
-    private let initialDescription: String
-    private let initialSite: String
-    private let initialAvatarURL: String
     private let onSave: (String, String, String, String) async -> Bool
 
     init(
@@ -35,23 +36,23 @@ struct EditProfileView: View {
         avatarURL: String,
         onSave: @escaping (String, String, String, String) async -> Bool
     ) {
-        self.initialName = name
-        self.initialDescription = description
-        self.initialSite = site
-        self.initialAvatarURL = avatarURL
         self.onSave = onSave
 
         _name = State(initialValue: name)
         _description = State(initialValue: description)
         _site = State(initialValue: site)
         _avatarURL = State(initialValue: avatarURL)
+        _savedName = State(initialValue: name)
+        _savedDescription = State(initialValue: description)
+        _savedSite = State(initialValue: site)
+        _savedAvatarURL = State(initialValue: avatarURL)
     }
 
     private var hasChanges: Bool {
-        name != initialName ||
-        description != initialDescription ||
-        site != initialSite ||
-        avatarURL != initialAvatarURL
+        name.trimmingCharacters(in: .whitespacesAndNewlines) != savedName.trimmingCharacters(in: .whitespacesAndNewlines) ||
+        description.trimmingCharacters(in: .whitespacesAndNewlines) != savedDescription.trimmingCharacters(in: .whitespacesAndNewlines) ||
+        normalizedWebsite(site) != normalizedWebsite(savedSite) ||
+        avatarURL.trimmingCharacters(in: .whitespacesAndNewlines) != savedAvatarURL.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     private var initials: String {
@@ -61,7 +62,7 @@ struct EditProfileView: View {
     }
 
     private var isKeyboardVisible: Bool {
-        focusedField != nil || isPhotoLinkFieldFocused
+        keyboardHeight > 0
     }
 
     var body: some View {
@@ -116,7 +117,7 @@ struct EditProfileView: View {
             .scrollDismissesKeyboard(.interactively)
             .disabled(isSaving)
 
-            if !isKeyboardVisible {
+            if hasChanges && !isKeyboardVisible {
                 saveButton
             }
 
@@ -136,12 +137,31 @@ struct EditProfileView: View {
                 Color.black.opacity(0.15)
                     .ignoresSafeArea()
 
-                ProgressView()
-                    .progressViewStyle(.circular)
+                VStack {
+                    ProgressView()
+                        .progressViewStyle(.circular)
+                }
+                .frame(width: 82, height: 82)
+                .background(Color(uiColor: UIColor(hexString: "#F7F7F8")))
+                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
             }
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
+        .toolbar(.hidden, for: .tabBar)
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillChangeFrameNotification)) { notification in
+            guard
+                let frame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect
+            else { return }
+
+            let screenHeight = UIScreen.main.bounds.height
+            let overlap = max(0, screenHeight - frame.minY)
+            keyboardHeight = overlap
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
+            keyboardHeight = 0
+        }
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button(action: backAction) {
@@ -151,6 +171,7 @@ struct EditProfileView: View {
                         .frame(width: 24, height: 24)
                         .foregroundStyle(Color(uiColor: UIColor(hexString: "#1A1B22")))
                 }
+                .disabled(isSaving)
             }
         }
     }
@@ -210,17 +231,17 @@ struct EditProfileView: View {
     private var saveButton: some View {
         Button(action: saveAction) {
             Text("Сохранить")
-                .font(.system(size: 22.0 / 2, weight: .bold))
-                .foregroundStyle(.white)
-                .frame(maxWidth: .infinity)
-                .frame(height: 60)
-                .background(Color(uiColor: UIColor(hexString: "#111427")))
-                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .font(.system(size: 17, weight: .bold))
+            .foregroundStyle(.white)
+            .frame(maxWidth: .infinity)
+            .frame(height: 60)
+            .background(Color(uiColor: UIColor(hexString: "#111427")))
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
         }
         .buttonStyle(.plain)
         .padding(.horizontal, 16)
         .padding(.bottom, 8)
-        .disabled(isSaving)
+        .disabled(isSaving || !hasChanges)
     }
 
     private var photoSheetOverlay: some View {
@@ -390,6 +411,7 @@ struct EditProfileView: View {
     }
 
     private func backAction() {
+        guard !isSaving else { return }
         focusedField = nil
         if hasChanges {
             isExitAlertPresented = true
@@ -404,15 +426,33 @@ struct EditProfileView: View {
         let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedDescription = description.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedSite = site.trimmingCharacters(in: .whitespacesAndNewlines)
+        let normalizedSite = normalizedWebsite(trimmedSite)
         let trimmedAvatarURL = avatarURL.trimmingCharacters(in: .whitespacesAndNewlines)
 
         Task {
-            let isSaved = await onSave(trimmedName, trimmedDescription, trimmedSite, trimmedAvatarURL)
+            let isSaved = await onSave(trimmedName, trimmedDescription, normalizedSite, trimmedAvatarURL)
             isSaving = false
             if isSaved {
+                name = trimmedName
+                description = trimmedDescription
+                site = trimmedSite
+                avatarURL = trimmedAvatarURL
+                savedName = trimmedName
+                savedDescription = trimmedDescription
+                savedSite = trimmedSite
+                savedAvatarURL = trimmedAvatarURL
                 dismiss()
             }
         }
+    }
+
+    private func normalizedWebsite(_ value: String) -> String {
+        let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return "" }
+        if trimmed.hasPrefix("http://") || trimmed.hasPrefix("https://") {
+            return trimmed
+        }
+        return "https://\(trimmed)"
     }
 
     @ViewBuilder

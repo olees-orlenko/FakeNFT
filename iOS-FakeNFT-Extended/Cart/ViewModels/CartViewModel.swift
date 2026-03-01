@@ -48,6 +48,6 @@ final class CartViewModel: ObservableObject {
 
     func deleteItem(_ item: CartModel) async {
         nfts.removeAll { $0.id == item.id }
-        try? await service.updateOrder(nftIds: nfts.map { $0.id })
+        _ = try? await service.updateOrder(nftIds: nfts.map { $0.id })
     }
 }

@@ -8,12 +8,12 @@ struct ProfileRowView: View {
         HStack {
             Text("\(title) (\(count))")
                 .font(.system(size: 17, weight: .bold))
-                .foregroundStyle(Color.primary)
+                .foregroundStyle(Color(uiColor: .closeButton))
             Spacer()
             Image(systemName: "chevron.right")
-                .foregroundStyle(Color(.systemGray2))
+                .foregroundStyle(Color(uiColor: .closeButton))
         }
+        .frame(maxWidth: .infinity)
         .frame(height: 54)
-        .padding(.horizontal, 16)
     }
 }
