@@ -3,7 +3,8 @@ import SwiftUI
 // MARK: - ProfileView
 
 struct ProfileView: View {
-    @StateObject private var favoritesStore = ProfileFavoritesViewModel()
+    @Environment(ServicesAssembly.self) private var servicesAssembly
+    @EnvironmentObject private var favoritesManager: FavoritesManager
 
     @State private var viewData: ProfileViewData
     @State private var screenState: ScreenState
@@ -79,6 +80,13 @@ struct ProfileView: View {
             guard shouldLoadOnAppear, !hasLoaded else { return }
             hasLoaded = true
             await loadProfileData()
+            await loadMissingFavoriteNFTsIfNeeded()
+        }
+        .onChange(of: favoritesManager.favoriteIDs) { _ in
+            updateFavoriteItemsFromCache()
+            Task {
+                await loadMissingFavoriteNFTsIfNeeded()
+            }
         }
     }
 
@@ -184,7 +192,7 @@ struct ProfileView: View {
             NavigationLink {
                 MyNFTsView(
                     items: myNFTItems,
-                    favoriteIDs: favoritesStore.favoriteIDs,
+                    favoriteIDs: favoritesManager.favoriteIDs,
                     screenState: $myNFTsScreenState,
                     onRetry: {
                         Task { await loadProfileData() }
@@ -274,15 +282,13 @@ struct ProfileView: View {
     private func apply(profile: ProfileDTO, nftList: [Nft]) {
         profileDTO = profile
         allNFTsByID = Dictionary(uniqueKeysWithValues: nftList.map { ($0.id, $0) })
-
-        let favoriteIDs = Set(profile.likes)
-        favoritesStore.replace(with: favoriteIDs)
+        favoritesManager.replaceFromServer(with: Set(profile.likes))
 
         myNFTItems = profile.nfts
             .compactMap { allNFTsByID[$0] }
             .map(MyNFTItem.init(nft:))
 
-        favoriteNFTItems = profile.likes
+        favoriteNFTItems = favoritesManager.favoriteIDs
             .compactMap { allNFTsByID[$0] }
             .map(FavoriteNFTItem.init(nft:))
 
@@ -315,7 +321,7 @@ struct ProfileView: View {
             description: description,
             avatar: avatarURL,
             website: site,
-            likes: Array(favoritesStore.favoriteIDs)
+            likes: Array(favoritesManager.favoriteIDs)
         )
 
         do {
@@ -333,11 +339,11 @@ struct ProfileView: View {
 
         isLikeRequestInFlight = true
 
-        let wasFavorite = favoritesStore.isFavorite(id: nftID)
+        let wasFavorite = favoritesManager.isFavorite(id: nftID)
         if wasFavorite {
-            favoritesStore.remove(id: nftID)
+            favoritesManager.remove(id: nftID)
         } else {
-            favoritesStore.insert(id: nftID)
+            favoritesManager.insert(id: nftID)
         }
 
         updateFavoriteItemsFromCache()
@@ -347,29 +353,26 @@ struct ProfileView: View {
             description: currentProfile.description,
             avatar: currentProfile.avatar,
             website: currentProfile.website,
-            likes: Array(favoritesStore.favoriteIDs)
+            likes: Array(favoritesManager.favoriteIDs)
         )
 
         do {
-            let updated = try await profileService.updateProfile(payload)
-            apply(profile: updated, nftList: Array(allNFTsByID.values))
+            _ = try await updateProfileWithRetry(payload: payload)
+            let confirmedProfile = try await profileService.fetchProfile()
+            favoritesManager.replace(with: Set(confirmedProfile.likes))
+            profileDTO = confirmedProfile
+            updateFavoriteItemsFromCache()
             myNFTsScreenState = .content
             favoritesScreenState = .content
         } catch {
-            if wasFavorite {
-                favoritesStore.insert(id: nftID)
-            } else {
-                favoritesStore.remove(id: nftID)
-            }
-            updateFavoriteItemsFromCache()
-            favoritesScreenState = .error(NSLocalizedString("Profile.Favorites.error", comment: ""))
+            favoritesScreenState = .content
         }
 
         isLikeRequestInFlight = false
     }
 
     private func updateFavoriteItemsFromCache() {
-        favoriteNFTItems = favoritesStore.favoriteIDs
+        favoriteNFTItems = favoritesManager.favoriteIDs
             .compactMap { allNFTsByID[$0] }
             .map(FavoriteNFTItem.init(nft:))
 
@@ -382,6 +385,37 @@ struct ProfileView: View {
             myNftCount: myNFTItems.count,
             favoriteNftCount: favoriteNFTItems.count
         )
+    }
+
+    private func loadMissingFavoriteNFTsIfNeeded() async {
+        let missingIDs = favoritesManager.favoriteIDs.filter { allNFTsByID[$0] == nil }
+        guard !missingIDs.isEmpty else { return }
+
+        for id in missingIDs {
+            if let nft = try? await servicesAssembly.nftService.loadNft(id: id) {
+                allNFTsByID[id] = nft
+            }
+        }
+
+        updateFavoriteItemsFromCache()
+    }
+
+    private func updateProfileWithRetry(payload: ProfileUpdateDTO) async throws -> ProfileDTO {
+        let maxAttempts = 3
+        var lastError: Error?
+
+        for attempt in 1...maxAttempts {
+            do {
+                return try await profileService.updateProfile(payload)
+            } catch {
+                lastError = error
+                if attempt < maxAttempts {
+                    try? await Task.sleep(nanoseconds: 350_000_000)
+                }
+            }
+        }
+
+        throw lastError ?? URLError(.badServerResponse)
     }
 
     private func makeWebsiteURL(from site: String) -> URL? {
@@ -398,12 +432,18 @@ struct ProfileView: View {
 
 #Preview {
     ProfileView(shouldLoadOnAppear: false)
+        .environment(ServicesAssembly(networkClient: DefaultNetworkClient(), nftStorage: NftStorageImpl()))
+        .environmentObject(FavoritesManager())
 }
 
 #Preview("Loading") {
     ProfileView(screenState: .loading, shouldLoadOnAppear: false)
+        .environment(ServicesAssembly(networkClient: DefaultNetworkClient(), nftStorage: NftStorageImpl()))
+        .environmentObject(FavoritesManager())
 }
 
 #Preview("Error") {
     ProfileView(screenState: .error("Не удалось загрузить профиль"), shouldLoadOnAppear: false)
+        .environment(ServicesAssembly(networkClient: DefaultNetworkClient(), nftStorage: NftStorageImpl()))
+        .environmentObject(FavoritesManager())
 }

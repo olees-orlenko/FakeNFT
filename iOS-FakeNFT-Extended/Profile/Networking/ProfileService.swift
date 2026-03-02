@@ -67,7 +67,12 @@ final class ProfileServiceImpl: ProfileService {
         var parts = fields.map { key, value in
             "\(escape(key))=\(escape(value))"
         }
-        parts.append(contentsOf: dto.likes.map { "likes=\(escape($0))" })
+        if dto.likes.isEmpty {
+            parts.append("likes=")
+            parts.append("likes[]=")
+        } else {
+            parts.append(contentsOf: dto.likes.map { "likes=\(escape($0))" })
+        }
 
         return parts.joined(separator: "&")
     }
