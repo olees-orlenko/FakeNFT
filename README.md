@@ -167,15 +167,15 @@
 Доступна на экранах: «Каталог», «Корзина», «Мои NFT», «Статистика».
 Настройки сохраняются локально (через `@AppStorage` или `UserDefaults`) и восстанавливаются после перезапуска.
 
-## Авторы
-- [Орленко Олеся](https://github.com/olees-orlenko)
-- [Mukhammad Makhmudov](https://github.com/MukhammadMR)
-- [Ignat Rogachevich](https://github.com/shogassxzp)
-- [Philip Gerasimov](https://github.com/Yogerasim)
-
 **Значения по умолчанию:**
 
 - Каталог — по количеству NFT;
 - Корзина — по названию;
 - Мои NFT — по рейтингу;
 - Статистика — по рейтингу.
+
+## Авторы
+- [Орленко Олеся](https://github.com/olees-orlenko)
+- [Mukhammad Makhmudov](https://github.com/MukhammadMR)
+- [Ignat Rogachevich](https://github.com/shogassxzp)
+- [Philip Gerasimov](https://github.com/Yogerasim)
