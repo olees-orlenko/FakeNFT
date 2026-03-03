@@ -88,6 +88,6 @@ final class NftViewModel: ObservableObject {
     }
     
     var authorURL: URL {
-        collection.authorURL ?? defaultAuthorURL
+        defaultAuthorURL
     }
 }
