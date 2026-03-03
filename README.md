@@ -7,7 +7,7 @@
 ### Скринкаст с демонстрацией эпиков
 - [Экран "Профиль"](https://disk.yandex.ru/d/xEp_SEOpanjaXw)
 - [Экран "Каталог"](https://disk.yandex.ru/i/G5HvGJgPij--oQ)
-- [Экран "Корзина"]()
+- [Экран "Корзина"](https://disk.yandex.ru/i/p609ZnvbaikZRw)
 - [Экран "Статистика"]()
 
 ## Назначение и цели приложения
