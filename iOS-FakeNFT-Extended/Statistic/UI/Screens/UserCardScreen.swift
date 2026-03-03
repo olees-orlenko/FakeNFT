@@ -57,7 +57,7 @@ struct UserCardScreen: View {
                     onBack?()
                 } label: {
                     Image(systemName: "chevron.left")
-                        .tint(.primary)
+                        .foregroundColor(.primary)
                 }
             }
         }

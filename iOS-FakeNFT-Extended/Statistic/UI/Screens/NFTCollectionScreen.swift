@@ -51,7 +51,7 @@ struct NFTCollectionScreen: View {
                     onBack?()
                 } label: {
                     Image(systemName: "chevron.left")
-                        .tint(.primary)
+                        .foregroundColor(.primary)
                 }
             }
         }
