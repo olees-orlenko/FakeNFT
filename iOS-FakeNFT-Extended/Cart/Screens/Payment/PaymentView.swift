@@ -7,10 +7,13 @@
 
 import SwiftUI
 
+private let purchaseDidCompleteNotification = Notification.Name("purchaseDidComplete")
+
 struct PaymentView: View {
     @Binding var cartPath: NavigationPath
+    let nftIds: [String]
+    @EnvironmentObject private var cartManager: CartManager
     @State private var isAlertShowed: Bool = false
-    @State private var isSuccessShowed: Bool = false
     @StateObject private var viewModel = PaymentViewModel()
 
     let columns = Array(repeating: GridItem(.flexible(), spacing: 7), count: 2)
@@ -90,8 +93,10 @@ struct PaymentView: View {
     private func validation() {
         if viewModel.selectedCurrency != nil {
             Task {
-                let success = await viewModel.processPayment()
+                let success = await viewModel.processPayment(nftIds: nftIds)
                 if success {
+                    cartManager.markPurchased(ids: nftIds)
+                    NotificationCenter.default.post(name: purchaseDidCompleteNotification, object: nil)
                     cartPath.append(CartRoute.success)
                 } else {
                     isAlertShowed = true
@@ -107,12 +112,14 @@ struct PaymentView: View {
 
 #Preview("Payment View Light") {
     @Previewable @State var previewPath = NavigationPath()
-    PaymentView(cartPath: $previewPath)
+    PaymentView(cartPath: $previewPath, nftIds: [])
+        .environmentObject(CartManager())
         .preferredColorScheme(.light)
 }
 
 #Preview("Payment View Dark") {
     @Previewable @State var previewPath = NavigationPath()
-    PaymentView(cartPath: $previewPath)
+    PaymentView(cartPath: $previewPath, nftIds: [])
+        .environmentObject(CartManager())
         .preferredColorScheme(.dark)
 }

@@ -31,13 +31,26 @@ final class PaymentViewModel: ObservableObject {
         }
     }
 
-    func processPayment() async -> Bool {
+    func processPayment(nftIds: [String]) async -> Bool {
         guard let currencyId = selectedCurrency?.id else { return false }
+        guard !nftIds.isEmpty else { return false }
         isLoading = true
         defer { isLoading = false }
 
         do {
-            return try await service.performPayment(currencyId: currencyId)
+            var seen = Set<String>()
+            let uniqueIds = nftIds.filter { seen.insert($0).inserted }
+
+            _ = try await service.updateOrder(nftIds: uniqueIds)
+
+            let paymentSuccess = try await service.performPayment(currencyId: currencyId)
+            guard paymentSuccess else { return false }
+
+            for nftID in uniqueIds {
+                _ = try await service.completeOrder(nftID: nftID)
+            }
+
+            return true
         } catch {
             paymentError = true
             return false

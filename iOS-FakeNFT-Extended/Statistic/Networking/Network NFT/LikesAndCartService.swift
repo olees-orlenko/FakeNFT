@@ -3,6 +3,7 @@ import Foundation
 protocol LikesAndCartService {
     func loadMyProfile(profileId: String) async throws -> StatisticUserProfileDTO
     func saveMyLikes(profileId: String, likes: [String]) async throws -> StatisticUserProfileDTO
+    func saveMyNFTs(profileId: String, nftIds: [String]) async throws -> StatisticUserProfileDTO
 
     func loadMyOrders(ordersId: String) async throws -> OrdersDTO
     func saveMyCart(ordersId: String, nftIds: [String]) async throws -> OrdersDTO
@@ -47,6 +48,24 @@ actor LikesAndCartServiceImpl: LikesAndCartService {
 
         print("✅ saveMyLikes SUCCESS updated.likes.count =", updated.likes.count)
 
+        return updated
+    }
+
+    func saveMyNFTs(profileId: String, nftIds: [String]) async throws -> StatisticUserProfileDTO {
+        var profile = try await loadMyProfile(profileId: profileId)
+
+        profile = StatisticUserProfileDTO(
+            id: profile.id,
+            name: profile.name,
+            avatar: profile.avatar,
+            description: profile.description,
+            website: profile.website,
+            nfts: nftIds,
+            likes: profile.likes
+        )
+
+        let request = StatisticUpdateProfileRequest(id: profileId, profile: profile)
+        let updated: StatisticUserProfileDTO = try await networkClient.send(request: request)
         return updated
     }
 

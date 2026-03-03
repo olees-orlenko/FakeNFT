@@ -15,20 +15,20 @@ final class CartViewModel: ObservableObject {
     @Published var isLoading = false
 
     private let service = CartService()
+    private let cartStorageKey = "cartNFTs"
 
     func loadCart() async {
         isLoading = true
         defer { isLoading = false }
 
+        let ids = currentCartIDs()
+        guard !ids.isEmpty else {
+            nfts = []
+            return
+        }
+
         do {
-            let order: OrderDTO = try await service.fetchOrder()
-
-            guard !order.nfts.isEmpty else {
-                await MainActor.run { self.nfts = [] }
-                return
-            }
-
-            let nftDetails = try await service.fetchNFTs(by: order.nfts)
+            let nftDetails = try await service.fetchNFTs(by: ids)
 
             await MainActor.run {
                 self.nfts = nftDetails.map { nft in
@@ -48,6 +48,17 @@ final class CartViewModel: ObservableObject {
 
     func deleteItem(_ item: CartModel) async {
         nfts.removeAll { $0.id == item.id }
-        _ = try? await service.updateOrder(nftIds: nfts.map { $0.id })
+        let ids = nfts.map { $0.id }
+        if ids.isEmpty {
+            _ = try? await service.clearOrder()
+        } else {
+            _ = try? await service.updateOrder(nftIds: ids)
+        }
+    }
+
+    private func currentCartIDs() -> [String] {
+        let value = UserDefaults.standard.string(forKey: cartStorageKey) ?? ""
+        if value.isEmpty { return [] }
+        return value.split(separator: ",").map(String.init)
     }
 }
