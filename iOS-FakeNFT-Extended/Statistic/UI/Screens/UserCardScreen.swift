@@ -23,13 +23,6 @@ struct UserCardScreen: View {
     var body: some View {
         VStack(spacing: 36) {
             
-            NavigationTitleView(
-                title: nil,
-                systemImage: "chevron.left",
-                buttonPosition: .left,
-                titleAlignment: .leading,
-                onTap: { onBack?() }
-            )
             userInfoBlock
             websiteButton
             
@@ -56,7 +49,19 @@ struct UserCardScreen: View {
         .padding(.top, 8)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background(Color(.systemBackground))
-        .toolbar(.hidden, for: .navigationBar)
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    onBack?()
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .tint(.primary)
+                }
+            }
+        }
+        .toolbar(.hidden, for: .tabBar)
     }
     
     // MARK: - Blocks

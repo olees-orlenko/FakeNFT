@@ -38,19 +38,24 @@ struct NFTCollectionScreen: View {
     var body: some View {
         VStack(spacing: 26) {
 
-            NavigationTitleView(
-                title: "Коллекция NFT",
-                systemImage: "chevron.left",
-                buttonPosition: .left,
-                titleAlignment: .center,
-                onTap: { onBack?() }
-            )
-
             content
         }
         .padding(.top, 8)
         .background(Color(.systemBackground))
-        .toolbar(.hidden, for: .navigationBar)
+        .navigationTitle("Коллекция NFT")
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    onBack?()
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .tint(.primary)
+                }
+            }
+        }
+        .toolbar(.hidden, for: .tabBar)
         .task { await viewModel.load() }
     }
 
@@ -58,9 +63,9 @@ struct NFTCollectionScreen: View {
     private var content: some View {
         switch viewModel.state {
         case .loading:
-            VStack {
-                ProgressView().padding()
-                Spacer()
+            ZStack {
+                Color(.systemBackground).ignoresSafeArea()
+                StatisticsLoadingHUD()
             }
 
         case .error(let message):
@@ -84,7 +89,7 @@ struct NFTCollectionScreen: View {
                             imageURL: item.imageURL,
                             isLiked: Binding(
                                 get: { viewModel.likedIds.contains(item.id) },
-                                set: { _ in } 
+                                set: { _ in }
                             ),
                             isInCart: Binding(
                                 get: { viewModel.cartIds.contains(item.id) },
