@@ -8,7 +8,7 @@
 - [Экран "Профиль"](https://disk.yandex.ru/d/xEp_SEOpanjaXw)
 - [Экран "Каталог"](https://disk.yandex.ru/i/G5HvGJgPij--oQ)
 - [Экран "Корзина"](https://disk.yandex.ru/i/p609ZnvbaikZRw)
-- [Экран "Статистика"]()
+- [Экран "Статистика"](https://disk.yandex.ru/d/Ss7YOolXwXn8TA)
 
 ## Назначение и цели приложения
 
