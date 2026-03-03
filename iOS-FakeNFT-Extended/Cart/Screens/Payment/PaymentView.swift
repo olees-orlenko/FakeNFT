@@ -26,7 +26,7 @@ struct PaymentView: View {
             paymentConfirm
                 .alert("Payment.alert", isPresented: $isAlertShowed) {
                     Button("Cart.cancel", role: .cancel) { isAlertShowed = false }
-                    Button("Common.retry") { validation() } 
+                    Button("Common.retry") { validation() }
                 }
         }
         .task {
@@ -34,6 +34,19 @@ struct PaymentView: View {
         }
         .background(.whiteAdaptive)
         .navigationTitle("Payment.title")
+        .navigationBarBackButtonHidden(UIDevice.current.systemVersion.compare("26.0", options: .numeric) == .orderedAscending)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                if #available(iOS 26.0, *) {}
+                else {
+                    Button(action: { cartPath.removeLast() }) {
+                        Image(systemName: "chevron.left")
+                            .foregroundStyle(.blackAdaptive)
+                            .font(.title3)
+                    }
+                }
+            }
+        }
     }
 
     // MARK: - UI Components

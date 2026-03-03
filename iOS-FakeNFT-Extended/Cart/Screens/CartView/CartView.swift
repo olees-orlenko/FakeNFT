@@ -190,8 +190,8 @@ struct CartView: View {
     }
 
     private var totalPrice: Double {
-            viewModel.nfts.reduce(0) { $0 + $1.price }
-        }
+        viewModel.nfts.reduce(0) { $0 + $1.price }
+    }
 
     private var formattedTotalPrice: String {
         String(format: "%.2f", totalPrice).replacingOccurrences(of: ".", with: ",")
@@ -204,14 +204,15 @@ struct CartView: View {
                     $0.price < $1.price
                 } }
             },
-            SortOption(title: "По имени") {
-                withAnimation { viewModel.nfts.sort { $0.name < $1.name } }
-            },
             SortOption(title: "По рейтингу") {
                 withAnimation { viewModel.nfts.sort { $0.rating > $1.rating } }
             },
+            SortOption(title: "По названию") {
+                withAnimation { viewModel.nfts.sort { $0.name < $1.name } }
+            },
         ]
     }
+
     // MARK: - Private Methods
 
     private func deleteItem(_ item: CartModel) {
