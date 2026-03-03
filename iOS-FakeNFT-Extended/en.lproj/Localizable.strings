@@ -50,7 +50,7 @@
 "Cart.checkout" = "К оплате";
 "Cart.price" = "Цена";
 "Cart.empty" = "Корзина пуста";
-"Cart.deleteConfirm" = "Вы уверены, что хотите удалить объект из корзины?";
+"Cart.deleteConfirm" = "Вы уверены, что хотите \nудалить объект из корзины?";
 "Cart.delete" = "Удалить";
 "Cart.cancel" = "Отмена";
 "Payment.title" = "Выберите способ оплаты";
