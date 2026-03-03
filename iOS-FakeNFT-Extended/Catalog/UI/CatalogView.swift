@@ -91,6 +91,7 @@ struct CatalogView: View {
                 }
             }
         }
+        .tint(.black)
     }
 }
 
