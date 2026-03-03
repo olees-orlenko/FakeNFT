@@ -15,11 +15,9 @@ final class CartManager: ObservableObject {
     var count: Int {
         cartItems.count
     }
-    @AppStorage("cartNFTs") private var cartIDsString: String = ""
-    @AppStorage("purchasedNFTsOverride") private var purchasedIDsString: String = ""
-    // Флаг нужен из-за API: пустой orders (nfts=) может возвращать 406,
-    // поэтому локально фиксируем "пустую корзину", чтобы удалённый последний NFT не возвращался.
-    @AppStorage("cartForcedEmpty") private var cartForcedEmpty: Bool = false
+    private let defaults = UserDefaults.standard
+    private let cartStorageKey = "cartNFTs"
+    private let purchasedStorageKey = "purchasedNFTsOverride"
     @Published private(set) var cartItems: Set<String> = []
     private let cartService = CartService()
     private var isSyncInProgress = false
@@ -36,6 +34,16 @@ final class CartManager: ObservableObject {
     }
     
     // MARK: - Methods
+
+    private var cartIDsString: String {
+        get { defaults.string(forKey: cartStorageKey) ?? "" }
+        set { defaults.set(newValue, forKey: cartStorageKey) }
+    }
+
+    private var purchasedIDsString: String {
+        get { defaults.string(forKey: purchasedStorageKey) ?? "" }
+        set { defaults.set(newValue, forKey: purchasedStorageKey) }
+    }
     
     private func persist() {
         cartIDsString = cartItems.sorted().joined(separator: ",")
@@ -60,9 +68,6 @@ final class CartManager: ObservableObject {
         persistPurchased(purchased)
 
         cartItems.subtract(ids)
-        if cartItems.isEmpty {
-            cartForcedEmpty = true
-        }
         persist()
     }
     
@@ -71,14 +76,6 @@ final class CartManager: ObservableObject {
     }
 
     func replace(with ids: Set<String>) {
-        if ids.isEmpty {
-            cartForcedEmpty = true
-        }
-        if cartForcedEmpty && !ids.isEmpty {
-            cartItems = []
-            persist()
-            return
-        }
         cartItems = ids
         persist()
     }
@@ -110,10 +107,24 @@ final class CartManager: ObservableObject {
             let target = cartItems
 
             if target.isEmpty {
+                do {
+                    _ = try await cartService.clearOrder()
+                    if cartItems == target {
+                        replace(with: [])
+                    }
+                } catch {
+                    print("❌ Ошибка очистки корзины: \(error)")
+                }
+
                 if pendingSync {
                     pendingSync = false
                     continue
                 }
+
+                if cartItems != target {
+                    continue
+                }
+
                 break
             }
 
@@ -142,16 +153,12 @@ final class CartManager: ObservableObject {
     }
     
     func addToCart(_ id: String) {
-        cartForcedEmpty = false
         cartItems.insert(id)
         persist()
     }
     
     func removeFromCart(_ id: String) {
         cartItems.remove(id)
-        if cartItems.isEmpty {
-            cartForcedEmpty = true
-        }
         persist()
     }
     

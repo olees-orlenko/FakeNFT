@@ -96,7 +96,6 @@ struct PaymentView: View {
                 let success = await viewModel.processPayment(nftIds: nftIds)
                 if success {
                     cartManager.markPurchased(ids: nftIds)
-                    await cartManager.refreshFromServer()
                     NotificationCenter.default.post(name: purchaseDidCompleteNotification, object: nil)
                     cartPath.append(CartRoute.success)
                 } else {

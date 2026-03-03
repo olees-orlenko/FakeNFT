@@ -108,6 +108,23 @@ actor CartService {
         try await completeOrder(nftIds: [nftID], primaryFormat: .repeated)
     }
 
+    func clearOrder() async throws -> OrderDTO {
+        guard let url = URL(string: "\(baseURL)/api/v1/orders/1") else { throw NetworkError.invalidURL }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        request.setValue(token, forHTTPHeaderField: "X-Practicum-Mobile-Token")
+        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.httpBody = Data()
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard let httpResponse = response as? HTTPURLResponse else { throw NetworkCartError.noData }
+        guard httpResponse.statusCode == 200 else { throw NetworkCartError.serverError(httpResponse.statusCode) }
+
+        return try JSONDecoder().decode(OrderDTO.self, from: data)
+    }
+
     private func makeArrayBody(key: String, values: [String], format: ArrayBodyFormat) -> String {
         if values.isEmpty {
             return "\(key)="

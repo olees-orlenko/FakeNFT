@@ -83,18 +83,18 @@ struct ProfileView: View {
             guard shouldLoadOnAppear, !hasLoaded else { return }
             hasLoaded = true
             await loadProfileData()
-            await loadMissingFavoriteNFTsIfNeeded()
         }
-        .onChange(of: favoritesManager.favoriteIDs) { _ in
-            updateFavoriteItemsFromCache()
+        .onChange(of: favoritesManager.favoriteIDs) {
             Task {
+                favoritesScreenState = .loading
                 await loadMissingFavoriteNFTsIfNeeded()
+                updateFavoriteItemsFromCache()
+                favoritesScreenState = .content
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: purchaseDidCompleteNotification)) { _ in
             Task {
                 await loadProfileData()
-                await loadMissingFavoriteNFTsIfNeeded()
             }
         }
     }
@@ -268,6 +268,7 @@ struct ProfileView: View {
         }
     }
 
+    @MainActor
     private func loadProfileData() async {
         screenState = .loading
         myNFTsScreenState = .loading
@@ -277,6 +278,8 @@ struct ProfileView: View {
             let profile = try await profileService.fetchProfile()
             let nftList = try await profileService.fetchNFTList()
             apply(profile: profile, nftList: nftList)
+            await loadMissingMyNFTsIfNeeded()
+            await loadMissingFavoriteNFTsIfNeeded()
             screenState = .content
             myNFTsScreenState = .content
             favoritesScreenState = .content
@@ -288,20 +291,13 @@ struct ProfileView: View {
         }
     }
 
+    @MainActor
     private func apply(profile: ProfileDTO, nftList: [Nft]) {
         profileDTO = profile
         allNFTsByID = Dictionary(uniqueKeysWithValues: nftList.map { ($0.id, $0) })
         favoritesManager.replaceFromServer(with: Set(profile.likes))
-
-        let effectiveMyNFTIDs = Set(profile.nfts).union(cartManager.getPurchasedIDs())
-
-        myNFTItems = effectiveMyNFTIDs
-            .compactMap { allNFTsByID[$0] }
-            .map(MyNFTItem.init(nft:))
-
-        favoriteNFTItems = favoritesManager.favoriteIDs
-            .compactMap { allNFTsByID[$0] }
-            .map(FavoriteNFTItem.init(nft:))
+        updateMyNFTItemsFromCache()
+        updateFavoriteItemsFromCache()
 
         let websiteURL = makeWebsiteURL(from: profile.website) ?? ProfileViewData.mock.websiteURL
         let websiteTitle = profile.website
@@ -319,6 +315,7 @@ struct ProfileView: View {
         )
     }
 
+    @MainActor
     private func saveProfile(
         name: String,
         description: String,
@@ -345,6 +342,7 @@ struct ProfileView: View {
         }
     }
 
+    @MainActor
     private func toggleFavorite(nftID: String) async {
         guard !isLikeRequestInFlight, let currentProfile = profileDTO else { return }
 
@@ -382,6 +380,7 @@ struct ProfileView: View {
         isLikeRequestInFlight = false
     }
 
+    @MainActor
     private func updateFavoriteItemsFromCache() {
         favoriteNFTItems = favoritesManager.favoriteIDs
             .compactMap { allNFTsByID[$0] }
@@ -398,6 +397,39 @@ struct ProfileView: View {
         )
     }
 
+    @MainActor
+    private func updateMyNFTItemsFromCache() {
+        let effectiveMyNFTIDs = Set(profileDTO?.nfts ?? []).union(cartManager.getPurchasedIDs())
+        myNFTItems = effectiveMyNFTIDs
+            .compactMap { allNFTsByID[$0] }
+            .map(MyNFTItem.init(nft:))
+    }
+
+    @MainActor
+    private func loadMissingMyNFTsIfNeeded() async {
+        let effectiveMyNFTIDs = Set(profileDTO?.nfts ?? []).union(cartManager.getPurchasedIDs())
+        let missingIDs = effectiveMyNFTIDs.filter { allNFTsByID[$0] == nil }
+        guard !missingIDs.isEmpty else { return }
+
+        for id in missingIDs {
+            if let nft = try? await servicesAssembly.nftService.loadNft(id: id) {
+                allNFTsByID[id] = nft
+            }
+        }
+
+        updateMyNFTItemsFromCache()
+        viewData = viewData.updated(
+            name: viewData.name,
+            description: viewData.description,
+            websiteTitle: viewData.websiteTitle,
+            websiteURL: viewData.websiteURL,
+            avatarURLString: viewData.avatarURLString,
+            myNftCount: myNFTItems.count,
+            favoriteNftCount: favoriteNFTItems.count
+        )
+    }
+
+    @MainActor
     private func loadMissingFavoriteNFTsIfNeeded() async {
         let missingIDs = favoritesManager.favoriteIDs.filter { allNFTsByID[$0] == nil }
         guard !missingIDs.isEmpty else { return }
