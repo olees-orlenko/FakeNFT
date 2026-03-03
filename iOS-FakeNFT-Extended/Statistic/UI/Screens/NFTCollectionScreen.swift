@@ -58,9 +58,9 @@ struct NFTCollectionScreen: View {
     private var content: some View {
         switch viewModel.state {
         case .loading:
-            VStack {
-                ProgressView().padding()
-                Spacer()
+            ZStack {
+                Color(.systemBackground).ignoresSafeArea()
+                StatisticsLoadingHUD()
             }
 
         case .error(let message):
@@ -84,7 +84,7 @@ struct NFTCollectionScreen: View {
                             imageURL: item.imageURL,
                             isLiked: Binding(
                                 get: { viewModel.likedIds.contains(item.id) },
-                                set: { _ in } 
+                                set: { _ in }
                             ),
                             isInCart: Binding(
                                 get: { viewModel.cartIds.contains(item.id) },

@@ -11,9 +11,9 @@ struct StatisticsFlowView: View {
             Group {
                 switch viewModel.state {
                 case .loading:
-                    VStack {
-                        ProgressView().padding()
-                        Spacer()
+                    ZStack {
+                        Color(.systemBackground).ignoresSafeArea()
+                        StatisticsLoadingHUD()
                     }
 
                 case .error(let message):
@@ -42,8 +42,9 @@ struct StatisticsFlowView: View {
                     nftCollectionDestination(userId: userId)
                 }
             }
-            .sheet(item: $safariURL) { item in
+            .fullScreenCover(item: $safariURL) { item in
                 SafariView(url: item.url)
+                    .ignoresSafeArea()
             }
             .sheet(isPresented: $viewModel.isSortSheetPresented) {
                 StatisticsSortSheet(
@@ -82,11 +83,12 @@ struct StatisticsFlowView: View {
             )
 
         } else {
-            VStack(spacing: 12) {
-                ProgressView()
-                Text("Загрузка...")
-                    .foregroundColor(.secondary)
-                Button("Назад") { popIfPossible() }
+            ZStack {
+                Color(.systemBackground).ignoresSafeArea()
+                VStack(spacing: 12) {
+                    StatisticsLoadingHUD()
+                    Button("Назад") { popIfPossible() }
+                }
             }
         }
     }
@@ -105,11 +107,12 @@ struct StatisticsFlowView: View {
             )
 
         } else {
-            VStack(spacing: 12) {
-                ProgressView()
-                Text("Загрузка...")
-                    .foregroundColor(.secondary)
-                Button("Назад") { popIfPossible() }
+            ZStack {
+                Color(.systemBackground).ignoresSafeArea()
+                VStack(spacing: 12) {
+                    StatisticsLoadingHUD()
+                    Button("Назад") { popIfPossible() }
+                }
             }
         }
     }
