@@ -15,10 +15,18 @@ final class CartViewModel: ObservableObject {
     @Published var isLoading = false
 
     private let service = CartService()
+    private let cartForcedEmptyKey = "cartForcedEmpty"
 
     func loadCart() async {
         isLoading = true
         defer { isLoading = false }
+
+        // Если локально корзина была очищена, не показываем "залипшие" серверные позиции
+        // до следующего явного добавления NFT пользователем.
+        if UserDefaults.standard.bool(forKey: cartForcedEmptyKey) {
+            nfts = []
+            return
+        }
 
         do {
             let order: OrderDTO = try await service.fetchOrder()

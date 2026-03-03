@@ -1,9 +1,12 @@
 import SwiftUI
 
+private let purchaseDidCompleteNotification = Notification.Name("purchaseDidComplete")
+
 // MARK: - ProfileView
 
 struct ProfileView: View {
     @Environment(ServicesAssembly.self) private var servicesAssembly
+    @EnvironmentObject private var cartManager: CartManager
     @EnvironmentObject private var favoritesManager: FavoritesManager
 
     @State private var viewData: ProfileViewData
@@ -85,6 +88,12 @@ struct ProfileView: View {
         .onChange(of: favoritesManager.favoriteIDs) { _ in
             updateFavoriteItemsFromCache()
             Task {
+                await loadMissingFavoriteNFTsIfNeeded()
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: purchaseDidCompleteNotification)) { _ in
+            Task {
+                await loadProfileData()
                 await loadMissingFavoriteNFTsIfNeeded()
             }
         }
@@ -284,7 +293,9 @@ struct ProfileView: View {
         allNFTsByID = Dictionary(uniqueKeysWithValues: nftList.map { ($0.id, $0) })
         favoritesManager.replaceFromServer(with: Set(profile.likes))
 
-        myNFTItems = profile.nfts
+        let effectiveMyNFTIDs = Set(profile.nfts).union(cartManager.getPurchasedIDs())
+
+        myNFTItems = effectiveMyNFTIDs
             .compactMap { allNFTsByID[$0] }
             .map(MyNFTItem.init(nft:))
 
@@ -433,17 +444,20 @@ struct ProfileView: View {
 #Preview {
     ProfileView(shouldLoadOnAppear: false)
         .environment(ServicesAssembly(networkClient: DefaultNetworkClient(), nftStorage: NftStorageImpl()))
+        .environmentObject(CartManager())
         .environmentObject(FavoritesManager())
 }
 
 #Preview("Loading") {
     ProfileView(screenState: .loading, shouldLoadOnAppear: false)
         .environment(ServicesAssembly(networkClient: DefaultNetworkClient(), nftStorage: NftStorageImpl()))
+        .environmentObject(CartManager())
         .environmentObject(FavoritesManager())
 }
 
 #Preview("Error") {
     ProfileView(screenState: .error("Не удалось загрузить профиль"), shouldLoadOnAppear: false)
         .environment(ServicesAssembly(networkClient: DefaultNetworkClient(), nftStorage: NftStorageImpl()))
+        .environmentObject(CartManager())
         .environmentObject(FavoritesManager())
 }

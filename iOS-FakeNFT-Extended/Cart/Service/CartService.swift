@@ -45,6 +45,11 @@ actor CartService {
     private let baseURL = RequestConstants.baseURL
     private let token = RequestConstants.token
 
+    enum ArrayBodyFormat {
+        case repeated
+        case commaSeparated
+    }
+
     func fetchOrder() async throws -> OrderDTO {
         try await performRequest(path: "/api/v1/orders/1")
     }
@@ -65,27 +70,79 @@ actor CartService {
     }
 
     func updateOrder(nftIds: [String]) async throws -> OrderDTO {
+        let repeated = try await performOrderMutation(
+            method: "PUT",
+            nftIds: nftIds,
+            bodyFormat: .repeated
+        )
+
+        if Set(repeated.nfts) == Set(nftIds) {
+            return repeated
+        }
+
+        return try await performOrderMutation(
+            method: "PUT",
+            nftIds: nftIds,
+            bodyFormat: .commaSeparated
+        )
+    }
+
+    func completeOrder(nftIds: [String], primaryFormat: ArrayBodyFormat = .commaSeparated) async throws -> OrderDTO {
+        do {
+            return try await performOrderMutation(
+                method: "POST",
+                nftIds: nftIds,
+                bodyFormat: primaryFormat
+            )
+        } catch NetworkCartError.serverError {
+            let fallback: ArrayBodyFormat = primaryFormat == .commaSeparated ? .repeated : .commaSeparated
+            return try await performOrderMutation(
+                method: "POST",
+                nftIds: nftIds,
+                bodyFormat: fallback
+            )
+        }
+    }
+
+    func completeOrder(nftID: String) async throws -> OrderDTO {
+        try await completeOrder(nftIds: [nftID], primaryFormat: .repeated)
+    }
+
+    private func makeArrayBody(key: String, values: [String], format: ArrayBodyFormat) -> String {
+        if values.isEmpty {
+            return "\(key)="
+        }
+
+        switch format {
+        case .repeated:
+            return values.map { "\(key)=\($0)" }.joined(separator: "&")
+        case .commaSeparated:
+            let joined = values.joined(separator: ",")
+            let encoded = joined.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? joined
+            return "\(key)=\(encoded)"
+        }
+    }
+
+    private func performOrderMutation(
+        method: String,
+        nftIds: [String],
+        bodyFormat: ArrayBodyFormat
+    ) async throws -> OrderDTO {
         guard let url = URL(string: "\(baseURL)/api/v1/orders/1") else { throw NetworkError.invalidURL }
 
         var request = URLRequest(url: url)
-        request.httpMethod = "PUT"
-
+        request.httpMethod = method
         request.setValue(token, forHTTPHeaderField: "X-Practicum-Mobile-Token")
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
 
-        let bodyString = nftIds.map { "nfts=\($0)" }.joined(separator: "&")
-        request.httpBody = bodyString.data(using: .utf8)
+        let body = makeArrayBody(key: "nfts", values: nftIds, format: bodyFormat)
+        request.httpBody = body.data(using: .utf8)
 
         let (data, response) = try await URLSession.shared.data(for: request)
-
         guard let httpResponse = response as? HTTPURLResponse else { throw NetworkCartError.noData }
 
-
-        if httpResponse.statusCode != 200 {
-            if let serverError = String(data: data, encoding: .utf8) {
-                print("DEBUG: Ошибка сервера (тело): \(serverError)")
-            }
+        guard httpResponse.statusCode == 200 else {
             throw NetworkCartError.serverError(httpResponse.statusCode)
         }
 

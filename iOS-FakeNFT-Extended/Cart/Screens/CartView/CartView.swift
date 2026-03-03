@@ -7,10 +7,13 @@
 
 import SwiftUI
 
+private let purchaseDidCompleteNotification = Notification.Name("purchaseDidComplete")
+
 struct CartView: View {
     // MARK: - Properties
 
     @ObservedObject private var viewModel = CartViewModel()
+    @EnvironmentObject private var cartManager: CartManager
     @State var cartPath = NavigationPath()
     @State private var isShowingSortMenu = false
     @State private var isShowingDeleteAlert = false
@@ -78,7 +81,7 @@ struct CartView: View {
             .navigationDestination(for: CartRoute.self) { route in
                 switch route {
                 case .payment:
-                    PaymentView(cartPath: $cartPath)
+                    PaymentView(cartPath: $cartPath, nftIds: viewModel.nfts.map(\.id))
                         .toolbar(.hidden, for: .tabBar)
                 case .success:
                     PaymentSuccessView(cartPath: $cartPath)
@@ -95,8 +98,13 @@ struct CartView: View {
         }
         .background(.whiteAdaptive)
         .task {
-            if viewModel.nfts.isEmpty {
+            await viewModel.loadCart()
+            cartManager.replace(with: Set(viewModel.nfts.map(\.id)))
+        }
+        .onReceive(NotificationCenter.default.publisher(for: purchaseDidCompleteNotification)) { _ in
+            Task {
                 await viewModel.loadCart()
+                cartManager.replace(with: Set(viewModel.nfts.map(\.id)))
             }
         }
     }
@@ -122,6 +130,7 @@ struct CartView: View {
         }
         .refreshable {
             await viewModel.loadCart()
+            cartManager.replace(with: Set(viewModel.nfts.map(\.id)))
         }
         .background(.whiteAdaptive)
         .listStyle(.plain)
@@ -208,6 +217,7 @@ struct CartView: View {
     private func deleteItem(_ item: CartModel) {
         Task {
             await viewModel.deleteItem(item)
+            cartManager.replace(with: Set(viewModel.nfts.map(\.id)))
         }
     }
 }
@@ -216,20 +226,24 @@ struct CartView: View {
 
 #Preview("Cart Light") {
     CartView()
+        .environmentObject(CartManager())
         .preferredColorScheme(.light)
 }
 
 #Preview("Cart Dark") {
     CartView()
+        .environmentObject(CartManager())
         .preferredColorScheme(.dark)
 }
 
 #Preview("Cart empty state light") {
     CartView()
+        .environmentObject(CartManager())
         .preferredColorScheme(.light)
 }
 
 #Preview("Cart empty state dark") {
     CartView()
+        .environmentObject(CartManager())
         .preferredColorScheme(.dark)
 }
