@@ -5,34 +5,57 @@ struct StatisticsFlowView: View {
     @StateObject private var viewModel = StatisticsViewModel()
     @State private var path: [StatisticsRoute] = []
     @State private var safariURL: IdentifiableURL? = nil
+    @State private var isShowingSortMenu = false
 
     var body: some View {
         NavigationStack(path: $path) {
-            Group {
-                switch viewModel.state {
-                case .loading:
-                    ZStack {
-                        Color(.systemBackground).ignoresSafeArea()
-                        StatisticsLoadingHUD()
-                    }
-
-                case .error(let message):
-                    VStack(spacing: 12) {
-                        Text("Ошибка: \(message)")
-                            .foregroundColor(.red)
-                        Button("Повторить") { viewModel.retry() }
-                    }
-
-                case .content(let users):
-                    StatisticsScreen(
-                        users: users,
-                        onSortTap: { viewModel.showSortSheet() },
-                        onSelectUser: { user in
-                            path.append(.userCard(userId: user.id))
+            ZStack {
+                Group {
+                    switch viewModel.state {
+                    case .loading:
+                        ZStack {
+                            Color(.systemBackground).ignoresSafeArea()
+                            StatisticsLoadingHUD()
                         }
+
+                    case .error(let message):
+                        VStack(spacing: 12) {
+                            Text("Ошибка: \(message)")
+                                .foregroundColor(.red)
+                            Button("Повторить") { viewModel.retry() }
+                        }
+
+                    case .content(let users):
+                        StatisticsScreen(
+                            users: users,
+                            onSelectUser: { user in
+                                path.append(.userCard(userId: user.id))
+                            }
+                        )
+                    }
+                }
+
+                if isShowingSortMenu {
+                    StatisticsSortSheet(
+                        isPresented: $isShowingSortMenu,
+                        selected: viewModel.sortType,
+                        onSelect: viewModel.selectSort
                     )
                 }
             }
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        isShowingSortMenu = true
+                    } label: {
+                        Image("Menu")
+                            .foregroundColor(.primary)
+                            .padding(9)
+                    }
+                }
+            }
+            .toolbar(isShowingSortMenu ? .hidden : .visible, for: .tabBar)
             .navigationDestination(for: StatisticsRoute.self) { route in
                 switch route {
                 case .userCard(let userId):
@@ -45,13 +68,6 @@ struct StatisticsFlowView: View {
             .fullScreenCover(item: $safariURL) { item in
                 SafariView(url: item.url)
                     .ignoresSafeArea()
-            }
-            .sheet(isPresented: $viewModel.isSortSheetPresented) {
-                StatisticsSortSheet(
-                    isPresented: $viewModel.isSortSheetPresented,
-                    selected: viewModel.sortType,
-                    onSelect: viewModel.selectSort
-                )
             }
         }
     }

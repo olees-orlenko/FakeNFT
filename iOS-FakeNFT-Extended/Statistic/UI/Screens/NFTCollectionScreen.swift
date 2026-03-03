@@ -38,19 +38,24 @@ struct NFTCollectionScreen: View {
     var body: some View {
         VStack(spacing: 26) {
 
-            NavigationTitleView(
-                title: "Коллекция NFT",
-                systemImage: "chevron.left",
-                buttonPosition: .left,
-                titleAlignment: .center,
-                onTap: { onBack?() }
-            )
-
             content
         }
         .padding(.top, 8)
         .background(Color(.systemBackground))
-        .toolbar(.hidden, for: .navigationBar)
+        .navigationTitle("Коллекция NFT")
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    onBack?()
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .tint(.primary)
+                }
+            }
+        }
+        .toolbar(.hidden, for: .tabBar)
         .task { await viewModel.load() }
     }
 

@@ -1,70 +1,107 @@
 import SwiftUI
 
+// MARK: - Statistics Sort Filter
+
 struct StatisticsSortSheet: View {
+
+    // MARK: - Properties
+
     @Binding var isPresented: Bool
     let selected: StatisticsSortType
     let onSelect: (StatisticsSortType) -> Void
 
+    // MARK: - Body
+
     var body: some View {
-        VStack(spacing: 12) {
-            VStack(spacing: 0) {
-                Text("Сортировка")
-                    .font(.system(size: 13, weight: .regular))
-                    .foregroundStyle(Color.secondary)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 10)
+        GeometryReader { proxy in
+            if isPresented {
+                Color.black.opacity(0.5)
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        withAnimation { isPresented = false }
+                    }
 
-                Divider()
+                VStack(spacing: 0) {
+                    VStack(spacing: 0) {
+                        Text(NSLocalizedString("Sorting", comment: ""))
+                            .font(.caption2)
+                            .foregroundColor(Color(.sortingText))
+                            .padding(.top, 12)
+                            .padding(.bottom, 12)
 
-                sheetRow(title: StatisticsSortType.byName.rawValue) {
-                    onSelect(.byName)
-                    isPresented = false
+                        Divider()
+
+                        Button(action: {
+                            withAnimation { isPresented = false }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
+                                onSelect(.byName)
+                            }
+                        }) {
+                            Text(StatisticsSortType.byName.rawValue)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 18)
+                        }
+
+                        Divider()
+
+                        Button(action: {
+                            withAnimation { isPresented = false }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
+                                onSelect(.byRating)
+                            }
+                        }) {
+                            Text(StatisticsSortType.byRating.rawValue)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 18)
+                        }
+                    }
+                    .background(
+                        RoundedRectangle(cornerRadius: 13, style: .continuous)
+                            .fill(Color(UIColor.sortingBackground))
+                    )
+                    .padding(.horizontal, 8)
+                    .padding(.bottom, 8)
+
+                    Button(action: {
+                        withAnimation { isPresented = false }
+                    }) {
+                        Text(NSLocalizedString("Close.Button", comment: ""))
+                            .bold()
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(
+                                RoundedRectangle(cornerRadius: 13, style: .continuous)
+                                    .fill(Color(UIColor.systemBackground))
+                            )
+                    }
+                    .padding(.horizontal, 8)
                 }
-
-                Divider()
-
-                sheetRow(title: StatisticsSortType.byRating.rawValue) {
-                    onSelect(.byRating)
-                    isPresented = false
-                }
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+                .zIndex(1)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
             }
-            .background(Color(.secondarySystemGroupedBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-
-            Button {
-                isPresented = false
-            } label: {
-                Text("Закрыть")
-                    .font(.system(size: 17, weight: .semibold))
-                    .foregroundStyle(Color.blue)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 54)
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .background(Color(.secondarySystemGroupedBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-
-            Spacer(minLength: 0)
         }
-        .padding(.horizontal, 16)
-        .padding(.top, 8)
-        .padding(.bottom, 12)
-        .presentationDetents([.height(250)])
-        .presentationDragIndicator(.hidden)
-        .presentationBackground(.clear)
-    }
-
-    private func sheetRow(title: String, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Text(title)
-                .font(.system(size: 17, weight: .regular))
-                .foregroundStyle(Color.blue)
-                .frame(maxWidth: .infinity)
-                .frame(height: 52)
-                .multilineTextAlignment(.center)
-                .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
+        .animation(.easeOut(duration: 0.22), value: isPresented)
     }
 }
+
+// MARK: - Preview
+
+#Preview("StatisticsSortSheet light") {
+    StatisticsSortSheet(
+        isPresented: .constant(true),
+        selected: .byRating,
+        onSelect: { _ in }
+    )
+    .preferredColorScheme(.light)
+}
+
+#Preview("StatisticsSortSheet dark") {
+    StatisticsSortSheet(
+        isPresented: .constant(true),
+        selected: .byRating,
+        onSelect: { _ in }
+    )
+    .preferredColorScheme(.dark)
+}
+

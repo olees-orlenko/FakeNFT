@@ -25,19 +25,10 @@ struct StatisticsScreen: View {
     }
 
     let users: [UserStat]
-    var onSortTap: (() -> Void)? = nil
     var onSelectUser: ((UserStat) -> Void)? = nil
 
     var body: some View {
         VStack(spacing: 16) {
-
-            NavigationTitleView(
-                title: nil,
-                assetImage: "Light",
-                buttonPosition: .right,
-                titleAlignment: .center,
-                onTap: { onSortTap?() }
-            )
 
             List {
                 ForEach(Array(users.enumerated()), id: \.element.id) { index, user in
