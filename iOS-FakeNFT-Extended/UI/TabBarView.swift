@@ -1,15 +1,6 @@
 import SwiftUI
 
 struct TabBarView: View {
-    
-    init() {
-        let appearance = UITabBarAppearance()
-        appearance.stackedLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.black]
-        appearance.stackedLayoutAppearance.normal.iconColor = UIColor.black
-        UITabBar.appearance().standardAppearance = appearance
-        UITabBar.appearance().scrollEdgeAppearance = appearance
-    }
-    
     var body: some View {
         TabView {
             ProfileView()
@@ -43,6 +34,5 @@ struct TabBarView: View {
                     }
                 }
         }
-        .tint(.blue)
     }
 }

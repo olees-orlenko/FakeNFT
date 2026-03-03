@@ -1,9 +1,14 @@
 import UIKit
 
 extension UIFont {
+    // Ниже приведены примеры шрифтов, настоящие шрифты надо взять из фигмы
 
-    // MARK: - Body Fonts
-    
+    // Headline Fonts
+    static var headline1 = UIFont.systemFont(ofSize: 34, weight: .bold)
+    static var headline2 = UIFont.systemFont(ofSize: 28, weight: .bold)
+    static var headline4 = UIFont.systemFont(ofSize: 20, weight: .bold)
+
+    // Body Fonts
     static var bodyRegular = UIFont.systemFont(ofSize: 17, weight: .regular)
     
     // MARK: - Font for NftCollection Title

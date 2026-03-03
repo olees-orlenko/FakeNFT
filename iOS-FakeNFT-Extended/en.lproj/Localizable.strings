@@ -46,7 +46,6 @@
 // MARK: - Statistic
 "Statistic.nftCollectionTitle" = "Коллекция NFT";
 "Statistic.openUserWebsite" = "Перейти на сайт пользователя";
-
 // MARK: - Cart
 "Cart.checkout" = "К оплате";
 "Cart.price" = "Цена";
@@ -68,3 +67,4 @@
 "Sort.price" = "По цене";
 "Sort.name" = "По имени";
 "Sort.rating" = "По рейтингу";
+
