@@ -6,7 +6,7 @@
 
 ### Скринкаст с демонстрацией эпиков
 - [Экран "Профиль"](https://disk.yandex.ru/d/xEp_SEOpanjaXw)
-- [Экран "Каталог"](https://disk.yandex.ru/i/G5HvGJgPij--oQ)
+- [Экран "Каталог"](https://disk.yandex.ru/i/gVB3_xan5rcF1g)
 - [Экран "Корзина"](https://disk.yandex.ru/i/p609ZnvbaikZRw)
 - [Экран "Статистика"](https://disk.yandex.ru/d/Ss7YOolXwXn8TA)
 
