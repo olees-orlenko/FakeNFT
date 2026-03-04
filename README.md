@@ -5,6 +5,7 @@
 [Дизайн Figma](https://www.figma.com/design/Uz5G39wRRCr2mRE4SbnNla/FakeNFT--YP-)
 
 ### Скринкаст с демонстрацией эпиков
+- [Приложение FakeNFT](https://disk.yandex.ru/i/sm7nWuow6iTRVQ)
 - [Экран "Профиль"](https://disk.yandex.ru/d/xEp_SEOpanjaXw)
 - [Экран "Каталог"](https://disk.yandex.ru/i/gVB3_xan5rcF1g)
 - [Экран "Корзина"](https://disk.yandex.ru/i/p609ZnvbaikZRw)
