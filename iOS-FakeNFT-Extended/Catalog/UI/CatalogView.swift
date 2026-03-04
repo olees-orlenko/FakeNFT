@@ -70,6 +70,7 @@ struct CatalogView: View {
                 NavigationStack {
                     NFTCollectionView(collection: collection)
                 }
+                .tint(.black)
             }
             .task {
                 await viewModel.loadCovers()
@@ -91,7 +92,6 @@ struct CatalogView: View {
                 }
             }
         }
-        .tint(.black)
     }
 }
 
